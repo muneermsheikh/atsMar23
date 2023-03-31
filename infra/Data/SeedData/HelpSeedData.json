@@ -1,0 +1,30 @@
+[
+    {
+        "Topic": "Candidate Assessment",
+        "HelpItems": [
+            {"Sequence": 1, "HelpText": 
+                "Candidates need to be checklisted prior to shortlisting for forwarding to client"
+            }, 
+            {"Sequence": 2, "HelpText": 
+                "Requirements matching candidate professions (a candidate can have multiple professions) will be displayed in the dropdown titled 'Select Requirement details"
+            },
+            {"Sequence": 3, "HelpText": 
+                "Choose a requirement for which you want to shortlist the candidate"
+            },
+            {"Sequence": 4, "HelpText": 
+                "If the Demand Letter category selected in the dropdown requires candidate to be asssessed, then",
+                "HelpSubText": 
+                    [
+                        {"SrNo": 1, "SubText": 
+                            "If the Demand Letter category has assessment questions defined, then those assessment questions will be displayed to enable you assess the candidate"},
+                        {"SrNo": 2, "SubText": 
+                            "If assessment questions for the DL category has not been defined, then the questions will first need to be defined by the authorised person"}
+                    ]
+            },
+            {"Sequence": 5, "HelpText": 
+                "If the DL category selected is not defined to require candidate assessment, then you just need to shortlist the candidate for forwarding to client."
+            }
+        ]
+    }
+]
+

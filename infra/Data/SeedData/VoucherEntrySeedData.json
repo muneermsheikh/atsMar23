@@ -1,0 +1,118 @@
+[
+	{"FinanceVoucherId": 1, "TransDate": "2020-01-12T10:00", "CoaId": 2, "AccountName":"Petty Cash", 
+		"Amount": -2582, "Narration": ""},
+	{"FinanceVoucherId": 1, "TransDate": "2020-01-12T10:00", "CoaId": 12, "AccountName":"Office Maintenance", 
+		"Amount": 1000, "Narration": "Office paste control"},
+	{"FinanceVoucherId": 1, "TransDate": "2020-01-12T10:00", "CoaId": 9, "AccountName":"Business Visits - Hotel Accommodation", 
+		"Amount": 1582, "Narration": "Bill No dkdkdk"},
+
+	{"FinanceVoucherId": 2, "TransDate": "2020-01-12T10:00", "CoaId": 2, "AccountName":"Petty Cash", 
+		"Amount": 5000, "Narration": ""},
+	{"FinanceVoucherId": 2, "TransDate": "2020-01-12T10:00", "CoaId": 30, "AccountName":"Sagirbhai Current Account", 
+		"Amount": -5000, "Narration": "fOR OFFICE EXPENESES"},
+	
+	{"FinanceVoucherId": 3, "TransDate": "2020-01-12T10:00", "CoaId": 9, "AccountName":"Business Visits - Hotel Accommodation", 
+		"Amount": 8582, "Narration": "Bill No dkdkdk"},
+	{"FinanceVoucherId": 3, "TransDate": "2020-01-12T10:00", "CoaId": 10, "AccountName":"Business Visits - Airfare", 
+		"Amount": 6000, "Narration": ""},
+	{"FinanceVoucherId": 3, "TransDate": "2020-01-12T10:00", "CoaId": 35, "AccountName":"SBI Bank Kanpur Branch", 
+		"Amount": -14582, "Narration": "Cheque No. 3483948394"},
+
+	{"FinanceVoucherId": 4, "TransDate": "2020-02-12T10:00", "CoaId": 1, "AccountName":"Salary", 
+		"Amount": 18000, "Narration": "Salary for Jan 22- Kadir"},
+	{"FinanceVoucherId": 4, "TransDate": "2020-02-12T10:00", "CoaId": 1, "AccountName":"Salary", 
+		"Amount": 20000, "Narration": "Salary for Jan 22- Dutta"},
+	{"FinanceVoucherId": 4, "TransDate": "2020-02-12T10:00", "CoaId": 1, "AccountName":"Salary", 
+		"Amount": 12000, "Narration": "Salary for Jan 22- Saira"},
+	{"FinanceVoucherId": 4, "TransDate": "2020-02-12T10:00", "CoaId": 1, "AccountName":"Salary", 
+		"Amount": 1500, "Narration": "Salary for Jan 22- maid"},
+	{"FinanceVoucherId": 4, "TransDate": "2020-02-12T10:00", "CoaId": 30, "AccountName":"Sagirbhai Current Account", 
+		"Amount": -51500, "Narration": "Salary for Jan 22"},
+	
+	{"FinanceVoucherId": 5, "TransDate": "2020-03-12T10:00", "CoaId": 37, "AccountName":"Sales - Recruitment", 
+		"Amount": -55000, "Narration": "Recruitent Sales - Azhar Khan 10823"},
+	{"FinanceVoucherId": 5, "TransDate": "2020-02-12T10:00", "CoaId": 38, "AccountName":"Azhar Khan - App 10823", 
+		"Amount": 55000, "Narration": "Service charges - requirement 1082-2"},
+
+	{"FinanceVoucherId": 6, "TransDate": "2020-03-15T10:00", "CoaId": 30, "AccountName":"Azhar Khan - App 10823", 
+		"Amount": -10000, "Narration": "Advance Received"},
+	{"FinanceVoucherId": 6, "TransDate": "2020-02-12T10:00", "CoaId": 2, "AccountName":"Petty Cash", 
+		"Amount": 10000, "Narration": "Azhar Khan - App 10823"},
+	
+	{"FinanceVoucherId": 7, "TransDate": "2020-03-20T10:00", "CoaId": 30, "AccountName":"Azhar Khan - App 10823", 
+		"Amount": -15000, "Narration": "Advance Received"},
+	{"FinanceVoucherId": 7, "TransDate": "2020-03-20T10:00", "CoaId": 2, "AccountName":"Petty Cash", 
+		"Amount": 15000, "Narration": "Azhar Khan - App 10823"},
+	
+	{"FinanceVoucherId": 8, "TransDate": "2020-03-25T10:00", "CoaId": 37, "AccountName":"Sales - Recruitment", 
+		"Amount": 5000, "Narration": "discount as approved by abcd"},
+	{"FinanceVoucherId": 8, "TransDate": "2020-03-25T10:00", "CoaId": 30, "AccountName":"Azhar Khan - App 10328", 
+		"Amount": -5000, "Narration": "discount as approved by abcd"},
+	
+	{"FinanceVoucherId": 9, "TransDate": "2020-04-10T10:00", "CoaId": 30, "AccountName":"Azhar Khan - App 10823", 
+		"Amount": -12000, "Narration": "Advance Received"},
+	{"FinanceVoucherId": 9, "TransDate": "2020-04-10T10:00", "CoaId": 35, "AccountName":"SBI Bank Kanpur Branch", 
+		"Amount": 12000, "Narration": "Azhar Khan - App 10823"},
+	
+	{"FinanceVoucherId": 10, "TransDate": "2020-08-15T10:00", "CoaId":32, "AccountName": "Munir Personal Account", 
+		"Amount": 25000, "Narration": "On account payment to munirbhai as approved by sagirbha"},
+	{"FinanceVoucherId": 10, "TransDate": "2020-08-15T10:00", "CoaId": 2, "AccountName":"Petty Cash", 
+		"Amount": -25000, "Narration": "On account payment to munirbhai as approved by sagirbha"},
+
+	{"FinanceVoucherId": 11, "TransDate": "2020-08-05T10:00", "CoaId": 30, "AccountName":"Sagirbhai Current Account", 
+		"Amount": -7582, "Narration": "for expenses"},
+	{"FinanceVoucherId": 11, "TransDate": "2020-08-05T10:00", "CoaId": 2, "AccountName":"Petty Cash", 
+		"Amount": 7582, "Narration": "Recd from sagirbhai"},
+	
+	{"FinanceVoucherId": 12, "TransDate": "2020-08-16T10:00", "CoaId": 30, "AccountName":"Sagirbhai Current Account", 
+		"Amount": -8542, "Narration": "for expenses"},
+	{"FinanceVoucherId": 12, "TransDate": "2020-08-16T10:00", "CoaId": 2, "AccountName":"Petty Cash", 
+		"Amount": 8542, "Narration": "Recd from sagirbhai"},
+
+	{"FinanceVoucherId": 13, "TransDate": "2020-09-11T10:00", "CoaId": 30, "AccountName":"Sagirbhai Current Account", 
+		"Amount": -1500, "Narration": "salary of maid servant"},
+	{"FinanceVoucherId": 13, "TransDate": "2020-09-11T10:00", "CoaId": 1, "AccountName":"Salary", 
+		"Amount": 1500, "Narration": "salary of maid servnt"},
+
+	{"FinanceVoucherId": 14, "TransDate": "2020-09-11T10:00", "CoaId": 3, "AccountName":"Ramesh Sirnate", 
+		"Amount": -10000, "Narration": "Ramesh Sirnate"},
+	{"FinanceVoucherId": 14, "TransDate": "2020-09-11T10:00", "CoaId": 35, "AccountName":"SBI Bank kanpur branch", 
+		"Amount": 10000, "Narration": "Receivable from Ramesh Sirnate"},
+
+	{"FinanceVoucherId": 15, "TransDate": "2020-09-23T10:00", "CoaId": 23, "AccountName":"Courier - International", 
+		"Amount": 1500, "Narration": "courier to jeddah"},
+	{"FinanceVoucherId": 15, "TransDate": "2020-09-23T10:00", "CoaId": 2, "AccountName": "Petty cash", 
+		"Amount": -1500, "Narration": "inernational courier"},
+
+	{"FinanceVoucherId": 16, "TransDate": "2020-09-12T10:00", "CoaId": 33, "AccountName":"Dutta - Personal Account", 
+		"Amount": 2500, "Narration": "courier to jeddah"},
+	{"FinanceVoucherId": 16, "TransDate": "2020-09-23T10:00", "CoaId": 2, "AccountName": "Petty cash", 
+		"Amount": -2500, "Narration": "paid to dutta"},
+
+	{"FinanceVoucherId": 17, "TransDate": "2020-06-23T10:00", "CoaId": 28, "AccountName":"Sales - Airfare", 
+		"Amount": -35000, "Narration": "Sales airfare"},
+	{"FinanceVoucherId": 17, "TransDate": "2020-06-23T10:00", "CoaId": 4, "AccountName": "Rahul Dwivedi", 
+		"Amount": 35000, "Narration": "ticket for jogeshwari"},
+
+	{"FinanceVoucherId": 18, "TransDate": "2020-07-12T10:00", "CoaId": 28, "AccountName":"Sales - Airfare", 
+		"Amount": -55500, "Narration": "air ticket sales"},
+	{"FinanceVoucherId": 18, "TransDate": "2020-07-23T10:00", "CoaId": 3, "AccountName": "Ramesh sirnate", 
+		"Amount": 25000, "Narration": "paid to dutta"},
+	{"FinanceVoucherId": 18, "TransDate": "2020-07-12T10:00", "CoaId": 4, "AccountName":"RAhul Dwivedi", 
+		"Amount": 30500, "Narration": "courier to jeddah"},
+	
+	{"FinanceVoucherId": 19, "TransDate": "2020-09-24T10:00", "CoaId": 2, "AccountName": "Petty cash", 
+		"Amount": -5500, "Narration": "member ship fee for portal"},
+	{"FinanceVoucherId": 19, "TransDate": "2020-09-24T10:00", "CoaId": 11, "AccountName": "Membership fee for portal", 
+		"Amount": 100000, "Narration": "Member ship fee for portal"},
+	{"FinanceVoucherId": 19, "TransDate": "2020-09-24T10:00", "CoaId": 14, "AccountName": "Afreen Kanpur Current Account", 
+		"Amount": -94500, "Narration": "member ship fee for portal"},
+
+	{"FinanceVoucherId": 20, "TransDate": "2020-10-24T10:00", "CoaId": 2, "AccountName": "Pett Cash", 
+		"Amount": -45000, "Narration": "paid to sagir bhai"},
+	{"FinanceVoucherId": 20, "TransDate": "2020-10-24T10:00", "CoaId": 30, "AccountName": "Sagirbhai current account", 
+		"Amount": 45000, "Narration": "paid to sagir bhai"}
+	
+
+
+] 

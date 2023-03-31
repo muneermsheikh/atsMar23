@@ -1,0 +1,66 @@
+[
+      {
+		"Gender": "Male", "CandidateName": "prijithp v", "Email": "prijithpv2@gmail.com", "AlternateEmail":"",  
+		"CategoryRef": "1015-1", "Source": "TimesJobs", "ResumeId":"151918673", "ResumeTitle":"", "Date": "2020-11-12T12:15:00", 
+      	"Age": "23 years", "PhoneNo": "394859211", "AlternatePhoneNo": "", "CurrentLocation": "Worli Mumbai",
+      	"Education": "B.Com.", "Ctc":"","WorkExperience":"25 yrs", "Status": "","StatusByUserId": 1 , "StatusDate":null, "UserName": "munir",
+		"Natioality": "Indian", "OrderItemId": 10, "Address": "" , "City": "Mumbai"},
+
+	{
+		"Gender": "Male", "CandidateName": "Vinod Singh", "Email": "vinod_singh200523@rediffmail.com", "AlternateEmail":"vinodsinghksa@gmail.com", 
+		"CategoryRef": "", "Source": "TimesJobs", "ResumeId":"151918674", "ResumeTitle":"", "Date": "2021-11-11T12:00", 
+      	"Age": "23 years", "PhoneNo": "91-9935215877", "AlternatePhoneNo": "", "CurrentLocation": "Worli Mumbai",
+      	"Education": "B.Com.", "Ctc":"","WorkExperience": "22 yrs", "Status": "","StatusByUserId": 1 , "StatusDate":null, "UserName": "munir",
+		"Natioality": "Indian", "OrderItemId": 10, "Address": "" , "City": "Ujjain"},
+
+	{
+		"Gender": "Male", "CandidateName": "Manikandan Balakrishnan", "Email": "manikandan.b2k19@gmail.com", "AlternateEmail":"", 
+	 	"CategoryRef": "", "Source": "TimesJobs", "ResumeId":"15198675", "ResumeTitle":"", "Date": "2021-11-11T12:00", 
+      	"Age": "23 years", "PhoneNo": "91-9600203535", "AlternatePhoneNo": "", "CurrentLocation": "Worli Mumbai",
+      	"Education": "B.Com.", "Ctc":"","WorkExperience": "11 yrs", "Status": "","StatusByUserId": 1 , "StatusDate":null, "UserName": "munir",
+		"Natioality": "Indian", "OrderItemId": 10, "Address": "" , "City": "Hyderabad"
+	},
+	{
+		"Gender": "Male", "CandidateName": "taraknadh Kanta", "Email": "taraknadh2004@gmail.com", "AlternateEmail":"", 
+		"CategoryRef": "", "Source": "TimesJobs", "ResumeId":"15198676", "ResumeTitle":"", "Date": "2021-11-11T12:00", 
+      	"Age": "23 years", "PhoneNo": "91-7729815842", "AlternatePhoneNo": "", "CurrentLocation": "Worli Mumbai",
+      	"Education": "B.Com.", "Ctc":"","WorkExperience": "20 yrs", "Status": "","StatusByUserId": 1 , "StatusDate":null, "UserName": "munir",
+		"Natioality": "Indian", "OrderItemId": 10, "Address": "" , "City": "Kolkota"
+	},
+	{
+		"CandidateName": "Jayakumar Sudalaimani", "CategoryRef": "", "Source": "TimesJobs", "ResumeId":"128060967", 
+		"ResumeTitle":"", "Date": "2021-11-11T12:00", 
+      	"Age": "23 years", "PhoneNo": "9940546876", "AlternatePhoneNo": "", "Email": "jayakumarmani13@gmail.com", "AlternateEmail":"", 
+		"CurrentLocation": "Worli Mumbai", "Education": "B.Com.", "Ctc":"","WorkExperience": "25 yrs", "Status": "","StatusByUserId": 1, 
+		"StatusDate":null, "UserName": "munir", "Natioality": "Indian", "OrderItemId": 10, "Address": "" , "City": "Chenna"
+	},
+	{
+		"Gender": "Male", "CandidateName": "prijithp v", "Email": "prijithpv2@gmail.com", "AlternateEmail":"",  
+		"CategoryRef": "1015-1", "Source": "TimesJobs", "ResumeId":"1521918673", "ResumeTitle":"Refrigeration Technician", "Date": "2020-11-12T12:15:00", 
+      	"Age": "23 years", "PhoneNo": "3941859211", "AlternatePhoneNo": "", "CurrentLocation": "Worli Mumbai",
+      	"Education": "B.Com.", "Ctc":"","WorkExperience": "25 yrs", "Status": "","StatusByUserId":1 , "StatusDate":null, "UserName": "munir",
+		"Natioality": "Indian", "OrderItemId": 10, "Address": "" , "City": "Mumbai"
+	},
+	{
+		"Gender": "Male", "CandidateName": "P.chinna kutti", "Email": "kalikutti004@gmail.com", "AlternateEmail":"kalikut004@gmail.com",  
+		"CategoryRef": "1015-1", "Source": "TimesJobs", "ResumeId":"1533839233", "ResumeTitle":"Refrigeration Technician", "Date": "2020-11-12T12:15:00", 
+      	"Age": "23 years", "PhoneNo": "6374644517", "AlternatePhoneNo": "", "CurrentLocation": "Worli Mumbai",
+      	"Education": "B.Com.", "Ctc":"","WorkExperience": "25 yrs", "Status": "","StatusByUserId":1 , "StatusDate":null, "UserName": "munir",
+		"Natioality": "Indian", "OrderItemId": 10, "Address": "" , "City": "Mumbai"
+	},
+	{
+		"Gender": "Male", "CandidateName": "Muhammad Shamsuddin", "Email": "iamshamsuddin1992@gmail.com", "AlternateEmail":"iamshamsuddin@outlook.com",  
+		"CategoryRef": "1015-1", "Source": "TimesJobs", "ResumeId":"143918683", "ResumeTitle":"Refrigeration Technician", "Date": "2020-11-12T12:15:00", 
+      	"Age": "23 years", "PhoneNo": "8240275487", "AlternatePhoneNo": "", "CurrentLocation": "Worli Mumbai",
+      	"Education": "B.Com.", "Ctc":"","WorkExperience": "15 yrs", "Status": "","StatusByUserId": 1 , "StatusDate":null, "UserName": "munir",
+		"Natioality": "Indian", "OrderItemId": 10, "Address": "" , "City": "Chennai"
+	},
+	{
+		"Gender": "Male", "CandidateName": "GOWTHAMARAJ  MARISAMY SELVARAJ", "Email": "gowthamaraj200@gmail.com", "AlternateEmail":"iamshamsuddin@outlook.com",  
+		"CategoryRef": "1015-1", "Source": "TimesJobs", "ResumeId":"150473149", "ResumeTitle":"Refrigeration Technician", "Date": "2020-11-12T12:15:00", 
+      	"Age": "23 years", "PhoneNo": "9150954937", "AlternatePhoneNo": "", "CurrentLocation": "Worli Mumbai",
+      	"Education": "B.Com.", "Ctc":"","WorkExperience":"2 yrs", "Status": "","StatusByUserId":1 , "StatusDate":null, "UserName": "munir",
+		"Natioality": "Indian", "OrderItemId": 10, "Address": "" , "City": "Chennai"
+	}
+
+]

@@ -1,0 +1,33 @@
+
+[
+     { "Divn": "R", "AccountType": "I", "AccountName": "Salary"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "conveyance"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Stationery"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Refreshment"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Courier Dometic"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Courier International"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Saudi MoFA Fee"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Umra MoFA Fee"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Sales Recruitment"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Sales Umra"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Setting Medical"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Setting Visa"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Setting PCC"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Sales Airfare"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Sales Hotel Booking"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Electricity Bill Office"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Office Maintenance"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Membership Fee - Portal"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Business Visits - Airfare"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Business Visits - Hotel Accommodation"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Business Visits - Visit Visas"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Amortization"},
+     { "Divn": "R", "AccountType": "I", "AccountName": "Depreciation"},
+     { "Divn": "B", "AccountType": "I", "AccountName": "Business Visits - Travel"},
+     { "Divn": "B", "AccountType": "B", "AccountName": "Rahul Dwivedi - Candidate - Appl No. 39482", "OpBalance": 150000 },
+     { "Divn": "B", "AccountType": "B", "AccountName": "Ramesh Srnate - Candidate - Appl No. 10402", "OpBalance": 150000 },
+     { "Divn": "B", "AccountType": "B", "AccountName": "Petty Cash", "OpBalance": 150000 },
+     { "Divn": "B", "AccountType": "B", "AccountName": "Afreen Kanpur Current Account No. 34343343", "OpBalance": 0 },
+     { "Divn": "B", "AccountType": "R", "AccountName": "Retained Earnings", "OpBalance": 93000 }
+]
+

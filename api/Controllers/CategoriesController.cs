@@ -1,20 +1,23 @@
-
-
+using api.Errors;
+using core.Entities;
 using core.Entities.MasterEntities;
-using infra.Data;
+using core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
-    [ApiController]
+     [ApiController]
     [Route("api/controller")]
     public class CategoriesController: ControllerBase
     {
-        private readonly ATSContext _context;
-        public CategoriesController(ATSContext context)
+          
+          private readonly IGenericRepository<Category> _categoryRepo;
+          private readonly IGenericRepository<Customer> _customerRepo;
+
+        public CategoriesController(IGenericRepository<Category> categoryRepo, IGenericRepository<Customer> customerRepo)
         {
-            _context = context;
+               _customerRepo = customerRepo;
+               _categoryRepo = categoryRepo;
         }
         
         [HttpGet]
@@ -22,8 +25,16 @@ namespace api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<Category>>> GetCategories()
         {
-            var products = await _context.Categories.ToListAsync();
-            return products;
+            var products = await _categoryRepo.ListAllAsync();
+            if (products == null) return BadRequest(new ApiResponse(404, "The Categories requested was not found"));
+            return Ok(products);
+        }
+
+        public async Task<ActionResult<Category>> GetCategoryById(int id)
+        {
+            var product = await _categoryRepo.GetByIdAsync(id);
+            if (product == null) return BadRequest(new ApiResponse(404, "The Category requested was not found"));
+            return Ok(product);
         }
     }
 }

@@ -1,0 +1,85 @@
+[
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":2, 
+		"AccountName": "Petty Cash", "Amount": 2582, "Narration": "By GPay from Sagirbhai" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":30, 	
+		"AccountName": "Sagirbhai Current Account", "Amount": -2582, "Narration": "By GPay from Sagirbhai" },
+
+	{"TransDate": "2020-01-13T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":2, 
+		"AccountName": "Petty Cash", "Amount": 3582, "Narration": "By GPay from Sagirbhai" },
+	{"TransDate": "2020-01-13T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":30, 	
+		"AccountName": "Sagirbhai Current Account", "Amount": -3582, "Narration": "By GPay from Sagirbhai" },
+
+	{"TransDate": "2020-01-14T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":2, 
+		"AccountName": "Petty Cash", "Amount": 4582, "Narration": "By GPay from Sagirbhai" },
+	{"TransDate": "2020-01-14T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":30, 	
+		"AccountName": "Sagirbhai Current Account", "Amount": -4582, "Narration": "By GPay from Sagirbhai" },
+
+	{"TransDate": "2020-01-15T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":2, 
+		"AccountName": "Petty Cash", "Amount": 5582, "Narration": "By GPay from Sagirbhai" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":30, 	
+		"AccountName": "Sagirbhai Current Account", "Amount": -5582, "Narration": "By GPay from Sagirbhai" },
+
+	{"TransDate": "2020-01-16T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":2, 
+		"AccountName": "Petty Cash", "Amount": 6582, "Narration": "By GPay from Sagirbhai" },
+	{"TransDate": "2020-01-16T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":30, 	
+		"AccountName": "Sagirbhai Current Account", "Amount": -6582, "Narration": "By GPay from Sagirbhai" },
+
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":37, 
+		"AccountName": "Sales - Recruitment", "Amount": -55000, "Narration": "Azhar Khan, NAFIE STEEL Inds, Category 1082-2" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":38, 	
+		"AccountName": "Candidate - App No. 10823 - Azhar Khan", "Amount": 55000, "Narration": "Azhar Khan, NAFIE STEEL Inds, Category 1082-2" },
+
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":38, 
+		"AccountName": "Candidate - App No. 10823 - Azhar Khan", "Amount": -20000, "Narration": "Recd from Azhar Khan by cash" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":2, 
+		"AccountName": "Petty Cash", "Amount": 20000, "Narration": "Recd from Azhar Khan by cash" },
+
+	{"TransDate": "2020-01-16T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":38, 
+		"AccountName": "Candidate - App No. 10823 - Azhar Khan", "Amount": -15000, "Narration": "Recd from Azhar Khan by cash" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":2, 
+		"AccountName": "Petty Cash", "Amount": 15000, "Narration": "Recd from Azhar Khan by cash" },
+
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":30, 
+		"AccountName": "Sagirbhai Current Account", "Amount": 35000, "Narration": "Petty cash handed over to Sagirbhai" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":2, 
+		"AccountName": "Petty Cash", "Amount": -35000, "Narration": "Petty cash handed over to Sagirbhai" },
+
+	{"TransDate": "2020-01-20T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":30, 
+		"AccountName": "Sagirbhai Current Account", "Amount": 25000, "Narration": "Petty cash handed over to Sagirbhai" },
+	{"TransDate": "2020-01-20T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":2, 
+		"AccountName": "Petty Cash", "Amount": -25000, "Narration": "Petty cash handed over to Sagirbhai" },
+
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":12, 	
+		"AccountName": "Office Maintenance", "Amount": 700, "Narration": "paste control treatment" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":12, 	
+		"AccountName": "Office Maintenance", "Amount": 1200, "Narration": "Wall painting after A/C Repairs" },
+	{"TransDate": "2020-01-16T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":44, 	
+		"AccountName": "Computer Maintenance", "Amount": 2200, "Narration": "Canon Printer Repairs" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":12, 	
+		"AccountName": "Office Maintenance", "Amount": 200, "Narration": "Drinking Water" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":2, 	
+		"AccountName": "Pett Cash", "Amount": -4300, "Narration": "Petty Cash expenses" },
+	
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":32, 
+		"AccountName": "Munir Personal Account", "Amount": -1000, "Narration": "On account - 3 days salary deducted" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":33, 
+		"AccountName": "Dutta Personal Account", "Amount": 1000, "Narration": "son account - 3 days salaryd deducted" },
+
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":1, 	
+		"AccountName": "Salary", "Amount": 15000, "Narration": "Wall painting after A/C Repairs" },
+	
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":1, 
+		"AccountName": "Salary", "Amount": 18000, "Narration": "Salary for Kadir" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":1, 
+		"AccountName": "Salary", "Amount": 12000, "Narration": "Salary for Saira" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":35, 
+		"AccountName": "SBI Bank Kanpur branch", "Amount": -45000, "Narration": "Salaries for Aug 2022" },
+
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":9, 
+		"AccountName": "Business Visits - Hotel Accommodation", "Amount": 35000, "Narration": "Hotel Grand 4 nights x single room" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":10, 
+		"AccountName": "Business Visits - Airfare", "Amount": 50010, "Narration": "Air fare for malaysia visit" },
+	{"TransDate": "2020-01-12T10:00", "Divn": "R", "TransactionGroup": "A", "CoaId":35, 
+		"AccountName": "SBI Bank Kanpur branch", "Amount": -85010, "Narration": "business visit for malaysia" }
+	
+]

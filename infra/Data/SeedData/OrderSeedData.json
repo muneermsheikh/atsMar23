@@ -1,0 +1,73 @@
+[
+    {  
+        "OrderDate": "2020-10-10T10:00:00", "CustomerId": 1, "OrderRef": "telephonic message", 
+        "SalesmanId": 9,  "CustomerOfficialForLogistics": 7, "customerOfficialForHR": 7, "OrderNo": 1000,
+        "CustomerOfficialForAccounts": 7, "CompleteBy": "2021-01-01T10:00:00", "Country": "Saudi Arabia", 
+        "CityOfWorking": "Jeddah", "AssignedId": 1,
+        "OrderItems": 
+        [
+            {
+                "SrNo": 1, "CategoryId": 1, "SourceFrom": "India", "Quantity": 15, "MinCVs": 30, "MaxCVs": 60,
+                "Ecnr": false, "RequireAssess": false, "HrExecId": 2, "HrSupId": 2, "HrmId": 1, "AssignedId": null, 
+                "Charges": 25000
+            },
+            {
+                "SrNo": 2, "CategoryId": 2, "SourceFrom": "India", "Quantity": 5, "MinCVs": 15,"MaxCVs": 30, 
+                "Ecnr": false, "RequireAssess": false, "HrExecId": 3, "HrSupId": 1, "HrmId": 1, "AssignedId": null, 
+                "Charges": 25500
+            }
+        ]
+    },
+    {  
+        "OrderDate": "2020-11-11T10:00:00", "CustomerId": 2, "OrderRef": "telehonic message", 
+        "SalesmanId": 10,  "CustomerOfficialForLogistics": 8, "customerOfficialForHR": 8, 
+        "customerOfficialForAccounts": null, "CompleteBy": "2021-01-01T11:11:11", "Country": "Saudi Arabia", 
+        "CityOfWorking": "Dammam", "OrderNo": 1004, "AssignedId": 1,
+        "OrderItems": 
+        [
+            {
+                "SrNo": 1, "CategoryId": 2, "SourceFrom": "India", "Quantity": 5, "MinCVs": 15, "MaxCVs": 20,
+                "Ecnr": false, "RequireAssess": false, "HrExecId": 1, "HrSupId": 2, "HrmId": 3, "AssignedId": null, 
+                "Charges": 35000
+            },
+            {
+                "SrNo": 2, "CategoryId": 3, "SourceFrom": "India", "Quantity": 4, "MinCVs": 8,"MaxCVs": 12, 
+                "Ecnr": true, "RequireAssess": false, "HrExecId": 3, "HrSupId": 1, "HrmId": 1, "AssignedId": null, "Charges": 45500
+            }
+        ]
+    },
+    {  
+        "OrderDate": "2020-10-12T10:00:00", "CustomerId": 3, "OrderRef": "telehonic message", 
+        "SalesmanId": 11,  "CustomerOfficialForLogistics": 9, "customerOfficialForHR": 9, 
+        "customerOfficialForAccounts": 10, "CompleteBy": "2020-11-01T00:10:10", "Country": "Saudi Arabia", 
+        "CityOfWorking": "Dammam", "OrderNo": 1002, "AssignedId":1,
+        "OrderItems": 
+        [
+            {
+                "SrNo": 1, "CategoryId": 4, "SourceFrom": "India", "Quantity": 1, "MinCVs": 3, "MaxCVs": 6,"Ecnr": false, 
+                "RequireAssess": false, "HrExecId": 2, "HrSupId": 2, "HrmId": 1, "AssignedId": null, "Charges": 25500 
+            },
+            {
+                "SrNo": 2, "CategoryId": 2, "SourceFrom": "India", "Quantity": 5, "MinCVs": 15,"MaxCVs": 30, "Ecnr": false, 
+                "RequireAssess": false, "HrExecId": 3, "HrSupId": 1, "HrmId": 1, "AssignedId": null, "Charges": 15000
+            }
+        ]
+    },
+    {  
+        "OrderDate": "2019-02-25T01:00:12",  "CustomerId": 4, "OrderRef": "telehonic message", 
+        "SalesmanId": 10,  "CustomerOfficialForLogistics": 11, "customerOfficialForHR": 11, 
+        "customerOfficialForAccounts": 12, "CompleteBy": "2021-11-12T12:00:00", "Country": "Saudi Arabia", 
+        "CityOfWorking": "Jeddah", "OrderNo": 1003,
+        "OrderItems": 
+        [
+            {
+                "SrNo": 1, "CategoryId": 1, "SourceFrom": "India", "Quantity": 15, "MinCVs": 30, "MaxCVs": 60, "Ecnr": false, 
+                "RequireAssess": false, "HrExecId": 2, "HrSupId": 2, "HrmId": 1, "AssignedId": null, "Charges": 0
+            },
+            {
+                "SrNo": 2, "CategoryId": 2, "SourceFrom": "India", "Quantity": 5, "MinCVs": 15,"MaxCVs": 30, "Ecnr": false, 
+                "RequireAssess": false, "HrExecId": 3, "HrSupId": 1, "HrmId": 1, "AssignedId": null, "Charges": 12500
+            }
+        ]
+    }
+]

@@ -1,0 +1,61 @@
+[
+     {    "OrderItemId": 1,
+          "Remuneration": { "WorkHours": 8, "SalaryCurrency": "SAR", "SalaryMin": 1200, 
+          "SalaryMax": 1500, "ContractPeriodInMonths": 24, 
+          "HousingProvidedFree": true, "HousingAllowance": 0, "HousingNotProvided":false,
+          "FoodProvidedFree": true, "FoodAllowance": 0, "FoodNotProvided":false,
+          "TransportProvidedFree": true, "TransportAllowance": 0, "TransportNotProvided":false,
+          "OtherAllowance": 0, "LeavePerYearInDays": 28, "Remueration_LeaveAirfareEntitlementAfterMonths": 24}
+     },
+     {    "OrderItemId": 2,
+          "Remuneration": {"WorkHours": 8, "SalaryCurrency": "SAR", "SalaryMin": 1200, "SalaryMax": 1500, "ContractPeriodInMonths": 24, "HousingProvidedFree": true, "HousingAllowance": 0, "HousingNotProvided":false, 
+          "FoodProvidedFree": true, "FoodAllowance": 0, "FoodNotProvided":false,
+          "TransportAllowance": 0, "TransportProvidedFree":true,"TransportNotProvided":false,
+          "OtherAllowance": 0, "LeavePerYearInDays": 28, "Remueration_LeaveAirfareEntitlementAfterMonths": 24}
+     },
+     {    "OrderItemId": 3, "Remuneration": {"WorkHours": 8, "SalaryCurrency": "SAR", "SalaryMin": 1200, "SalaryMax": 1500, 
+          "ContractPeriodInMonths": 24, "HousingProvidedFree": true, "HousingAllowance": 0, "HousingNotProvided":false,
+         "FoodProvidedFree": true, "FoodAllowance": 0, "FoodNotProvided": false,
+         "TransportProvidedFree": true, "TransportAllowance": 0, "TransportNotProvided":false,
+         "OtherAllowance": 0, "LeavePerYearInDays": 28, "Remueration_LeaveAirfareEntitlementAfterMonths": 24}
+     },
+     {
+          "OrderItemId": 4, "Remuneration": {"WorkHours": 8,"SalaryCurrency": "SAR", "SalaryMin": 1200, "SalaryMax": 1500, 
+          "ContractPeriodInMonths": 24, "HousingProvidedFree": true, "HousingAllowance": 0, "HousingNotProvided":false,
+              "FoodProvidedFree": true, "FoodAllowance": 0, "FoodNotProvided":false, 
+              "TransportProvidedFree": true, "TransportNotProvided":false,"TransportAllowance": 0, 
+              "OtherAllowance": 0, "LeavePerYearInDays": 28, "Remueration_LeaveAirfareEntitlementAfterMonths": 24}
+     },
+     {
+          "OrderItemId": 5, "Remuneration": {"WorkHours": 8,"SalaryCurrency": "SAR", "SalaryMin": 2200, 
+          "SalaryMax": 2500, "ContractPeriodInMonths": 24, 
+          "HousingProvidedFree": true, "HousingAllowance": 0, "HousingNotProvided": false,
+          "FoodProvidedFree": true, "FoodAllowance": 0, "FoodNotProvided": false, 
+          "TransportProvidedFree": true, "TransportAllowance": 0, "TransportNotProvided":false,
+          "OtherAllowance": 0, "LeavePerYearInDays": 28, "Remueration_LeaveAirfareEntitlementAfterMonths": 24}
+     },
+     {
+          "OrderItemId": 6, "Remuneration": {"WorkHours": 8, "SalaryCurrency": "SAR", "SalaryMin": 1100, "SalaryMax": 1200, 
+          "ContractPeriodInMonths": 24, "HousingProvidedFree": true, "HousingAllowance": 0, "HousingNotProvided":false,
+          "FoodProvidedFree": false, "FoodAllowance": 400, "FoodNotProvided": false,
+          "TransportProvidedFree": true, "TransportNotProvided":false,"TransportAllowance": 0, 
+          "OtherAllowance": 200, "LeavePerYearInDays": 28, "Remueration_LeaveAirfareEntitlementAfterMonths": 12}
+     },
+     {
+          "OrderItemId": 7, "Remuneration": {"WorkHours": 8, "SalaryCurrency": "SAR", "SalaryMin": 1200, 
+          "SalaryMax": 1500, "ContractPeriodInMonths": 24, 
+          "HousingProvidedFree": true, "HousingAllowance": 0, "HousingNotProvided": false,
+          "FoodProvidedFree": true, "FoodAllowance": 0, "FoodNotProvided": false,
+          "TransportProvidedFree": true, "TransportAllowance": 0, 
+          "OtherAllowance": 0, "LeavePerYearInDays": 28, "Remueration_LeaveAirfareEntitlementAfterMonths": 24}
+     },
+     {
+          "OrderItemId": 8, "Remuneration": {"WorkHours": 8, "SalaryCurrency": "SAR", "SalaryMin": 1200, 
+          "SalaryMax": 1500, "ContractPeriodInMonths": 24, 
+          "HousingProvidedFree": true, "HousingAllowance": 0, "HousingNotProvided": false, 
+          "FoodProvidedFree": true, "FoodAllowance": 0, "FoodNotProvided": false,
+          "TransportProvidedFree": true,"TransportAllowance": 0, "TransportNotProvided": false, 
+          "OtherAllowance": 0, "LeavePerYearInDays": 28, "LeaveAirfareEntitlementAfterMonths": 24}
+     }
+
+]

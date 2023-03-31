@@ -1,0 +1,61 @@
+[
+	{"Menu": "Main", "MenuUrl": "", "Explanation": "Home", 
+	"MenuItems":
+		[
+			{"SubMenu": "Home", "MenuUrl": "/home", "Explanation": "takes you back to home",
+				"SubMenuItems": 
+				[
+					{}
+				]
+			},
+			{"SubMenu": "Admin", "MenuUrl": "/admin", 
+				"Explanation": "Orders, Customers, Associates, Vendors, Employees, Master Values, Messages, reports, tasks",
+				"SubMenuItems": 
+				[
+					{"SubMenuItem": "Orders", "MenuUrl": "/orders", 
+						"Explanation": "presents Order Index, clicking an order allows following functions: add view, edit, delete, contract review, forward to Agents"},
+					{"SubMenuItem": "Customers", "MenuUrl": "/client/customer", 
+						"Explanation": "presents Customers Index, allows following functions: add view, edit, delete, assess performance"},
+					{"SubMenuItem": "Associates", "MenuUrl": "/client/associate", 
+						"Explanation": "presents Associates Index, allows following functions: add view, edit, delete, assess performance"},
+					{"SubMenuItem": "Vendors", "MenuUrl": "/client/vendor", 
+						"Explanation": "presents Vendors Index, allows following functions: add view, edit, delete, assess performance"},
+					{"SubMenuItem": "Employees", "MenuUrl": "/employee", 	
+						"Explanation": "presents Employees Index, allows following functions: add view, edit, delete, assess performance"},
+					{"SubMenuItem": "Master Values", "MenuUrl": "/masters", 
+						"Explanation": "presents options to add, edit, view or delete: Categories, Qualifications, Identity Roles, Customers Index, allows following functions: add view, edit, delete, assess performance"}
+				]
+			},
+			{"SubMenu": "HR", "MenuUrl": "/hr", 
+				"Explanation": "CV Index, Add CV, Question Bank, Assessment Questions for Orders, Candidate Checklist, Interview List, Forward cv to Clients, selections and rejections, Employments",
+				"SubMenuItems": 
+				[
+					{"SubMenuItem":"CV Index", "MenuUrl": "/candidate", 
+						"Explanation": "presents index of CVs in descending order of Application Numbers.  Functions available: View, Edit, "},
+					{"SubMenuItem":"Add a CV", "MenuUrl": "/candidate/add", 
+						"Explanation": "presents blank form to add a new CV"},
+					{"SubMenuItem":"Question Bank", "MenuUrl": "/hr/stddqs", 
+						"Explanation": "list of standard assessment Questions for use in absence of custom job description"},
+					{"SubMenuItem":"Category Assessment Questions", "MenuUrl": "/hr/qs", 
+						"Explanation": "Define Assessment Questions for categories "},
+					{"SubMenuItem":"Candidate Checklist", "MenuUrl": "/hr/checklist", 
+						"Explanation": "Define Assessment Questions for categories "},
+					{"SubMenuItem":"Interview Index", "MenuUrl": "/interviews/list", 
+						"Explanation": "Presents list of open interviews - with options to edit, delete or add"},
+					{"SubMenuItem":"CVs Forward", "MenuUrl": "/admin/cvforward", 
+						"Explanation": "Presents list of shortlisted CVs ready to forward to cients "},
+					{"SubMenuItem":"Selections and rejections", "MenuUrl": "/admin/selections", 
+						"Explanation": "presents CVs pending selection decision by clients "},
+					{"SubMenuItem":"Employments of selected candidates", "MenuUrl": "/hr", 
+						"Explanation": "presents employment records of all candidates selected under a given Ordere No"}
+					
+				]
+			},
+			{"SubMenu": "Processing", "MenuUrl": "/process", "Explanation": "list of candidates pending for processing"},
+			{"SubMenu": "Call History", "MenuUrl": "/candidate/historyfromCVId/0", "Explanation": "displays a form to search candidate, employee or vendor, to retrieve/update history of calling records"},
+			{"SubMenu": "Prospectives", "MenuUrl": "/prospectives/false", "Explanation": "displays index of calling list, with categories and count. Clicking a status count will present list of those candidates for call updates"},
+			{"SubMenu": "Finance", "MenuUrl": "/finance", "Explanation": "Receipt Voucher, Payment Voucer, confirm cash receipts, Chart of Accounts, list of vouchers, statement of account, financial transactions"}
+			
+		]
+	}
+]
