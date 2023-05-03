@@ -1,0 +1,55 @@
+<div *ngIf="cv===null">
+     No candidate detail available
+</div>
+<div *ngIf="cv!==null && cv!==undefined" class="col-12">
+     <div class="stdd row mb-0">
+          <div class="stdd form-check mx-1 w10" >
+               <input type="checkbox"
+                   class="form-check-input"
+                   [checked]="cv!.checked"
+                   value="cv.id"
+                   (change)="CVChecked(cv!)"
+               >
+           </div>
+
+          <div class="stdd w50" title="click to edit" mouseover="style.cursor = 'pointer'" routerLink="/candidates/edit/{{cv.id}}">{{cv.applicationNo}}</div>
+          <!-- <app-right-click-menu *ngIf="!isHidden" [x]="xPosTabMenu" [y]="yPosTabMenu" ></app-right-click-menu> -->
+          <div class="stdd mx-1 w180" routerLink = "/candidate/historyfromcvid/{{cv.id}}" title="contact history of the candidate" >{{cv.fullName}}</div> 
+          <div class="stdd mx-1 w100">{{cv.city}}</div>
+          <div class="stdd mx-1 w200" >{{cv.referredByName}}</div>
+          
+          <div class="stdd mx-1 fSmall w200" style="border:aqua" >
+               <span style="white-space: normal;" *ngFor="let item of cv.userProfessions">
+                    {{item.profession}} 
+                    <div style="display: inline-block" *ngIf="cv.userProfessions.length>1">,</div> 
+               </span>
+          </div> 
+          
+     <!-- 
+               <tx-document-viewer width="800px" class="stdd w100"
+               height="800px"
+               basePath="https://localhost:5001"
+               dock="Fill"
+               toolbarDocked=true
+               isSelectionActivated=true
+               showThumbnailPane=true>
+          </tx-document-viewer>
+     
+          <div class="stdd mx-1 w100 fa fa-eye" (click)="onClickLoadDocument(cv.id)"></div>
+-->
+               <!-- <button class="w30 fa fa-pencil" style="display: inline-block;" type="button" routerLink="/candidate/edit/{{cv.id}}" ></button> -->
+               <!-- <button class="stdd fSmall fa fa-eye" type="button" routerLink="/candidate/view/{{cv.id}}" ></button> -->
+               <button (click)="editCV(cv.id)" type="button" 
+                    class="w30 btn btn-outline-secondary ml-1 fa fa-pencil" type="button" 
+                    title="edit the candidate profile"></button>
+               <button (click)="cvAssessClicked(cv)" type="button" 
+                    class="w30 btn btn-outline-secondary fa fa-balance-scale" title="Assess this candidate" 
+                    title="click to assess the CV"
+                    > 
+               </button>
+               <button (click)="download(cv.id)" type="button" class="w30 btn btn-outline-secondary ml-1 fa fa-download" type="button" title="download candidate profile"></button>
+               <button type="button" routerLink="/candidate/delete/{{cv.id}}" class="w30 btn btn-outline-secondary mx-1 fa fa-trash red" type="button" ></button>
+          <!-- <app-cv-assess *ngIf="currentId===item.id" [header]="header" [candidateAssessment]="assessment" ></app-cv-assess> -->
+     </div>
+</div>
+

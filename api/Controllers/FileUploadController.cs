@@ -27,9 +27,14 @@ namespace api.Controllers
         private readonly IUserGetAndUpdateService _userGetAndUpdateService;
         private readonly IExcelService _excelService;
                 
-        public FileUploadController(ATSContext context, UserManager<AppUser> userManager, 
-            IWebHostEnvironment env, IUserService userService, IUserGetAndUpdateService userGetAndUpdateService,
-            IProspectiveCandidateService prospectiveService, IExcelService excelService)
+        public FileUploadController(
+            ATSContext context, 
+            UserManager<AppUser> userManager, 
+            IWebHostEnvironment env, 
+            IUserService userService, 
+            IUserGetAndUpdateService userGetAndUpdateService,
+            IProspectiveCandidateService prospectiveService, 
+            IExcelService excelService)
         {
             _excelService = excelService;
             _userGetAndUpdateService = userGetAndUpdateService;

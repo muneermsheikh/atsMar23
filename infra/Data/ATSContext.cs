@@ -7,12 +7,15 @@ using core.Entities.Admin;
 using core.Entities.Attachments;
 using core.Entities.EmailandSMS;
 using core.Entities.HR;
+using core.Entities.Identity;
 using core.Entities.MasterEntities;
 using core.Entities.Messages;
 using core.Entities.Orders;
 using core.Entities.Process;
 using core.Entities.Tasks;
 using core.Entities.Users;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace infra.Data

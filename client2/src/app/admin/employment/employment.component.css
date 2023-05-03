@@ -1,0 +1,16 @@
+.stdd {
+     display: inline-block;
+     vertical-align: top;
+     padding-top: 0px;
+     padding-bottom: 0px;
+}
+
+.b {font-weight: bold;}
+
+.alignR {text-align: right;}
+.w50 {width: 50px;}
+.w80 {width: 80px;}
+.w100 {width: 100px;}
+.w125 {width: 125px;}
+.w150 {width: 150px;}
+

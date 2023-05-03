@@ -10,7 +10,7 @@ namespace core.Dtos
         public string CustomerName { get; set; }
         public int ApplicationNo {get; set;}
         public int CandidateId { get; set; }
-        public bool Ecnr { get; set; }
+        public string Ecnr { get; set; }
         public string CandidateName { get; set; }
         public int OrderNo { get; set; }
         public int OrderId {get; set;}

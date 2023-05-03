@@ -1,0 +1,19 @@
+.stdd {
+     display: inline-block;
+     vertical-align: top;
+     font-size: small;
+}
+.b {font-weight: bold;}
+.w40 {width: 40px;}
+
+.w50 {width: 50px;}
+.w70 {width: 70px;}
+.w80 {width: 80px;}
+.w90 {width: 90px;}
+.w600 {width: 600px;}
+.w350 {width: 350px;}
+.w300 {width: 300px;}
+.w250 {width: 250px;}
+.w100 {width: 100px;}
+.w125{width: 125px;}
+.w150 {width: 150px;}

@@ -3,7 +3,9 @@ using core.Entities.Identity;
 using infra.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 namespace api.Extensions
@@ -17,13 +19,14 @@ namespace api.Extensions
                 opt.UseSqlite(config.GetConnectionString("IdentityConnection"));
             });
 
-            services.AddIdentityCore<AppUser>(opt => 
-            {
-                // add identity options here
-            })
-            .AddEntityFrameworkStores<AppIdentityDbContext>()
-            .AddSignInManager<SignInManager<AppUser>>();
 
+            services.AddIdentityCore<AppUser>()
+                .AddEntityFrameworkStores<AppIdentityDbContext>()
+                .AddSignInManager<SignInManager<AppUser>>()
+                //.AddDefaultTokenProviders()
+                //.AddRoles<AppRole>()
+                ;
+            
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt => {
                     opt.TokenValidationParameters = new TokenValidationParameters{

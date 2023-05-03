@@ -1,0 +1,21 @@
+.stdd {
+     display: inline-block;
+     vertical-align: top;
+ }
+.lbl {
+    display: inline-block;
+    vertical-align: middle;
+    font-weight: bold;
+    padding-bottom: 2px;
+}
+ .alignR {text-align: right;}
+ .b {font-weight: bold;}
+
+ .w50 {width: 50px;}
+ .w75 {width: 75px;;}
+ .w100 {width: 100px;}
+ .w150 {width: 150px;}
+ .w400 {width: 400px;}
+
+ .blue {color: blue;}
+ .red {color: red;}

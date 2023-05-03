@@ -1,0 +1,36 @@
+.windowlarge .modal-dialog{
+     height: 1200px;
+     width: 1700px; 
+     margin: auto;
+     position: absolute;
+     top:0;
+     right: 0;
+     bottom: 0;
+     left: 0;
+   }
+
+.stdd {
+     display: inline-block;
+     vertical-align: top;
+     font-size: small;
+     margin: 0px !important;
+}
+
+.headerTitle {
+     display: inline-block !important;
+     vertical-align: middle;
+     text-decoration: underline;
+     font-weight: bold;
+}
+
+.w3 {width: 3px;}
+.w5 {width: 5px;}
+.w10 {width: 10px;}
+.w35 {width: 35px;}
+.w50 {width: 50px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w120{width: 120px;}
+.w150 {width: 150px;}
+.w170 {width: 170px;}
+.w200 {width: 200px;}

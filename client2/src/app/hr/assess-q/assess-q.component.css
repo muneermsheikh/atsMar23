@@ -1,0 +1,19 @@
+.stdd {
+     display: inline-block;
+     vertical-align: middle;
+}
+
+hr {
+     margin-top: 0px; 
+     margin-bottom: 0px; 
+     padding-top: px; 
+     padding-bottom: 0px;
+} 
+.hAlignCenter {text-align: center;}
+.red {color: red;}
+.blue {color: blue;}
+.green {color: green;}
+.w50 {width: 50px;}
+.w75 {width: 75px;}
+.w200 {width: 200px;}
+.w400 {width: 400px;}

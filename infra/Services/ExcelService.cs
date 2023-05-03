@@ -147,7 +147,7 @@ namespace infra.Services
                                     newCandidate.PpNo=val;
                                     break;
                                 case "ECNR":
-                                    newCandidate.Ecnr=Convert.ToBoolean(val);
+                                    newCandidate.Ecnr=val;
                                     break;
                                 case "Address":
                                     newCandidate.Address=TrimIfNecessary(val,150);

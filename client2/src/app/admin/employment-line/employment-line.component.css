@@ -1,0 +1,48 @@
+
+.w40 {width: 40px;}
+.w50 {width: 50px;}
+.w80 {width: 80px;}
+.w100 {width: 100px;}
+.w125 {width: 125px;}
+.w150 {width: 150px;}
+.w175 {width: 175px;}
+.w200 {width: 200px;}
+.w250 {width: 250px;}
+
+.b {font-weight: bold;}
+
+.stdd {
+	display: inline-block;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	margin-right: 2px;
+}
+
+.vAlignTop {vertical-align: top;}
+.alignR {text-align: right;}
+
+.lbl {
+	display: inline-block;
+	font-size: small;
+	font-weight: bold;
+	width: 110px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	margin-right: 2px;
+}
+
+.lblR {
+	display: inline-block;
+	font-size: small;
+	font-weight: bold;
+	width: 75px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	margin-right: 2px;
+	text-align: right;
+}
+
+.checkbox {
+	margin-left: 50px;
+	display: inline-block;
+}

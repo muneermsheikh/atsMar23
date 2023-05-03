@@ -1,6 +1,7 @@
 using core.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace infra.Identity
 {
@@ -13,6 +14,8 @@ namespace infra.Identity
           protected override void OnModelCreating(ModelBuilder builder)
           {
                base.OnModelCreating(builder);
+               //services.AddDefaultIdentity<ApplicationUser().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+               
           }
      }
 }

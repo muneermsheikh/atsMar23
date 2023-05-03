@@ -1,0 +1,53 @@
+<div *ngIf="review !== undefined" class="mx-2">
+     <div class="stdd">
+          <div style="font-size:medium;font-weight: bold;"> <strong>Edit Contract Review of a category</strong>
+          <div class="stdd"><strong>Category: </strong>{{review.categoryName}} </div>
+          <div><strong>Customer:</strong> {{review.customerName}}</div>
+          <div class="stdd"><strong>Order No:</strong> {{review.orderNo}} <strong>dtd</strong>:{{review.orderDate | date}}</div>
+          <label class="stdd"><strong>Status</strong></label>
+          <div class="stdd"> <strong>Review status</strong>
+          <ng-select *ngIf="reviewStatus" class="stdd w400 ml-1 mb-10"
+               [items]="reviewStatus"
+               bindLabel="itemStatus"
+               bindValue="id"
+               labelForId="reviewItemStatus"
+               placeholder="Select Status"
+               clearAllText="Clear"
+               [(ngModel)]="review.reviewItemStatus"
+               name="reviewItemStatus"
+               id="reviewItemStatus"
+               >
+          </ng-select>
+
+          <button type="button" style="display:inline-block" class="mx-15 btn btn-success fa fa-save" (click)="confirm()"></button>
+          <button type="button" style="display: inline-block;" class="btn btn-danger fa fa-window-close red" (click)="decline()"></button>
+     </div>
+
+</div>
+<br>
+<div style="font-size: small; vertical-align: middle;">
+     <div class="stdd w35 mx1 b" >Sr#</div>
+     <div class="stdd w300 mx-1 b" >Review Parameter</div>
+     <div class="stdd w35 mx-2 b" >Manda<br>tory</div>
+     <div class="stdd w35 mx-1 b" >Res<br>ponse</div>
+     <div class="stdd w35 mx-1 b" >Remarks</div>
+     <!-- <form #form="ngForm" id="form"> -->
+            <div class="form-control" *ngFor="let item of review.reviewItems">
+               <label class="w35 mx-1" >{{item.srNo}}</label>
+               <label class="stdd w300 ">{{item.reviewParameter}}</label>
+               <label class="stdd hAlignCentre mx-2 ml-15 vAlignMiddle" >{{item.isMandatoryTrue ? 'Y': 'N'}}</label>
+               
+               <input type="checkbox" style="margin-left: 25px; display: inline-block; vertical-align: middle;"  
+                         [checked]="item.response" value="item.response" 
+                         (change)="item.response = !item.response" >
+               <input type="text" style="margin-left: 25px; padding-left: 5px; display: inline-block; width: 300px; vertical-align: top;" 
+                    id="responseText" name="responseText"
+                    [(ngModel)]="item.responseText" value="item.responseText" >
+
+          </div>
+          
+     <!-- </form> -->
+
+</div>
+
+</div>

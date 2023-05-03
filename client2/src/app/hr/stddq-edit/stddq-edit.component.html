@@ -1,0 +1,34 @@
+<div class="container mt-2">
+
+     <div class="mt-2" *ngIf="stddq">
+          <div class="alert alert-info" *ngIf="form.dirty">
+               <strong>This Standard Assessment Question is edited</strong>
+          </div>
+     </div>
+     <div>
+          <form [formGroup]="form" >
+               <div class="w100 b">Question No.</div>
+               <br><input type="text" formControlName="qNo" class="stdd w50">
+                    <button type="submit" class="stdd btn btn-success w35 fa fa-save" (click)="onSubmit()" style="margin-left: 200px;"> </button>
+
+                <button class="stdd btn btn-primary mx-3 fa fa-window-close" (click)="onClose()" ></button>
+     
+               <br>
+               <div class="w100 b">Parameter</div>
+               <input type="text" formControlName="assessmentParameter" class="w200">
+               <br>
+               <div class="w100 b">Question</div>
+               <textarea formControlName="question" cols="50" rows="3"></textarea>
+               <br>
+               <div class="w100 b">Maxm Points</div>
+               <input type="number" formControlName="maxPoints" class="w50">
+               <br>
+               
+          </form>
+     </div>
+     
+</div>
+
+<div>
+     {{this.form.value | json}}
+</div>

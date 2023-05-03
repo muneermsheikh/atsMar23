@@ -1,0 +1,110 @@
+<div class="d-flex flex-column flex-md-row align-items-center justify-content-between
+     px-md-4 bg-white border-bottom shadow-sm fixed-top">
+     <img src="/assets/images/logo.png"  alt="logo" routerLink="/" class="logo">
+     <nav class="my-2 my-md-0 mr-md-3">
+          <div>
+               <a class="navbar-brand" routerLink='/' routerLinkActive='active' >Ideal Solutions</a>
+               <a class="p-2" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" >Home</a>
+               <a class="p-2" routerLink="/candidate/add" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" >Add CV</a>
+               <ng-container *ngIf="currentUser$ | async">
+                    <ul class="navbar-nav me-auto" style="display: inline-block;">
+                    <li class="nav-item mx-2" style="display: inline-block;">
+                         <a class="nav-link" routerLink='/admin' routerLinkActive='active'>Admin</a>
+                    </li>
+                    <li class="nav-item mx-2" style="display: inline-block;">
+                         <a class="nav-link" routerLink='/customers' routerLinkActive='active'>Orders</a>
+                    </li>
+                    <li class="nav-item mx-2" style="display: inline-block;">
+                         <a class="nav-link" routerLink='/hr' routerLinkActive='active'>HR</a>
+                    </li>
+                    
+                    <li class="nav-item mx-2" style="display: inline-block;">
+                         <a class="nav-link" routerLink='/processing' routerLinkActive='active' >Processing</a>
+                    </li>
+                    <li class="nav-item mx-2" style="display: inline-block;">
+                         <a class="nav-link" routerLink='candidate/historyfromcvid/0' routerLinkActive='active'>Call History</a>
+                    </li>
+                    <li class="nav-item mx-2" style="display: inline-block;">
+                         <a class="nav-link" routerLink='/prospectives/false' routerLinkActive='active'>Prospective</a>
+                    </li>
+
+                    <li class="nav-item mx-2" style="display: inline-block;">
+                         <a class="nav-link" routerLink='/finance' routerLinkActive='active'>Finance</a>
+                    </li>
+
+                    </ul>
+                    <div class="dropdown" style="display: inline-block;" dropdown>
+                         <a class="dropdown-toggle" style="cursor: pointer;" dropdownToggle>Admin</a>
+                         <div class="dropdown-menu dropdown-menu-right" style="cursor:pointer" *dropdownMenu>
+
+                              <a routerLink='/reports' class="dropdown-item d-flex align-items-center mx-2 py-2" >Reports </a>
+                              <a routerLink='/messages' class="dropdown-item d-flex align-items-center mx-2 py-2" >Messages </a>
+
+                              
+                              <div class="dropdown-divider"></div>
+
+                              <a routerLink="/categories" class="dropdown-item d-flex align-items-center mx-2 py-2"><i class="mx-2"></i> Categories</a>
+                              <a routerLink="/qualifications" class="dropdown-item d-flex align-items-center mx-2 py-2"><i class="mx-2"></i> Qualifications</a>
+                         
+                              <a routerLink="/client/customer" class="dropdown-item d-flex align-items-center mx-2 py-2"><i class="mx-2"></i> Customers</a>
+                              <a routerLink="/client/associate" class="dropdown-item d-flex align-items-center mx-2 py-2"> <i class="mx-2"></i> Associates</a>
+
+                              <a routerLink="/client/vendor" class="dropdown-item d-flex align-items-center mx-2 py-2"><i class="mx-2"></i> Vendors</a>
+
+                              <a routerLink="/employee" class="dropdown-item d-flex align-items-center mx-2 py-2"><i class="mx-2"></i> Employees</a>
+                              <a routerLink="/userTask" class="dropdown-item d-flex align-items-center mx-2 py-2"><i class="mx-2"></i> Tasks of the Logged In User</a>
+                              <a routerLink="/masters" class="dropdown-item d-flex align-items-center mx-2 py-2"><i class="mx-2"></i> Master Values</a>
+                              
+                              <a routerLink="/interviews/list" class="dropdown-item d-flex align-items-center mx-2 py-2"><i class="mx-2"></i> Interviews</a>
+                              <a routerLink="/process" class="dropdown-item d-flex align-items-center mx-2 py-2"><i class="mx-2"></i> Process</a>                              
+                              <a routerLink="/messages" class="dropdown-item d-flex align-items-center mx-2 py-2"><i class="mx-2"></i> Messages of loggedin user</a>
+
+                              
+                              
+                              
+                              <a routerLink="/admin" class="dropdown-item d-flex align-items-center mx-2 py-2"><i class="mx-2"></i> Admin Panel</a>
+                               
+                              <li class="nav-item mx-2" style="display: inline-block;">
+                                   <a routerLink="/account/transactions" class="btn btn-outline-secondary fal fa-blender-phone" href="#"></a>
+                              </li>
+                              
+                              <li class="nav-item mx-2" style="display: inline-block;">
+                                   <a class="nav-link" routerLink='/about' routerLinkActive='active' >About</a>
+                               </li>
+                              
+                         </div>
+                    </div>
+               </ng-container>
+               <li class="nav-item mx-2" style="display: inline-block;">
+                    <a routerLink='/testerrors' class='nav-link' routerlink='active'>Errors</a>
+          </div>
+          
+     </nav>
+
+     <ng-container *ngIf="(currentUser$ | async) === null">
+          <a routerLink="login" class="btn btn-outline-secondary mr-2" href="#">Login</a>
+          <a routerLink="register" class="btn btn-outline-secondary mr-3" href="#">Sign up</a>
+     </ng-container>
+     <ng-container *ngIf="(currentUser$ | async) as user">
+          <div class="dropdown ml-3 mr-5" dropdown>
+               <a class="dropdown-toggle" style="cursor: pointer;" dropdownToggle>
+                    <strong>Welcome {{(accountService.currentUser$ | async)?.displayName}}</strong>
+               </a>
+               <div class="dropdown-menu dropdown-menu-right" style="cursor:pointer" *dropdownMenu>
+                    <a routerLink="/pendingtasks" class="dropdown-item d-flex align-items-center py-2">
+                         <!-- <i class="fa fa-tasks mr-3"></i> -->
+                         View Tasks
+                    </a>
+                    <a routerLink="/history" class="dropdown-item d-flex align-items-center py-2">
+                         <!-- <i class="fa fa-history mr-3"></i> -->
+                         View history
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a (click)="logout()" class="dropdown-item d-flex align-items-center py-2">
+                         <!-- <i class="fa fa-sign-out mr-3"></i> -->
+                         Logout
+                    </a>
+               </div>
+          </div>
+     </ng-container>
+</div>

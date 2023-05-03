@@ -41,6 +41,7 @@ namespace core.Entities.HR
           public int Salary { get; set; }
           [Range(1,36)]
           public int ContractPeriodInMonths { get; set; }=24;
+          public int WeeklyHours {get; set;}=48;
           public bool HousingProvidedFree { get; set; }
           public int HousingAllowance { get; set; }
           public bool FoodProvidedFree { get; set; }
@@ -54,17 +55,18 @@ namespace core.Entities.HR
           public string OfferAttachmentUrl { get; set; }
           public string OfferAcceptanceUrl { get; set; }
           //related - to delete once navigation properties can be activated
+          public int CategoryId {get; set;}
           public string CategoryName { get; set; }
           public int OrderItemId { get; set; }
           public int OrderId {get; set;}
           public int OrderNo {get; set;}
           public int CustomerId {get; set;}
           public string CustomerName {get; set;}
-          public int CategoryId {get; set;}
+          
           public int CandidateId { get; set; }
           public int ApplicationNo { get; set; }
           public string CandidateName { get; set; }
-          public string CompanyName { get; set; }
+          public string CompanyName { get; set; }     //agent name
 
           //[ForeignKey("SelectionDecisionId")]
           //public SelectionDecision SelectionDecision {get; set;}

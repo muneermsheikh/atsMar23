@@ -1,0 +1,82 @@
+<div class="mx-2 mt-2">
+     <div class="stdd w75 b">Candidate:</div> 
+         <div class="stdd blue mx-1">{{chklst?.applicationNo}} - {{chklst?.candidateName}}</div>
+     <br><div class="stdd w75 b">Category:</div> 
+         <div class="stdd blue mx-1">{{chklst?.categoryRef}} </div>
+     <div class="stdd mx-1">{{chklst?.orderRef}}</div>
+ 
+     <br><div class="stdd w75 b mx-1">Fees:</div> 
+     <div *ngIf="chklst?.charges===undefined || chklst?.charges===undefined" class="stdd mx-1 w100 text-danger" >Not Defined</div>
+     <div *ngIf="chklst?.charges !==null" class="stdd blue w100" >{{chklst?.charges}}</div>
+     <div class="stdd b mx-1">Agreed:</div> 
+         <input class="form-text-input blue stdd w100 mx-1" [name]="'chargesAgreed'" 
+         (click)="ChargesDoubleClicked()"
+ 
+         title="this is charges agreed box"
+         [(ngModel)]="chklst!.chargesAgreed ">
+     
+     <div *ngIf="chklst?.charges != chklst?.chargesAgreed && chklst!.charges > 0" class="stdd b ml-5 mx-1" style="padding-right: 5px;">Fees Diff Approved:
+         <input type="checkbox" 
+             class="form-check-input mx-1" 
+             [checked]="chklst!.exceptionApproved"
+             (change)="chklst!.exceptionApproved=!chklst!.exceptionApproved"
+             [disabled]="true"
+         >
+         <div class="stdd" *ngIf="chklst!.exceptionApproved">
+             <div class="stdd w75">On: </div>
+             <div class="stdd w100 blue">{{chklst!.exceptionApprovedOn | date:'d-MMM-yy'}}</div>
+             <div class="stdd w75 ml-20 b">By:</div> 
+             <div class="stdd w75 blue">{{chklst.exceptionApprovedBy}</div>    
+         </div>
+     </div>
+     <br>
+     <div class="stdd b">checklisted on:</div> 
+     <div class="stdd blue">{{chklst!.checkedOn | date: 'd-MMM-yy'}}</div>
+     <div class="stdd ml-5 b"><span class="b">Checklist Completed:</span><span class="b mx-2 blue">{{chklst!.checklistedOk ? 'Yes' : 'No'}}</span></div>
+     <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+         <span aria-hidden="true">&times;</span>
+     </button>
+ </div>
+ 
+    <div class="modal-body">
+      <form #checklistForm="ngForm" id="checklistForm">
+         <label class="stdd b">HR Exec comments:</label>
+         <input type="text" class="stdd w400 my-2" [(ngModel)]="chklst!.hrExecComments" [name]="'hrExecComments'" >
+         <hr class="mt-0 mb-0 b">
+           <label class="lbl w25">Sr#</label>
+           <label class="lbl w200">Parameter</label>
+           <label class="lbl w50">Must<br>accept</label>
+           <label class="lbl w175">Candidate<br>Response</label>
+           <label class="lbl w50 b mx-2 fontSmall">Candidate<br>accepts</label>
+           
+           <label class="lbl w250">Exception</label>
+           <div *ngFor="let lst of chklst!.checklistHRItems; let i=index" >
+               <label class="stdd w25">{{lst.srNo}}</label>
+               <label class="stdd mx-1 w200">{{lst.parameter}}</label>
+               <input type="checkbox" style="margin-left: 10px;"
+                   class="form-check-input"
+                   [checked]="lst.mandatoryTrue"
+                   [disabled]="true"
+               >
+               <input style="margin-left: 50px; width: 200px; display: inline-block;" 
+                 type="text"  [name]="'response'+i" 
+                 [(ngModel)]="lst.response"
+               >
+               
+               <input type="checkbox" style="margin-left: 40px;"
+                   class="form-check-input stdd mx-1"
+                   [checked]="lst.accepts"
+                   (change)="lst.accepts = !lst.accepts"
+               >
+               <input style="margin-left: 40px;" 
+                 class="stdd w250" type="text"  
+                 [name]="'exception'+i" 
+                 [(ngModel)]="lst.exceptions"
+               >
+           </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default fa fa-cancel" (click)="bsModalRef.hide()"></button>
+      <button type="button" class="btn btn-success fa fa-save" (click)="updatechecklist()"></button>
+    </div>

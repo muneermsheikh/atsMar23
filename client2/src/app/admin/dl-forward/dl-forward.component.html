@@ -1,0 +1,55 @@
+<div >
+
+	<button type="button" class="btn btn-success" (click)="updateAgentsSelected()">Submit</button>
+ 
+     <div class="stdd headerTitle w100" style="margin-left: 3px;">Official Name</div>
+     <div class="stdd headerTitle mx-1 w200">Customer Name</div>
+     <div class="stdd headerTitle mx-1 w75">City</div>
+     <div class="stdd headerTitle w150">Email</div>
+     <div class="stdd headerTitle mx-1 w100">Phone No</div>
+     <div class="stdd headerTitle w100">WhatsApp No</div>
+     <hr  >
+     <form #agentsForm="ngForm" id="agentsForm">
+	   <div class="form-check stdd" *ngFor="let cat of forwardedCategories">
+		<div class="stdd  mx-1 w200">{{cat.orderItemId | categoryRefCode}}</div>
+		
+		<div class="stdd w100" style="padding-left:0px;">{{cat.categoryName}}</div>
+		 <br>
+		<div *ngFor="let off of cat.dlForwardCategoryOfficials">
+			<div>entered second loop: {{off.emailIdForwardedTo}}</div>
+			<span class="form-check stdd " >
+				<input type="checkbox" 
+				    class="form-check-input"
+				    [checked]="off.checked"
+				    (change)="off.checked = !off.checked" 
+				>
+			</span>
+
+			<span class="stdd form-check-label mx-1 w150" >{{off.emailIdForwardedTo}}</span>
+			<!--
+			<span class="stdd form-check-label w35" >
+			    <input type="checkbox" 
+				  class="form-check-input"
+				  [checked]="off.checkedPhone"
+				  (change)="off.checkedPhone = !off.checkedPhone" 
+			    >
+			</span>
+		-->
+			<span class="stdd form-check-label w100 mx-1" >{{off.phoneNoForwardedTo}}</span>
+		<!--
+			<span class="form-check stdd w35" >
+			    <input type="checkbox" 
+				class="form-check-input"
+				[checked]="off.checkedMobile"
+				(change)="off.checkedMobile = !off.checkedMobile" 
+			    >    
+			</span>
+		-->
+			<span class="stdd w100 mx-1 ">{{off.whatsAppNoForwardedTo}}</span>
+		  </div> 
+
+		</div>
+		 
+     </form>
+
+</div>

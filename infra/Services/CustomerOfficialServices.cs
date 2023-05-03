@@ -20,7 +20,7 @@ namespace infra.Services
                     .Where(x => x.CustomerStatus==EnumCustomerStatus.Active )
                     join o in _context.CustomerOfficials on c.Id equals o.CustomerId where o.IsValid && o.Id == CustomerOfficialId
                     select new CustomerOfficialDto(o.Id, c.Id,  c.CustomerName, c.City, c.Country, o.Title, 
-                    o.OfficialName, o.Designation, o.Email, o.Mobile, c.Introduction, c.KnownAs)
+                    o.OfficialName, o.Designation, o.Email, o.Mobile, c.Introduction, c.KnownAs, Convert.ToInt32(c.CustomerStatus)==300)
                     ).FirstOrDefaultAsync();
                
                return off;			

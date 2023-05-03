@@ -1343,8 +1343,8 @@ namespace infra.Data.Migrations
                     b.Property<int?>("DeployStageId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("Ecnr")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Ecnr")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("HRExecId")
                         .HasColumnType("INTEGER");
@@ -1447,8 +1447,8 @@ namespace infra.Data.Migrations
                     b.Property<int?>("DocControllerAdminTaskId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("Ecnr")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Ecnr")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("HRExecRemarks")
                         .HasColumnType("TEXT");
@@ -3295,8 +3295,8 @@ namespace infra.Data.Migrations
                     b.Property<string>("District")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("Ecnr")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Ecnr")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
@@ -3357,6 +3357,9 @@ namespace infra.Data.Migrations
                         .HasColumnType("VARCHAR");
 
                     b.Property<string>("Source")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserType")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

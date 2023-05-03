@@ -9,7 +9,7 @@ namespace core.Entities.HR
         {
         }
 
-        public CVRvw(int? checklistHRId, int candidateId, bool ecnr, int orderItemId, int orderId, int hrExecutiveId, 
+        public CVRvw(int? checklistHRId, int candidateId, string ecnr, int orderItemId, int orderId, int hrExecutiveId, 
         int hrExecTaskId, int hrSupId, int hrmId, DateTime submittedByHRExecOn, string hRExecRemarks)
         {
             ChecklistHRId = checklistHRId;
@@ -32,7 +32,7 @@ namespace core.Entities.HR
         public int? ChecklistHRId { get; set; }      //checklistHR may not be mandatory, so this has to allow null/zero
         [Required]
         public int CandidateId { get; set; }
-        public bool Ecnr { get; set; }
+        public string Ecnr { get; set; }
         public int Charges { get; set; }
         [Required]
         public int OrderItemId { get; set; }

@@ -1,0 +1,94 @@
+<div class="container">
+     <div *ngIf="employments.length===0">
+          No employment records
+     </div>
+     <button [disabled]="!form.dirty" type="submit" class="btn btn-success btn-block fa fa-save w50" (click)="onSubmit()" >
+          <!-- <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span> -->
+      </button>
+      <div *ngIf="employments.length > 0">
+          <form [formGroup]="form" onSubmit="onSubmit()"  >
+               <div *ngFor="let emp of employments">
+                    <div class="card-header">
+                         <div class="stdd mt-2">
+                              <strong>Candidate Name: </strong>{{emp.candidateName}}
+                         </div>
+                         <div class="stdd mt-2">
+                              <strong>Application No: </strong> {{emp.applicationNo}}
+                         </div>
+                         <div class="stdd mt-2">
+                              <strong>Category Ref: </strong> {{emp.categoryRef}}
+                         </div>
+                    </div>
+                    <div class="card-body">
+                         <div class="stdd w125 b">salary Currency:</div>
+                         <input type="text" class="stdd w100" formControlName="salaryCurrency" >
+                         <div class="stdd w125 mx-2 w80 b alignR">salary</div>
+                         <input type="number" class="stdd w80" formControlName="salary" >
+                         <div class="stdd w150 b alignR">contract Period</div>
+                         <input type="number" class="stdd w100" formControlName="contractPeriodInMonths" >
+                         <div class="stdd mx-2 w50">months</div>
+                         <br><div class="stdd w125 b">Leave Per Year</div>
+                         <input type="number" class="stdd w100" formControlName="leavePerYearInDays" >
+                         <div class="stdd mx-2 w50"> days, after </div>
+                         <input type="number" class="stdd mx-2 w80" formControlName="leaveEntitlementAfterMonths" >
+                         <div class="stdd w50"> months</div>
+                         <div class="stdd mx-2 w50 b alignR">SC</div>
+                         <input type="number" class="stdd w80" formControlName="charges" >
+                         <div class="stdd w150 b">offer accepted on</div>
+                         <input class="stdd mx-2 w150"
+                              type="text"
+                              placeholder="Date of birth"
+                              formControlName="offerAcceptedOn"
+                              bsDatepicker
+                              [bsValue]="emp.offerAcceptedOn"
+                              [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+                         >   
+                         <hr class="my-0">
+               
+                         <div class="stdd mx-2 w150">Provision</div>
+                         <div class="stdd mx-2 w150">Allowance</div>
+                         <div class="stdd mx-2 w50">Provided<br>free</div>
+                         
+                         <br>
+                         <div class="stdd mx-2 b w150">Housing Allowance</div>
+                         <input type="number" class="stdd w80 mx-30" formControlName="housingAllowance">
+                         <input type="checkbox" style="margin-left: 100px;"
+                              class="form-check-input mx-20" 
+                              [checked]="emp.housingProvidedFree"
+                              (change)="emp.housingProvidedFree=!emp.housingProvidedFree"
+                              formControlName="housingProvidedFree"
+                         >
+                         <br>
+                         <div class="stdd mx-2 b w150">Food</div>
+                         <input type="number" class="stdd w80 mx-30" formControlName="foodAllowance">
+                         <input type="checkbox" style="margin-left: 100px;"
+                              class="form-check-input mx-20" 
+                              [checked]="emp.foodProvidedFree"
+                              (change)="emp.foodProvidedFree=!emp.foodProvidedFree"
+                              formControlName="foodProvidedFree">
+                         <br>
+                         <div class="stdd mx-2 b w150">Transport</div>
+                         <input type="number" class="stdd w80 mx-10" formControlName="transportAllowance">
+                         <input type="checkbox" 
+                              class="form-check-input mx-20" 
+                              [checked]="emp.transportProvidedFree" style="margin-left: 100px;"
+                              (change)="emp.transportProvidedFree=!emp.transportProvidedFree"
+                              formControlName="transportProvidedFree"
+                         >
+                         <br>
+                         <div class="stdd b w150">Other Allownace</div>
+                         <input type="number" class="stdd w80 mx-10" formControlName="otherAllowance">
+                    </div>
+               </div>
+          </form>
+      </div>
+</div>
+
+<ul class="text-danger list-unstyled" *ngIf="errors">
+     <li *ngFor="let error of errors">
+          {{error}}
+     </li>
+ </ul>
+  <div style="font-size: small;">
+      {{this.form.value | json}}
+  </div>

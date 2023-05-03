@@ -15,7 +15,7 @@ namespace core.Entities.HR
         }
 
           public CVRef(int orderItemId, int categoryId, int orderId, int orderNo, string customerName, 
-                string categoryName, int candidateId, bool ecnr, int applicationNo, string candidateName, DateTime referredOn, 
+                string categoryName, int candidateId, string ecnr, int applicationNo, string candidateName, DateTime referredOn, 
                 int charges, int hrexecId, int cvreviewId)
           {
                OrderItemId = orderItemId;
@@ -43,7 +43,7 @@ namespace core.Entities.HR
         public string CustomerName {get; set;}
         public string CategoryName {get; set;}
         public int CandidateId { get; set; }
-        public bool Ecnr { get; set; }
+        public string Ecnr { get; set; }
         public int ApplicationNo {get; set;}
         public string CandidateName {get; set;}
         public DateTime ReferredOn { get; set; } = DateTime.Now;

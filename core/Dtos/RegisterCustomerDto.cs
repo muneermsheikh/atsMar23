@@ -28,4 +28,6 @@ namespace core.Dtos
         public ICollection<AgencySpecialty> AgencySpecialties {get; set;}
         public virtual ICollection<CustomerOfficialToCreateDto> CustomerOfficials {get; set;}
     }
+
+    
 }

@@ -1,0 +1,101 @@
+<div class="mt-4" *ngIf="registerForm" [formGroup]="registerForm">
+     <div class="row" formGroupName="userNamesForm">
+          <div class="mb-1">
+               <label style="margin-right:10px">User Type: </label>
+               <label class="form-check-label">
+                    <input type="radio" class="form-check-input" value="candidate" formControlName="userType"> Candidate
+               </label>
+               <label class="form-check-label">
+                    <input type="radio" class="form-check-input ms-3" value="official" formControlName="userType"> Official
+               </label>
+               <label class="form-check-label">
+                    <input type="radio" class="form-check-input ms-3" value="employee" formControlName="userType"> employee
+               </label>
+          </div>
+          
+          
+          <div class="form-group col-6">
+               <label style="margin-right: 10px">Application No</label>
+               <app-text-input [label]="'Application No'" formControlName="applicationNo" ></app-text-input>
+          </div>
+     
+          <div class="mb-1 col-6">
+               <label style="margin-right:10px">Gender: </label>
+               <label class="form-check-label">
+                    <input type="radio" class="form-check-input" value="male" formControlName="gender"> Male
+               </label>
+               <label class="form-check-label">
+                    <input type="radio" class="form-check-input ms-3" value="female" formControlName="gender"> Female
+               </label>
+          </div>
+          
+          <div class="mb-1 col-6">
+               <app-text-input [label]="'Username'" formControlName="username"></app-text-input>
+          </div>
+          <div class="mb-1 col-6">
+               <app-text-input [label]="'Known As'" formControlName="knownAs"></app-text-input>
+          </div>
+     
+          <div class="form-group col-4">
+               <app-text-input [label]="'First name'" formControlName="firstName"></app-text-input>
+          </div>
+          <div class="form-group col-4">
+               <app-text-input [label]="'Second Name'" formControlName="secondName"></app-text-input>
+          </div>
+          <div class="form-group col-4">
+               <app-text-input [label]="'Family name'" formControlName="familyName"></app-text-input>
+          </div>
+     
+          <div class="mb-1 col-6">
+               <app-text-input [label]="'Nationality'" formControlName="nationality"></app-text-input>
+          </div>
+     
+          <div class="mb-1 col-6">
+               <app-date-input [maxDate]="maxDate" [label]="'Date of birth'" formControlName="dOB" ></app-date-input>
+          </div>
+          <div class="mb-1 col-6">
+               <app-text-input [label]="'Place of birth'" formControlName="placeOfBirth"></app-text-input>
+          </div>
+              
+          <div class="form-group col-4">
+               <app-text-input [label]="'Aadhar No'" formControlName="aadharNo"></app-text-input>
+          </div>
+          <div class="form-group col-4">
+               <app-text-input [label]="'PP No'" formControlName="ppNo"></app-text-input>
+          </div>
+          <div class="form-group col-4">
+               <label class="form-check-label">
+                    <input type="radio" class="form-check-input" value=false formControlName="ecnr"> Required
+               </label>
+               <label class="form-check-label">
+                    <input type="radio" class="form-check-input ms-3" value=false formControlName="ecnr"> Not Reqd
+               </label>
+          </div>
+          <div class="form-group col-6">
+               <app-text-input [label]="'Referred By'" formControlName="referredByName"></app-text-input>
+          </div>
+     
+          <br>
+          <div class="form-group col-6">
+               <app-text-input [label]="'Password'" formControlName="password"
+                    [type]="'password'"
+               ></app-text-input>
+          </div>
+     
+          <div class="form-group col-6">
+               <app-text-input [label]="'Confirm Password'" formControlName="password"
+                    [type]="'password'"
+               ></app-text-input>
+          </div>
+     </div>
+</div>
+  
+ 
+ <div class="d-flex justify-content-between flex-row mb-5">
+     <button class="btn btn-outline-primary" routerLink="/home">
+         <i class="fa fa-angle-left"></i> Home
+     </button>
+     <button [disabled]="registerForm?.get('userNamesForm')?.invalid" class="btn btn-primary" cdkStepperNext>
+         Go to Address <i class="fa fa-angle-right"></i> 
+     </button>
+ </div>

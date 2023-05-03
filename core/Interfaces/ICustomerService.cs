@@ -1,5 +1,6 @@
 using core.Dtos;
 using core.Entities;
+using core.Specifications;
 
 namespace core.Interfaces
 {
@@ -13,8 +14,10 @@ namespace core.Interfaces
         Task<bool> EditCustomer(Customer customer);
         Task<ICollection<CustomerDto>> GetCustomersAsync(string userType);
         Task<CustomerDto> GetCustomerByIdAsync(int id);
-        Task<ICollection<CustomerDto>> GetCustomersPaginatedAsync(CustomerParams custParam);
-        
+        Task<CustomerBriefDto> GetCustomerBriefById(int id);
+        Task<Pagination<CustomerDto>> GetCustomersPaginatedAsync(CustomerParams custParam);
+        Task<ICollection<CustomerDto>> GetCustomersBriefAsync(CustomerSpecParams custParam);
+
         Task<CustomerDto> GetCustomerByUserNameAsync(string username);
         Task<string> GetCustomerNameFromId (int Id);
         Task<ICollection<CustomerIdAndNameDto>> GetCustomerIdAndName (string customerType);

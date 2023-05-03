@@ -1,0 +1,36 @@
+<div class="modal-header">
+
+     <div class="modal-title pull-left" style="font-size: smaller; font-weight:bold;">{{title}} </div>
+     <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+       <span aria-hidden="true">&times;</span>
+     </button>
+     
+   </div>
+   <div class="modal-body">
+    <div class="stdd b w100" style="margin-left: 17px;">Order No</div>
+    <div class="stdd b w150">Category Name</div>
+    <div class="stdd b w75">Qnty</div>
+    <div class="stdd b w150">Status</div>
+    
+    <hr style="display: inline-inline-block; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;">
+     <form #agentsForm="ngForm" id="agentsForm">
+          <div class="form-check stdd" *ngFor="let item of orderItems">
+               <span style="width: 3px; display: inline-block; padding: 0px; vertical-align: top;">
+                    <input type="checkbox" 
+                        class="form-check-input"
+                        [checked]="item.checked"
+                        (change)="item.checked = !item.checked" 
+                        [disabled]="item.status === 'closed' || item.status === 'canceled'"
+                    >
+               </span>  
+               <div class="stdd w100">{{item.orderNo}}</div>
+               <div class="stdd w150">{{item.categoryName}}</div>
+               <div class="stdd w75">{{item.quantity}}</div>
+               <div class="stdd w100">{{item.status}}</div>
+         </div> 
+     </form>
+   </div>
+   <div class="modal-footer">
+     <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Cancel</button>
+     <button type="button" class="btn btn-success" (click)="emitSelectedIds()">Submit</button>
+   </div>

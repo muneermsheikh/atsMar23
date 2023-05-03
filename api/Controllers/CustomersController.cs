@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers
 {
      //[Authorize(Policy = "Employee, CustomerMaintenanceRole")]
+     [Authorize]
      public class CustomersController : BaseApiController
      {
           private readonly IGenericRepository<Customer> _custRepo;
@@ -27,7 +28,7 @@ namespace api.Controllers
                _custRepo = custRepo;
           }
 
-        [Authorize(Roles="Admin, DocumentControllerAdmin, HRManager")]
+        //[Authorize] //(Roles="Admin, DocumentControllerAdmin, HRManager")]
         [HttpPost("registercustomers")]
         public async Task<ActionResult<ICollection<CustomerDto>>> RegisterCustomers(ICollection<RegisterCustomerDto> dtos)
         {
@@ -37,14 +38,14 @@ namespace api.Controllers
 
         }
 
-        [Authorize(Roles="Admin, DocumentControllerAdmin, HRManager")]
+        //[Authorize] //(Roles="Admin, DocumentControllerAdmin, HRManager")]
         [HttpPost]
         public async Task<ActionResult<CustomerDto>> RegisterCustomer(RegisterCustomerDto dto)
         {
             return await _customerService.AddCustomer(dto);
         }
 
-        [Authorize(Roles="Admin, DocumentControllerAdmin, HRManage, HRSupervisor")]
+        //[Authorize] //(Roles="Admin, DocumentControllerAdmin, HRManage, HRSupervisor")]
         [HttpGet]
         public async Task<ActionResult<Pagination<Customer>>> GetCustomers([FromQuery] CustomerSpecParams custParams)
         {
@@ -58,7 +59,15 @@ namespace api.Controllers
 
         }
 
-        [Authorize]
+        [HttpGet("customersBrief")]
+        public async Task<ActionResult<ICollection<CustomerBriefDto>>> GetCustomersBrief([FromQuery]CustomerSpecParams custParams)
+        {
+            var briefs = await _customerService.GetCustomersBriefAsync(custParams);
+            if(briefs==null) return NotFound("No data returned");
+            return Ok(briefs);
+        }
+
+        //[Authorize]
         [HttpGet("associateidandnames/{usertype}")]
         public async Task<ActionResult<ICollection<CustomerIdAndNameDto>>> GetCustomerIdAndNames(string usertype)
         {
@@ -76,7 +85,7 @@ namespace api.Controllers
         }
 
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("associateidamecitycountry/{usertype}")]
         public async Task<ActionResult<ICollection<CustomerIdAndNameDto>>> GetCustomerIdameCityCountry(string usertype)
         {
@@ -84,7 +93,7 @@ namespace api.Controllers
             if (dto==null) return NotFound(new ApiResponse(401, "nO valid data found"));
             return Ok(dto);
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet("byId/{id}")]
         public async Task<ActionResult<Customer>> GetCustomerById(int Id)
         {
@@ -93,7 +102,23 @@ namespace api.Controllers
             return Ok(cust);
         }
 
-        [Authorize(Roles="Admin, DocumentControllerAdmin, HRManager")]
+        [HttpGet("customerBriefById/{id}")]
+        public async Task<ActionResult<CustomerBriefDto>> GetCustomerBriefById(int Id)
+        {
+            var cust = await _customerService.GetCustomerBriefById(Id);
+            if (cust==null) return NotFound(new ApiResponse(404, "Not Found"));
+            return Ok(cust);
+        }
+
+        [HttpGet("customernamefromId/{id}")]
+        public async Task<ActionResult<string>> GetCustomerNameFromId(int Id)
+        {
+            var cust = await _customerService.GetCustomerNameFromId(Id);
+            if (cust==null) return Ok("not on record");
+            return Ok(cust);
+        }
+
+        //[Authorize(Roles="Admin, DocumentControllerAdmin, HRManager")]
         [HttpPut]
         public async Task<ActionResult> UpdateCustomer(Customer customer)
         {
@@ -104,7 +129,7 @@ namespace api.Controllers
             return BadRequest();
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("officialidandname/{custType}")]
         public async Task<ActionResult<ICollection<CustomerOfficialDto>>> CustomerOfficialIdAndNames(string custType)
         {
@@ -113,7 +138,7 @@ namespace api.Controllers
         }
         
         
-        [Authorize(Roles="Admin, DocumentControllerAdmin, HRManager, HRSupervisor, HRExecutive, DocumentControllerAdmin, DocumentControllerProcess")]
+        //[Authorize(Roles="Admin, DocumentControllerAdmin, HRManager, HRSupervisor, HRExecutive, DocumentControllerAdmin, DocumentControllerProcess")]
         [HttpGet("agentdetails")]
         public async Task<ActionResult<ICollection<CustomerOfficialDto>>> GetCustomerOfficialIds()
         {
@@ -121,7 +146,7 @@ namespace api.Controllers
             return Ok(users);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("customerCities/{customerType}")]
         public async Task<ICollection<CustomerCity>> GetCustomerCities (string customerType)
         {

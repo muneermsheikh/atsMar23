@@ -1,0 +1,34 @@
+.stdd {
+     margin: 2px;
+     padding: 2px;
+     display: inline-block !important;
+}
+
+.w100 {width: 100px;}
+.w150 {width: 150px;}
+.w250 {width: 250px;}
+.w50 {width: 50px;}
+
+table { table-layout: fixed; }
+
+
+   table {
+     width: 70%;
+     margin: 2px;
+     padding: 2px;
+   }
+   
+   
+   th {
+     border: 1px solid black;
+   }
+   
+   th.perk {width: 40%;}
+   th.amount {width: 30%; text-align:center;}
+   th.provided, th.notprovided {
+     width: 30%;
+     text-align: center;
+   }
+
+   td.provided, td.notprovided {text-align:center;}
+   

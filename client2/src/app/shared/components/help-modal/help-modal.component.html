@@ -1,0 +1,26 @@
+<div *ngIf="help !== undefined">
+     <div class="container stdd b">
+          {{help.topic}} Help 
+          <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+               <span aria-hidden="true">&times;</span>
+            </button>
+     </div>
+     
+     <div *ngFor="let item of help.helpItems">
+          <ul>
+               <li class="stdd w20">
+                    {{item.sequence}}
+               </li>
+               <li class="stdd w700">
+                    {{item.helpText}}
+               </li>
+               <div *ngIf="item.helpSubItems">
+                    <ul *ngFor="let itm of item.helpSubItems">
+                         <li class="stdd w30 ml-25">{{item.sequence}}-{{itm.sequence}}</li>
+                         <li class="stdd w700">{{itm.helpText}}</li>
+                    </ul>
+               </div>
+          </ul>
+     </div>
+     
+</div>

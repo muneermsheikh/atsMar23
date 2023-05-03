@@ -1,0 +1,18 @@
+.stdd {
+     display: inline-block !important;
+     margin-left: 1px;
+     margin-right: 1px;
+     margin-bottom: 0px;
+     margin-top: 0px;
+     padding: 1px;
+}
+.w35 {width: 35px;}
+.h40 {height: 1em;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w150 {width: 150px;}
+.w200 {width: 200px;}
+.w250 {width: 250px;}
+.w100pct {width: 100%;}
+
+.bordernone {border: none;}

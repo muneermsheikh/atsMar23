@@ -142,7 +142,7 @@ namespace infra.Services
                          
                          var ecnr = await _context.CVRefs.Where(x => x.Id==post.CVRefId).Select(x => x.Ecnr).FirstOrDefaultAsync();
 
-                         if(ecnr && post.StageId==EnumDeployStatus.TravelTicketBooked && 
+                         if(ecnr=="ecnr" && post.StageId==EnumDeployStatus.TravelTicketBooked && 
                               (EnumDeployStatus)nextDeployStage.Id==EnumDeployStatus.EmigDocsLodgedOnLine) {
 
                          } else if((int)post.StageId != nextDeployStage.Id) {

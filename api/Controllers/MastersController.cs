@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-     [Authorize(Roles = "Admin, HRManager, HRSupervisor")]
+     //[Authorize]    //(Roles = "Admin, HRManager, HRSupervisor")]
      public class MastersController : BaseApiController
      {
           private readonly IMastersService _mastersService;
@@ -40,7 +40,7 @@ namespace api.Controllers
                return true;
           }
 
-          [Authorize]         //(Policy = "MastersEditRole")]
+          //[Authorize]         //(Policy = "MastersEditRole")]
           [HttpDelete("deletecategory")]
           public async Task<ActionResult<bool>> DeleteCategory(Category category)
           {
@@ -49,7 +49,7 @@ namespace api.Controllers
                return true;
           }
 
-          [Authorize]         //(Policy = "ViewReportsRole")]
+          //[Authorize]         //(Policy = "ViewReportsRole")]
           [HttpGet("cpaginated")]
           public async Task<ActionResult<Pagination<Category>>> GetCategoryListAsync([FromQuery]CategorySpecParams categoryParams)
           {
@@ -67,7 +67,7 @@ namespace api.Controllers
           }
    
     //industry
-          [Authorize]         //(Policy = "MastersAddRole")]
+          //[Authorize]         //(Policy = "MastersAddRole")]
           [HttpPost("addindustry/{industryname}")]
           public async Task<ActionResult<Industry>> AddIndustry(string industryname)
           {
@@ -76,7 +76,7 @@ namespace api.Controllers
                return Ok(industryAdded);
           }
           
-          [Authorize]         //(Policy = "MastersEditRole")]
+          //[Authorize]         //(Policy = "MastersEditRole")]
           [HttpPut("editindustry")]
           public async Task<ActionResult<bool>> EditIndustry(Industry industry)
           {
@@ -85,7 +85,7 @@ namespace api.Controllers
                return true;
           }
 
-          [Authorize]         //(Policy = "MastersEditRole")]
+          //[Authorize]         //(Policy = "MastersEditRole")]
           [HttpDelete("deleteindustry")]
           public async Task<ActionResult<bool>> DeleteCategory(Industry industry)
           {
@@ -101,7 +101,8 @@ namespace api.Controllers
                if (item!=null) return BadRequest(new ApiResponse(404, "Not Found"));
                return Ok(item);
           }
-                   [HttpGet("industrylist")]
+          
+          [HttpGet("industrylist")]
           public async Task<ActionResult<Industry>> GetIndustryListAsync(IndustrySpecParams industryParams)
           {
                var lst = await _mastersService.GetIndustryListAsync(industryParams);
@@ -159,7 +160,15 @@ namespace api.Controllers
           }
 
           [HttpGet("qualifications")]
-          public async Task<ActionResult<Pagination<Qualification>>> GetQListAsync()
+          public async Task<ActionResult<Pagination<Qualification>>> GetQListAsync(QualificationSpecParams specParams)
+          {
+               var lst = await _mastersService.GetQualificationPaginated(specParams);
+               if (lst == null) return BadRequest(new ApiResponse(400, "no data returned"));
+               return Ok(lst);
+          }
+
+          [HttpGet("qualificationList")]
+          public async Task<ActionResult<Qualification[]>> GetQList()
           {
                var lst = await _mastersService.GetQualificationsAsync();
                if (lst == null) return BadRequest(new ApiResponse(400, "no data returned"));

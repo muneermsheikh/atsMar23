@@ -31,6 +31,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 
+app.UseCors("CorsPolicy");
+
 app.UseAuthentication();
 
 app.UseAuthorization();
@@ -42,6 +44,7 @@ var services = scope.ServiceProvider;
 var context = services.GetRequiredService<ATSContext>();
 var identityContext = services.GetRequiredService<AppIdentityDbContext>();
 var userManager = services.GetRequiredService<UserManager<AppUser>>();
+//var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
 var logger = services.GetRequiredService<ILogger<Program>>();
 

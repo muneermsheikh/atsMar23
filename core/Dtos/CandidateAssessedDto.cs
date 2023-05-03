@@ -5,6 +5,7 @@ namespace core.Dtos
         public int Id {get; set;}
         public int OrderItemId { get; set; }
         public string OrderItemRef {get; set;}
+        public string CategoryName {get; set;}
         public bool requireInternalReview {get; set;}
         public string CustomerName {get; set;}
         public int CandidateId {get; set;}
@@ -15,6 +16,7 @@ namespace core.Dtos
         public string AssessedByName {get; set;}
         public string AssessedResult {get; set;}
         public string checklistedByName {get; set;}
+        public DateTime ChecklistedOn {get; set;}
         public string Charges {get; set;}
         public int CvRefId {get; set;}
         public DateTime AssessedOn { get; set; }

@@ -26,6 +26,8 @@ namespace api.Helpers
                     .ForMember(d => d.AppUserId, o => o.MapFrom(s => 0));
                     
                CreateMap<Customer, CustomerDto>();
+               CreateMap<Customer, CustomerBriefDto>();
+               
                //CreateMap<CVRef, CVRefDto>();
                CreateMap<CVRef, CVRefAndDeployDto>();
                     //.ForMember(d => d.PictureUrl, o => o.MapFrom<ProductUrlResolver>());

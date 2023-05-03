@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using System.Xml.Xsl;
 using core.Dtos;
 using core.Entities.Attachments;
 using core.Entities.HR;
@@ -38,35 +39,45 @@ namespace infra.Services
                
           }
 
-          private async Task<bool> UpdateUserProfessionsWhereNull() {
+          /* 
+          private async Task<int> UpdateUserProfessionsWhereNull() {
                
+               int ret=0;
+
                var UserProfWithNullName = await _context.UserProfessions.Where(x => string.IsNullOrEmpty(x.Profession)).ToListAsync();
                var profs = await _context.Categories.Where(x => UserProfWithNullName.Select(x => x.CategoryId).Contains(x.Id)).ToListAsync();
                foreach(var cat in UserProfWithNullName) {
                     cat.Profession = profs.Where(x => x.Id==cat.CategoryId).Select(x => x.Name).FirstOrDefault();
                     _context.Entry(cat).State=EntityState.Modified;
                }
-               return await _context.SaveChangesAsync() > 0;
-          }
+               if(_context.ChangeTracker.HasChanges()) {
+                    if(await _context.SaveChangesAsync() > 0) ret = nextRandom();
+               } else {
+                    ret = nextRandom();
+               }
 
+               return ret;
+          }
+          */
+          
+          private int nextRandom(){
+               Random rnd = new Random();
+               return rnd.Next(1,1000);
+          }
           public async Task<Pagination<CandidateBriefDto>> GetCandidateBriefPaginated(CandidateSpecParams prm)
           {
-               await UpdateUserProfessionsWhereNull();
-
+               
                var brief = (from c in _context.Candidates where c.CandidateStatus !=(int)EnumCandidateStatus.NotAvailable         //notavailable=500
-                    join cl in _context.Customers on c.ReferredBy equals cl.Id into cust
-                    from customers in cust.DefaultIfEmpty()
+                    //join cl in _context.Customers on c.ReferredBy equals cl.Id into cust
+                    //from customers in cust.DefaultIfEmpty()
                     //join professions in _context.UserProfessions on c.Id equals professions.CandidateId into prof 
                     //from p in prof.DefaultIfEmpty()
                     orderby c.ApplicationNo 
                     select new CandidateBriefDto{
                          Id = c.Id, FullName = c.FullName, City = c.City, ApplicationNo = c.ApplicationNo, 
-                         ReferredById=(int)c.ReferredBy, ReferredByName= customers.CustomerName
+                         ReferredById=(int)c.ReferredBy     //, ReferredByName= customers.CustomerName
                     }).AsQueryable();
-               
-               if(!string.IsNullOrEmpty(prm.City)) brief = brief.Where(X => X.City.ToLower()==prm.City.ToLower());
-               if(prm.AgentId.HasValue) brief = brief.Where(x => x.ReferredById==prm.AgentId);
-               
+
                if(prm.ProfessionId.HasValue) {
                     var candidateIds = await _context.UserProfessions.Where(x => x.CategoryId==prm.ProfessionId).Select(x => x.CandidateId).ToListAsync();
                     brief = brief.Where(x => candidateIds.Contains(x.Id));
@@ -92,19 +103,41 @@ namespace infra.Services
                     }
                }
                var count = await brief.CountAsync();
-               
+               var dt = await brief.ToListAsync();
                if (count==0) return null;
                
                var dto = await brief.Skip((prm.PageIndex-1)*prm.PageSize).Take(prm.PageSize).ToListAsync();
+               
+               //now, find agents and proessions to populae the DTO
+               var officialList = dto.Select(x => x.ReferredById).Distinct().ToList();
+               var offAndCust = await (from off in _context.CustomerOfficials where officialList.Contains(off.Id)
+                    join cust in _context.Customers on off.CustomerId equals cust.Id 
+                    select new {OfficialId = off.Id, CustomerName = cust.KnownAs})
+                    .ToListAsync();
 
-               var profs = await _context.UserProfessions.Where(x => dto.Select(y => y.Id).ToList().Contains(x.CandidateId)).ToListAsync();
+               var UserProfs = await _context.UserProfessions.Where(x => string.IsNullOrEmpty(x.Profession)).ToListAsync();
+               var cats = await _context.Categories.Where(x => UserProfs.Select(x => x.CategoryId).ToList().Contains(x.Id)).ToListAsync();
+               foreach(var prof in UserProfs) {
+                    var cat = cats.Find(x => x.Id == prof.CategoryId);
+                    if(cat != null) {
+                         prof.Profession=cat.Name;
+                         _context.Entry(prof).State=EntityState.Modified;
+                    }
+               }
+               if(_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
+
+               var prosfs = await _context.UserProfessions.Where(x => dto.Select(y => y.Id).ToList().Contains(x.CandidateId)).ToListAsync();
 
                foreach(var item in dto) {
                     var proflist = new List<UserProfession>();
-                    var filteredprof = profs.Where(x => x.CandidateId==item.Id).ToList();
+                    var filteredprof = UserProfs.Where(x => x.CandidateId==item.Id).ToList();
                     item.UserProfessions = filteredprof;
+                    var nm = offAndCust.Find(x => x.OfficialId==item.ReferredById);
+                    if (nm != null) item.ReferredByName = nm.CustomerName;
                }
-               return new Pagination<CandidateBriefDto>(prm.PageIndex, prm.PageSize, count, dto);
+               var pag = new Pagination<CandidateBriefDto>(prm.PageIndex, prm.PageSize, count, dto);
+
+               return pag;
           }
           
           public async Task<string> DeleteUploadedFile(FileUpload fileupload)

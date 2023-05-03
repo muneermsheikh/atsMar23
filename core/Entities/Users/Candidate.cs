@@ -37,6 +37,7 @@ namespace core.Entities.Users
                 
             }
 
+        public string UserType {get; set;}="Candidate";
         public int ApplicationNo { get; set; }
 //names                
         [Required, MaxLength(1)]
@@ -44,7 +45,7 @@ namespace core.Entities.Users
         public string FirstName { get; set; }
         public string SecondName { get; set; }
         public string FamilyName { get; set; }
-        [Required]         
+        //[Required]         
         public string KnownAs { get; set; }
         public int? ReferredBy { get; set; }
         public string Source {get; set;}
@@ -53,7 +54,7 @@ namespace core.Entities.Users
         public string PlaceOfBirth { get; set; }
         public string AadharNo { get; set; }
         public string PpNo { get; set; } 
-        public bool Ecnr { get; set; }
+        public string Ecnr { get; set; }
         public string Address {get; set;}
         public string City {get; set;}
         public string Pin {get; set;}

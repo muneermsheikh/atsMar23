@@ -30,11 +30,12 @@ namespace api.Controllers
           private readonly ITaskControlledService _taskControlledService;
           private readonly IEmployeeService _empService;
           private readonly IConfiguration _config;
-          private readonly RoleManager<AppRole> _roleManager;
+          //private readonly RoleManager<AppRole> _roleManager;
           
           public AccountController(
                UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, 
-               ITokenService tokenService, RoleManager<AppRole> roleManager, 
+               ITokenService tokenService, 
+               //RoleManager<AppRole> roleManager, 
                ITaskControlledService taskControlledService,
                IMapper mapper, IUserService userService, AppIdentityDbContext identityContext,
                ITaskService taskService, IEmployeeService empService, IConfiguration config
@@ -50,7 +51,7 @@ namespace api.Controllers
                _taskService = taskService ?? throw new ArgumentNullException(nameof(taskService));
                _empService = empService ?? throw new ArgumentNullException(nameof(empService));
                _config = config ?? throw new ArgumentNullException(nameof(config));
-               _roleManager = roleManager;
+               //_roleManager = roleManager;
           }
 
 
@@ -104,9 +105,14 @@ namespace api.Controllers
           [HttpPost("login")]
           public async Task<ActionResult<core.Dtos.UserDto>> Login(LoginDto loginDto)
           {
-               //var user = await _userManager.FindByEmailAsync(loginDto.Email);
-               var user = await _userManager.Users.Where(x => x.Email == loginDto.Email)
+               //exclude user.roles till role management is implemented
+               /*var user = await _userManager.Users.Where(x => x.Email == loginDto.Email)
                     .Include(x => x.UserRoles).ThenInclude(x => x.Role)
+                    //.Select(x => new {x.Id, x.Gender, x.DisplayName, x.Email, x.loggedInEmployeeId})
+                    .FirstOrDefaultAsync();
+               */
+               var user = await _userManager.Users.Where(x => x.Email == loginDto.Email)
+                    //.Include(x => x.UserRoles).ThenInclude(x => x.Role)
                     //.Select(x => new {x.Id, x.Gender, x.DisplayName, x.Email, x.loggedInEmployeeId})
                     .FirstOrDefaultAsync();
                
@@ -124,7 +130,7 @@ namespace api.Controllers
                if (user.UserRoles != null) {
                     foreach(var role in user.UserRoles) 
                     {
-                         claims.Add(new Claim(ClaimTypes.Role, role.Role.Name));
+                         //claims.Add(new Claim(ClaimTypes.Role, role.Role.Name));
                     }
                }
                
@@ -154,7 +160,21 @@ namespace api.Controllers
                var users = await _userManager.Users.ToListAsync();
                return  Ok(_mapper.Map<ICollection<UserDto>>(users));
           }
+          
+          [HttpPost("registerCandidate")]
+          public async Task<ActionResult<ApiReturnDto>>RegisterNewCandidate(RegisterDto registerDto) {
+               var loggedInUser = await _userManager.FindByEmailFromClaimsPrincipal(User);
+               var returnDto = new ApiReturnDto();
 
+               var response = await CreateAppUserAndCandidate(registerDto,loggedInUser.loggedInEmployeeId);
+               if(!string.IsNullOrEmpty(response.ErrorString)) {
+                    returnDto.ErrorMessage=response.ErrorString;
+               } else {
+                    returnDto.ReturnInt=response.ApplicationNo;
+               }
+
+               return Ok(returnDto);
+          }
 
           [HttpPost("RegisterNewCandidate"), DisableRequestSizeLimit]
           public async Task<ActionResult<ApiReturnDto>> Upload()
@@ -248,7 +268,7 @@ namespace api.Controllers
                     dtoToReturn.ErrorString = "Aadhar Number is in use";
                     return dtoToReturn; }
 
-               if (!string.IsNullOrEmpty(registerDto.PpNo) && await _userService.CheckPPNumberExists(registerDto.PpNo) != "") {
+               if (!string.IsNullOrEmpty(registerDto.PpNo) && !string.IsNullOrEmpty(await _userService.CheckPPNumberExists(registerDto.PpNo))) {
                     dtoToReturn.ErrorString = "Passport Number is in use";
                     return dtoToReturn; }
 
@@ -284,15 +304,16 @@ namespace api.Controllers
                     return dtoToReturn;
                }
 
-               if(string.IsNullOrEmpty(registerDto.UserRole)) registerDto.UserRole="Candidate";
+               /* if(string.IsNullOrEmpty(registerDto.UserRole)) registerDto.UserRole="Candidate";
                if(!await _roleManager.RoleExistsAsync("Candidate")) {
                     var succeeded = await _roleManager.CreateAsync(new AppRole{Name="Candidate"}); }    
-
+               */
+               /*   **role** 
                var roleResult = await _userManager.AddToRoleAsync(user, registerDto.UserRole);
                if (!roleResult.Succeeded) {
                     dtoToReturn.ErrorString = roleResult.Errors.ToString();
                     return dtoToReturn; }
-               
+               */
                registerDto.DisplayName = registerDto.DisplayName ?? user.DisplayName;
                registerDto.PlaceOfBirth = registerDto.PlaceOfBirth ?? "";
                
@@ -326,7 +347,7 @@ namespace api.Controllers
                return  dtoToReturn;
           }
 
-          [Authorize(Roles ="Admin, HRManager, HRSupervisor")]
+          [Authorize]    //(Roles ="Admin, HRManager, HRSupervisor")]
           [HttpPost("registeremployee")]
           public async Task<ActionResult<core.Dtos.UserDto>> RegisterEmployee(RegisterEmployeeDto registerDto )
           {
@@ -440,7 +461,7 @@ namespace api.Controllers
           }
 
 
-          [Authorize(Roles ="Admin, HRManager")]
+          [Authorize]    //(Roles ="Admin, HRManager")]
           [HttpDelete("user/{useremail}")]
           public async Task<ActionResult<bool>> DeleteIdentityUser (string useremail)
           {

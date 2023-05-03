@@ -1,0 +1,267 @@
+<div *ngIf="!member">
+     Order Not found or loaded
+</div>
+<div class="col-12" style="margin-top: 0px; padding-top: 0px;" *ngIf="member">
+     <form [formGroup]="form" (change)="formChanged()" >
+          <input class="stdd w50" type="hidden" formControlName="id"> 
+
+          <label class="lbl w80">Order No</label>
+          <label class="lbl w110">Dated</label>
+          <label class="lbl w110">Complete By</label>
+          <label class="lbl w225">Customer</label>
+          <label class="lbl w80">City</label>
+          <label class="lbl w80">Country</label>
+          <label class="lbl w150">Order Ref</label>
+          <div *ngIf="!isAddMode" class="lbl">
+               <label class="lbl w100">Review status</label>
+               <label class="lbl w100">Fwd to HR On</label>
+               <label class="lbl w100">Order status</label>
+          </div>
+          <br>
+          <input class="stdd w80" type="text" [disabled]="isAddMode" formControlName="orderNo">
+          <input class="stdd w110"
+               type="text"
+               placeholder="Order Date"
+               formControlName="orderDate"
+               bsDatepicker
+               [bsValue]="bsValueDate"
+               [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+          >
+
+          <input class="stdd w110"
+               type="text"
+               placeholder="Complete By"
+               formControlName="completeBy"
+               bsDatepicker
+               [bsValue]="bsValueDate"
+               [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+          >
+
+          <ng-select *ngIf="customers" class="stdd w225 "
+               [items]="customers"
+               bindLabel="customerName"
+               bindValue="id"
+               labelForId="customerId"
+               placeholder="Select customer"
+               clearAllText="Clear"
+               formControlName="customerId"
+               (change)="customerChange($event)">
+          </ng-select>
+          <input class="stdd w80" type="text" formControlName="cityOfWorking">
+          <input class="stdd w80" type="text" formControlName="country">
+          <input class="stddSmaller w150" type="text" formControlName="orderRef">
+
+          <div *ngIf="!isAddMode" class="stdd">
+               <div class="stddSmaller b w100" style="border:btn-primary;" 
+                    [ngClass]="member.contractReviewStatusId===1?'green':member.contractReviewStatusId===2?'blue': 'red'" 
+               >
+                    {{member.contractReviewStatusId | reviewStatuName}}
+               </div>  
+
+               <div class="stddSmaller w110" style="border:btn-primary;">
+                    {{(member.forwardedToHRDeptOn)!.getFullYear() < 2000 ? 'not forwarded': member.forwardedToHRDeptOn | date}}
+               </div>
+          </div>
+          
+          <br>
+          <label class="lbl w125">Project Head</label>
+          <label class="lbl w125">Medical Incharge</label>
+          <label class="lbl w125">Visa Incharge</label>
+          <label class="lbl w125">Emigration Inchare</label>
+          <label class="lbl w125">Travel Incharge</label>
+          <br>
+          <ng-select  class="stdd w125" *ngIf="employees" 
+               [items]="employees"
+               bindLabel="knownAs"
+               bindValue="id"
+               labelForId="projectManagerId"
+               placeholder="Select Project Manager"
+               clearAllText="Clear"
+               formControlName="projectManagerId">
+          </ng-select>
+
+          <ng-select  class="stdd w125" *ngIf="employees" 
+               [items]="employees"
+               bindLabel="knownAs"
+               bindValue="id"
+               labelForId="medicalProcessInchargeEmpId"
+               placeholder="Select Medical Incharge"
+               clearAllText="Clear"
+               formControlName="medicalProcessInchargeEmpId">
+          </ng-select>
+     
+          <ng-select  class="stdd w125" *ngIf="employees"  
+               [items]="employees"
+               bindLabel="knownAs"
+               bindValue="id"
+               labelForId="visaProcessInchargeEmpId"
+               placeholder="Select Visa Incharge"
+               clearAllText="Clear"
+               formControlName="visaProcessInchargeEmpId">
+          </ng-select>
+          
+          <ng-select  class="stdd w125" *ngIf="employees"  
+               [items]="employees"
+               bindLabel="knownAs"
+               bindValue="id"
+               labelForId="emigProcessInchargeId"
+               placeholder="Select Emigration Incharge"
+               clearAllText="Clear"
+               formControlName="emigProcessInchargeId">
+          </ng-select>
+
+          <ng-select  class="stdd w125" *ngIf="employees"  
+               [items]="employees"
+               bindLabel="knownAs"
+               bindValue="id"
+               labelForId="travelProcessInchargeId"
+               placeholder="Select Travel Incharge"
+               clearAllText="Clear"
+               formControlName="travelProcessInchargeId">
+          </ng-select>
+
+          <button type="submit" [disabled]="!form.dirty" ngClass="isAddMode ? 'pull-right': ''" class="stdd btn btn-success fa fa-save" (click)="onSubmit()" 
+          title="Save the requirement" >
+               <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span> </button> 
+
+          <div *ngIf="!isAddMode" style="display: inline-block;" class="pull-right" >
+                         
+               <button class="btn btn-primary stdd fa fa-share " (click)="forwardDLToHRDept()" 
+                         title="forward this Requirement to HR Dept.  If no categories are selected, all categories will be forwarded"
+               > </button>
+               <button class="btn btn-primary stdd fa fa-users " (click)="assignTasksToHRExecs()" 
+                    title="assign selected categories"
+               > </button>
+               <button class="btn btn-primary stdd fa fa-share " (click)="forwardDLtoAgents()" 
+                    title="forward this Requirement to Agents.  If no categories are selected, all categories will be forwarded"
+               > </button>
+               <button class="btn btn-primary stdd fa fa-balance-scale " (click)="reviewItems()"
+                    title="Display Contract Review of this item"  
+               ></button>
+               <button class="btn btn-primary stdd fa fa-cogs " (click)="showProcess()"
+                    title="Display Processing records of the category"  
+               ></button>
+               <br>
+          </div>
+          
+          <hr style="margin: 1px; padding: 1px; border-width: 2px;">
+          <div style="font-weight: bold; margin-left: 0px; font-size: smaller;">
+               <label class="lblArrayFSmall w30">Sel</label>
+               <label class="lblArrayFSmall w30" >Sr#</label>
+               <label class="lblArrayFSmall w240">Category</label>
+               <label class="lblArrayFSmaller w40 mx-1">ECNR</label>
+               <label class="lblArrayFSmaller w40" >Procss<br>Only</label>
+               <label class="lblArrayFSmaller w35">Source<br>From</label>
+               <label class="lblArrayFSmaller w30">Qnty</label>
+               <label class="lblArrayFSmaller w30" >Min CVs</label>
+               <label class="lblArrayFSmaller w30" >Max CVs</label>
+               <label class="lblArrayFSmaller w35" >Internl<br>Rvw</label>
+               <label class="lblArrayFSmaller w35" >Assess<br>ment</label>
+               <label class="lblArrayFSmaller w35" >No Sup<br>rvw</label>
+               <label class="lblArrayFSmall w125"> HR Exec</label>
+               <label class="lblArrayFSmall w125" style="margin-left: 2px">HR Sup</label>
+               <label class="lblArrayFSmall w125" style="margin-left: 2px">HR Manager</label>
+               <label class="lblArrayFSmall w90" style="margin-left: 2px">Complete by</label>
+               <label class="lblArrayFSmall w50" >Charges</label>
+               <label class="lblArrayFSmall w75">Review<br>Status</label>
+
+               <div style="width: 50px; display: inline-block;">
+                    <button type="button" (click)="addItem()" class="stdd alignR fa fa-plus blue"></button>
+               </div>
+          </div>
+          <hr style="margin: 0px; padding: 0px;">
+
+          <div formArrayName="orderItems" class="mt-2 my-1 px-0" >
+               <div *ngFor="let q of orderItems.controls; let i=index">
+                    <div [formGroupName]="i" >
+                         <input type="checkbox" [disabled]="!form.dirty" formControlName="selected" class="stddSmMx1 w30" >
+                         <input type="text" formControlName="srNo" class="stddSmMx1 w30" >
+
+                         <div class="stdd w250 mx-1" >
+                              <ng-select  class="stdd w250 fontSmallest" *ngIf="categories" 
+                                   [items]="categories"
+                                   bindLabel="name"
+                                   bindValue="id"
+                                   labelForId="categoryId"
+                                   placeholder="Select Category"
+                                   clearAllText="Clear"
+                                   formControlName="categoryId">
+                              </ng-select>
+                         </div>
+
+                         <input type="checkbox" formControlName="ecnr" class="stddSmMx1 w35" >
+                         <input type="checkbox" formControlName="isProcessingOnly" class="stddSmMx1 tAlignLeft w35" >
+                         
+                         <input type="text" formControlName="sourceFrom" class="stddSmMx1 tAlignLeft w35" >
+                         <input type="text" formControlName="quantity" (change)="qntyChanged(i)" class="stddSmMx1 w30" >
+                         <input type="text" formControlName="minCVs" class="stddSmMx1 w30" style="padding-left: 2px;">
+                         <input type="text" formControlName="maxCVs" class="stddSmMx1 w30" >
+                         <input type="checkbox" formControlName="requireInternalReview" class="stddSmMx1 w35"  >
+                         <input type="checkbox" formControlName="requireAssess" class="stddSmMx1 w35" >
+                         <input type="checkbox" formControlName="noReviewBySupervisor" class="stddSMx1 w35" >
+
+                         <ng-select *ngIf="employees" class="stdd w125 fontSmaller" 
+                              [items]="employees"
+                              bindLabel="knownAs"
+                              bindValue="id"
+                              labelForId="hrExecId"
+                              placeholder="Select HR Executive"
+                              clearAllText="Clear"
+                              formControlName="hrExecId">
+                         </ng-select>
+                         <ng-select *ngIf="employees" class="stdd w125 fontSmaller" 
+                              [items]="employees"
+                              bindLabel="knownAs"
+                              bindValue="id"
+                              labelForId="hrSupId"
+                              placeholder="Select HR Supervisor"
+                              clearAllText="Clear"
+                              formControlName="hrSupId">
+                         </ng-select>
+                         <ng-select *ngIf="employees" class="stdd w125 fontSmaller" 
+                              [items]="employees"
+                              bindLabel="knownAs"
+                              bindValue="id"
+                              labelForId="hrmId"
+                              placeholder="Select HR Manager"
+                              clearAllText="Clear"
+                              formControlName="hrmId">
+                         </ng-select>
+                         
+                         <input type="text"
+                              placeholder="Complete By"
+                              formControlName="completeBefore"
+                              bsDatepicker
+                              [bsValue]="bsValueDate"
+                              [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+                              class="stddSmMx1 w90"
+                         >
+                         <input type="text" formControlName="charges" class="stdd w50 ">
+
+                         <button class="btn btn-sm w20 fontSmall" title="prospective candidates for this category" (click)="openReviewModal(i)">Contract Review</button>
+                         <div *ngIf="!isAddMode" class="stdd ml-3">       
+                              <button class="btn btn-sm w20 fontSmall" title="prospective candidates for this category" (click)="showProspectives(i)">Prospectives</button>
+                              <button class="btn btn-sm w20 fontSmall" title="Job Description for this category" (click)="openJDModal(i)">Job Desc</button>
+                              <button class="btn btn-sm w20 fontSmall" title="Remuneration for this categoryry" (click)="openRemunerationModal(i)">Remuneration</button>
+                              <button class="w20 btn btn-sm fontSmall" title="open Assessment Questions for the category">Assessment Qs</button>
+                         </div>
+                         <button class="stdd ml-2" (click)="removeItem(i)" class="w20 btn btn-sm btn-danger fa fa-trash" 
+                              title="remove this item"
+                         ></button>
+                    </div>
+               </div>
+          </div>
+     </form>
+
+     <ul class="text-danger list-unstyled" *ngIf="errors">
+          <li *ngFor="let error of errors">
+               {{error}}
+          </li>
+     </ul>
+</div>
+
+
+     <div style="float:inline-end; margin-top: 5px; font-size: smaller;">
+         {{this.form.value | json}}
+     </div>
+

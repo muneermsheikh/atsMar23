@@ -1,0 +1,19 @@
+.stdd {
+     display: inline-block;
+    vertical-align: top;
+}
+.fSmall {font-size: small;}
+
+.b {font-weight: bold;}
+.red {color: red;}
+.w10 {width: 10px;}
+.w20 {width: 20px;}
+.w25 {width: 25px;}
+.w30 {width: 30px;}
+.w50 {width: 50px;}
+.w70 {width: 70px;}
+.w100 {width: 100px;}
+.w180 {width: 180px;}
+.w200 {width: 200px;}
+.w250 {width: 250px;}
+.w300 {width: 300px;}

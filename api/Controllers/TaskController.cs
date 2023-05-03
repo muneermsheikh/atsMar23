@@ -20,13 +20,13 @@ namespace api.Controllers
           private readonly IEmailService _emailService;
           private readonly ITaskControlledService _taskControlledService;
           private readonly UserManager<AppUser> _userManager;
-          private readonly RoleManager<AppRole> _roleManager;
+          //private readonly RoleManager<AppRole> _roleManager;
 
           private static ApplicationTask staticTask=new ApplicationTask();
           private static TaskItem staticTaskItem=new TaskItem();
 
           public TaskController(IUnitOfWork unitOfWork, 
-               RoleManager<AppRole> roleManager,
+               //RoleManager<AppRole> roleManager,
                UserManager<AppUser> userManager,
                ITaskService taskService, 
                ITaskControlledService taskControlledService,
@@ -37,7 +37,7 @@ namespace api.Controllers
                _taskControlledService=taskControlledService;
                _unitOfWork = unitOfWork;
                _userManager = userManager;
-               _roleManager = roleManager;
+               //_roleManager = roleManager;
           }
 
           [Authorize]
@@ -149,7 +149,7 @@ namespace api.Controllers
                int loggedInUser = isAdminRole ? 0: user.loggedInEmployeeId;      //if admin role, return tasks of all users
                var emps = await _taskService.GetTasksPaginated(tParams, user.loggedInEmployeeId);
                
-               if (emps == null || emps.Count == 0) return BadRequest(new ApiResponse(404, "Failed to retrieve any tasks"));
+               if (emps == null || emps.Count == 0) return null;  //BadRequest(new ApiResponse(404, "Failed to retrieve any tasks"));
 
                return Ok(emps);
           }

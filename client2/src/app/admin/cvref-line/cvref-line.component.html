@@ -1,0 +1,27 @@
+<div *ngIf="cv!==undefined && cv !== null" class="col-12">
+     <div class="stdd row mb-0">
+          <div class="stdd form-check mx-1 w10">
+               <input type="text" 
+                    class="form-check-input"
+                    [checked]="cv.checked"
+                    value="cv.id"
+                    (change)="cvChecked(cv.id, cv.checked)"
+               >
+          </div>
+          <div class="stdd w150" mouseover="style.cursor = 'pointer'">{{cv.customerName}}</div>
+          <div class="stdd w50" >{{cv.orderItemRef}}</div>
+          <div class="stdd w150" >{{cv.applicationNo}}</div>
+          <div class="stdd w150" mouseover="style.cursor = 'pointer'" 
+               (click)="displayChecklistModal(cv)" 
+               
+          >{{cv.candidateName}}</div>
+          <div class="stdd w150" >{{cv.assessedOn | date}}</div>
+          <div class="stdd w150" >{{cv.assessedByName}}</div>
+          <div class="stdd w150" >{{cv.assessedResult}}</div>
+          <div class="stdd w75" title="click to display HR Checklist, which includes charges fixed and agreed by candidate" >
+               {{cv.charges}}
+          </div>
+     </div>
+</div>
+
+          

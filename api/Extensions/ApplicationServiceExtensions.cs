@@ -1,8 +1,11 @@
 using api.Errors;
+using core.Entities.Identity;
 using core.Interfaces;
 using infra.Data;
 using infra.Data.MasterRepositories;
+using infra.Identity;
 using infra.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -79,7 +82,8 @@ namespace api.Extensions
                 services.AddScoped<ICustomerOfficialServices, CustomerOfficialServices>();
                 services.AddScoped<IOrdersGetService, OrdersGetService>();
 
-
+                //services.AddScoped<RoleManager<AppRole>>();
+                
                 services.Configure<ApiBehaviorOptions>(options =>
                 {
                     options.InvalidModelStateResponseFactory = actionContext =>
@@ -98,6 +102,8 @@ namespace api.Extensions
                     };
                 });
 
+                //services.AddDefaultIdentity<ApplicationUser().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
                 services.AddAuthorization(opt => {
                     opt.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
                     opt.AddPolicy("RequireHRSupervisorRole", policy => policy.RequireRole("HRSupervisor"));
@@ -109,11 +115,14 @@ namespace api.Extensions
                 //services.AddSingleton<IResponseCacheService, ResponseCacheService>();
                 
                 /*
-            
-                services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
-            
-
+                    services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
                 */
+
+                services.AddCors(opt => {
+                    opt.AddPolicy("CorsPolicy", policy => {
+                        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                    });
+                });
                 return services;
                 
             }

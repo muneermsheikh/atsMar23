@@ -1,0 +1,16 @@
+.stdd {
+	display: inline-block;
+	font-size: small;
+	vertical-align: top;
+}
+
+li {vertical-align: top;
+	font-size: small;}
+
+.b {font-weight: bold;}
+
+.w20 {width: 20px;}
+.w30 {width: 30px;}
+.w50 {width: 50px;}
+.w100 {width: 100px;}
+.w700 {width: 700px;}

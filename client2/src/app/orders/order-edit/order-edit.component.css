@@ -1,0 +1,154 @@
+.stdd {
+     display: inline-block !important;
+     vertical-align: top;
+     margin-left: 3px;
+     margin-right:3px;
+     margin-top: 1px;
+     margin-bottom: 1px;
+    font-size: smaller;
+}
+
+label{display: block};
+
+.dropdown {
+  display: inline-block !important;
+  vertical-align: top;
+  margin: 1px;
+}
+
+
+.stddSmaller{
+  display: inline-block !important;
+  vertical-align: top;
+  margin-left: 3px;
+  margin-right:3px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  padding-right: 3px;
+  font-size: smaller;
+}
+
+.stddSmMx1 {
+  display: inline-block !important;
+  vertical-align: middle;
+  margin-right:1px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  padding-right: 1px;
+  font-size: smaller;
+  word-wrap: break-word;
+}
+
+.pullright {text-align: right;}
+
+.ml80 {margin-left: 80px;
+}
+
+.lbl {
+     display: inline-block !important;
+     font-size: smaller;
+     font-weight: bold;
+     margin-left: 3px;
+     margin-right:3px;
+     margin-top: 1px;
+     margin-bottom: 1px;
+}
+
+.lblArrayFSmall {
+  display: inline-block !important;
+  font-weight: bold;
+  margin-left: 1px;
+  font-size: small;
+  margin-right:1px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  vertical-align: middle;
+}
+
+.lblArrayFSmaller {
+  display: inline-block !important;
+  font-weight: bold;
+  margin-left: 1px;
+  font-size: smaller;
+  margin-right:1px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  vertical-align: middle;
+}
+
+
+.tAlignLeft {text-align: left;}
+.tAlignRight {text-align: right;}
+
+.vAlignMiddle {vertical-align: middle !important;}
+.vAlignTop {vertical-align: top;}
+.fontSmall {font-size: small;}
+.fontSmaller {font-size: smaller;}
+
+.w10 {width: 10px;}
+.w20 {width: 20px;}
+.w30 {width: 30px;}
+.w35 {width: 35px;}
+.w40 {width: 40px;}
+.w50 {width: 50px;}
+.w65 {width: 65px;}
+.w75 {width: 75px;}
+.w80 {width: 80px;}
+.w90 {width: 90px;}
+.w100 {width: 100px;}
+.w110 {width: 110px;}
+.w125 {width: 125px;}
+.w115 {width: 115px;}
+.w125 {width: 125px;}
+.w150 {width: 150px;}
+.w175 {width: 175px;}
+.w200 {width: 200px;}
+.w225 {width: 225px;}
+.w240 {width: 240px;}
+.w250 {width: 250px;}
+.w300 {width: 300px;}
+.w400 {width: 400px;}
+.w500 {width: 500px;}
+
+.b {font-weight: bold;}
+
+.alignR {float: right;}
+
+.blue {color: blue;}
+.black {color: black;}
+.red {color: red;}
+.green {color: green}
+
+.tooltip {
+     position: relative;
+     display: inline-block;
+     border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+   }
+   
+   /* Tooltip text */
+   .tooltip .tooltiptext::after {
+     content: " ";
+     position: absolute;
+     top: 50%;
+     left: 100%; /* To the right of the tooltip */
+     margin-top: -5px;
+     border-width: 5px;
+     border-style: solid;
+     border-color: transparent transparent transparent black;
+   }
+   
+   /* Show the tooltip text when you mouse over the tooltip container */
+   .tooltip:hover .tooltiptext {
+     visibility: visible;
+   }
+   
+   
+.custom {
+  min-height: 20px;
+  height: 20px;
+  width: 125px;
+  font-size: x-small;
+  display: inline-block !important;
+  vertical-align: top;
+  margin: 2px;
+}

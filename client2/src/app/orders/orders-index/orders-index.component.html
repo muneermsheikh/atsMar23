@@ -1,0 +1,72 @@
+<div class="row" >
+     <div class="col-2" >
+          <ng-container>
+               <div class="stdd b w50 blue">Sort</div>
+               <select name="" id="" class="custom-select mb-2" (change)="onSortSelected($event)">
+                    <option *ngFor="let sort of sortOptions"
+                         [value] = "sort.value"
+                    >{{sort.name}}</option>
+               </select>
+               <div class="stdd b w50 blue">City</div>
+
+               <ul class="list-group mb-3">
+                    <li class="list-group-item" *ngFor="let city of orderCities"
+                        [class.active]="city.cityName === oParams.city" [value]="city.cityName"
+                        (click)="onCitySelected(city.cityName)">
+                        {{city.cityName}}
+                    </li>
+                </ul>
+          </ng-container>
+     </div>
+     <div class="col-10">
+          <div class="d-flex justify-contents-between align-items-center">
+               <app-paging-header
+                    [totalCount]="totalCount"
+                    [pageNumber]="oParams.pageNumber"
+                    [pageSize]="oParams.pageSize"
+               >
+               </app-paging-header>
+
+               <app-paging 
+                    [pageSize]="oParams.pageSize" 
+                    [totalCount]="totalCount" 
+                    [pageNumber]="oParams.pageNumber" 
+                    (pageChanged)="onPageChanged($event)"  >
+               </app-paging>
+
+               <div class="ml-5 d-flex justify-contents-between align-items-center">
+                    <div class="form-inline mt-2" *ngIf="orders">
+                         <input (keyup.enter)="onSearch()" type="text" class="stdd form-control w300" #search placeholder="Search">
+                         <button (click)="onSearch()" class="btn btn-outline-primary my-1">Search</button>
+                         <button (click)="onReset()" class="btn btn-outline-success mx-2 my-1">Reset</button>
+                         <button class="btn btn-outline-success ml-2 my-1 fa fa-plus" routerLink="/orders/add" ></button>
+                         <button class="btn btn-outline mx-2 my-1" routerLink="/orders/dlforward">Forward To Agents</button>
+                    </div>
+               </div>
+          </div>
+          <div class="form-inline" style="font-weight: bold;">
+               <div class="stdd w70 b" >Order No</div>
+               <div class="stdd w100 b" >Order Date</div>
+               <div class="stdd w200 b">Customer Name</div>
+               <div class="stdd w100 b" >City</div>
+               <div class="stdd w150 b">Review status</div>
+               <div class="stdd w100 b">Reviewed On</div>
+               <div class="stdd w100 b">Forwarded To HR On</div>
+               <div class="stdd w150 b" >Order Status</div>
+          </div>
+          <div class="row" *ngFor="let order of orders" >
+               <app-order-line 
+                    [order]="order" 
+                    (viewEvent)="viewOrder($event)"
+                    (editEvent)="editOrder($event)"
+                    (contractReviewEvent)="contractReviewOrder($event)"
+                    (dlForwardedToHREvent)="dlForwardedToHRDept($event)"
+                    (dlFwdToAssciatesEvent)="dlForwardToAssociates($event)"
+                    (deleteEvent)="deleteOrder($event)"
+                    (dlFwdToHREvent)="dlForwardToHRDept($event)"
+               ></app-order-line>
+          </div>
+          
+     </div>
+</div>
+

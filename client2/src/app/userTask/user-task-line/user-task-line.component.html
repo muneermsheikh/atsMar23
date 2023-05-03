@@ -1,0 +1,33 @@
+<div *ngIf="task===null">
+     No Tasks available
+</div>
+<div *ngIf="task!==null" >
+     <div style="display: inline-block; width: max-content; margin-left: 40px;" >
+          <!-- <div class="stdd w25" style="text-align: right;">{{task.id}}</div> -->
+          <div class="stdd w100 fontSmall mx-2" >{{task!.assignedToName}}</div>
+          <div class="stdd w75 fontSmall" >{{task!.taskDate | date: 'dd-MMM-yy'}}</div>
+          <!--<div class="stdd w90">{{task.taskTypeName}}</div> -->
+          <div class="stdd w400 fontSmall">{{task!.taskDescription.substring(0,138)}}</div>
+          <div class="stdd w100">{{task!.completeBy | date: 'dd-MMM-yy'}}</div>
+          <div class="stdd w100">{{task!.taskStatus}}</div>
+          
+          <div style="display: inline-block; width: 250px; line-height: 1em;">
+               <button class="btn btn-outline-success fa fa-pencil blue" type="button" title="edit this task" 
+                    [disabled]="!boolEditable"  
+                    (click)="editClicked()"
+               ></button>
+               <button class="mx-1 btn btn-outline-secondary fa fa-eye blue" type="button" 
+                    title="view this task" 
+                    routerLink="/userTask/view/{{task!.id}}" 
+                    (click)="deleteClicked()"
+                    ></button>
+               <button class="btn btn-outline-secondary fa fa-trash red" type="button" 
+                    title="mark this task as deleted" 
+                    [disabled]="!boolEditable"
+                    (click)="markAsDeleted(task!.id)" ></button>
+               <button class="mx-1 btn btn-outline-secondary  green fa fa-check" title="mark this task as completed" 
+                    [disabled]="!boolEditable"  type="button" (click)="markAsCompleted(task!.id)" ></button>
+          </div>
+     </div>
+</div>
+

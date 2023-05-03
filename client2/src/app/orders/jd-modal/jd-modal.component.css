@@ -1,0 +1,9 @@
+.stdd {
+     margin: 2px;
+     padding: 2px;
+     display: inline-block !important;
+}
+
+.w100 {width: 100px;}
+.w250 {width: 250px;}
+.w50 {width: 50px;}

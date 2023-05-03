@@ -1,0 +1,121 @@
+<div class="mx-3">
+     <div *ngIf="selectionsPending.length===0">
+          no selections pending
+     </div>     
+     <div class="stdd col-6">
+          <div *ngIf="selectionsPending.length > 0" > 
+     
+               <div class="stdd">
+                    <app-paging-header 
+                         [totalCount]="totalCount" 
+                         [pageNumber]="sParams.pageIndex" 
+                         [pageSize]="sParams.pageSize"
+                    ></app-paging-header>
+                    <app-paging 
+                         [pageSize]="sParams.pageSize" 
+                         [totalCount]="totalCount" 
+                         [pageNumber]="sParams.pageIndex" 
+                         (pageChanged)="onPageChanged($event)"  
+                    > </app-paging>
+               </div>
+          </div>
+     </div>
+     <div class="stdd col-6 fontSmaller" 
+          title="Emails and SMS Messages will be composed and saved in Emails or SMS Components as drafts.  The messages can be edited before sending">
+               send to candidates:
+          <div class="stdd form-check">
+               <input id="SelMsgsToCandidates" type="checkbox" [(ngModel)]="SelMsgsToCandidates">
+               <label for="SelMsgsToCandidates" class="form-check-label ml-2">Selection Emails</label>
+           </div>
+           <div class="stdd form-check">
+               <input id="SelSMSToCandidates" type="checkbox" [(ngModel)]="SelSMSToCandidates">
+               <label for="SelSMSToCandidates" class="form-check-label ml-2">Selection SMS</label>
+           </div>
+           <div class="stdd form-check">
+               <input id="RejMsgsToCandidates" type="checkbox" [(ngModel)]="RejMsgsToCandidates">
+               <label for="RejMsgsToCandidates" class="form-check-label ml-2">Rejection Emails</label>
+           </div>
+           <div class="stdd form-check">
+               <input id="RejSMSToCandidates" type="checkbox" [(ngModel)]="RejSMSToCandidates">
+               <label for="RejSMSToCandidates" class="form-check-label ml-2">Rejection SMS</label>
+           </div>
+     </div>
+     <!-- <div class="stdd col-2">Send to Client
+           <div class="stddd form-check">
+               <input id="MsgsToClient" type="checkbox" id="msgToClient" disabled="true" [(ngModel)]="MsgsToClient">
+               <label for="MsgsToClient" class="form-check-label m-2">Advises to Client</label>
+           </div>
+     </div>
+-->
+          
+          <br>
+          <div class="stdd w50 b" >Sort</div>
+          <select name="" id="" class="stdd w150" (change)="onSortSelected($event.target)">
+               <option *ngFor="let sort of sortOptions"
+                    [value] = "sort.value"
+               >{{sort.name}}</option>
+          </select>
+
+          <label class="stdd lbl" style="margin-left: 15px;">Transactions will be dated: </label> 
+          <input class="stdd w150"
+               type="text"
+               bsDatepicker
+               [bsValue]="todayDate"
+               [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+          >   
+
+          <input (keyup.enter)="onSearch()" type="text" class="stdd form-control ml-5 w300" #search placeholder="Search">
+          <button type="button" (click)="onSearch()" class="stdd btn btn-outline-primary mx-1 my-1" style="font-size: small;">Search</button>
+          <button type="button" (click)="onReset()" class="stdd btn btn-outline-success mx-1 my-1" style="font-size: small;">Reset</button>
+
+
+          <form #form="ngForm" id="form">
+               <label class="lbl" style="margin-left:2px; width: 50px;">Check</label>
+               <label class="lbl mx-2 w75">App No</label>
+               <label class="lbl mx-2 w150">Candidate Name</label>
+               <label class="lbl mx-2 w150">Referred to Company</label>
+               <label class="lbl mx-2 w150">Referred for category</label>
+               <label class="lbl mx-2 w75">Referred On</label>
+               <label class="lbl mx-2 w300">Selection decision</label>
+               <label class="lbl mx-2 w200">Remarks</label>
+               <button type="button" class="btn btn-success ml-10 fa fa-check" title="register selection decisions on checked candidates" (click)="registerSelections()" ></button>  
+               <button class="stdd btn btn-default fa fa-2x fa-window-close" title="Close this form "  (click)="routeChange()" ></button>
+               
+               <div *ngFor="let item of selectionsPending">
+                    <div class="stdd mx-10 form-check" style="text-align: center; margin-left: 10px;">
+                         <input type="checkbox" 
+                              class="form-check-input mx-10" 
+                              name="checked"
+                              class="form-check-input" 
+                              [checked]="item.checked"
+                              [value]="item.checked"
+                              (change)="item.checked = !item.checked"
+                         >
+                    </div>
+                    <label class="stdd mx-3 w75" style="margin-left: 15px;" >{{item.applicationNo}}</label>
+                    <label class="stdd mx-2 w150">{{item.candidateName}}</label>
+                    <label class="stdd mx-2 w150">{{item.customerName}}</label>
+                    <label class="stdd mx-2 w150">{{item.categoryRefAndName}}</label>
+                    <label class="stdd mx-2 w75">{{item.referredOn | date : 'd-MMM-yy'}}</label>
+                    <ng-select *ngIf="selectionStatus" class="stdd ml5 w300"
+                         name="selectionStatusId"
+                         [items]="selectionStatus"
+                         bindLabel="status"
+                         bindValue="id"
+                         labelForId="status"
+                         placeholder="Selection status"
+                         clearAllText="Clear"
+                         [(ngModel)]="item.selectionStatusId"
+                    >
+                    </ng-select>
+                    <input type="text" class="stdd w300 ml2" name="remarks" [(ngModel)]="item.remarks" >
+                    <!-- 
+                         <button class="stdd mx-2 btn btn-outline-primary fa fa-usd" [disabled]="item.selectionStatusId !== statusSelected" 
+                         (click)="showEmploymentModal(item)" ></button>
+                    -->
+               </div>
+          </form>
+
+</div>
+
+

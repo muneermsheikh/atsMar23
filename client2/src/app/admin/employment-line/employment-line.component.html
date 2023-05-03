@@ -1,0 +1,90 @@
+<div *ngIf="emp !== undefined">
+
+     <div class="stdd col-5 mx-2 vAlignTop my-2" style="border-style: inset;">
+          <div class="lbl">Application No</div>
+          <div class="stdd w100">{{emp.applicationNo}}</div>
+          <div class="lblR">Candidate</div>
+          <div class="stdd w150">{{emp.candidateName}}</div>
+          <button class="stdd pull-right btn mx-2 fa fa-save fa-2x" (click)="update()" ></button>
+          <br>
+          <div class="lbl">Category Name</div>
+          <div class="stdd w100">{{emp.categoryName}}</div>
+          <br>
+          <div class="lbl">Order No</div>
+          <div class="stdd w100">{{emp.orderNo}}</div>
+          <br>
+          <div class="lbl">Employer</div>
+          <div class="stdd w250">{{emp.customerName}}</div>
+          <br>
+          <div class="lbl">Selected On</div>
+          <div class="stdd w100" >{{emp.selectedOn | date : 'dd-MMM-yy'}}</div>
+          <div class="lblR">Accepted On</div>
+          <input class="stdd w100"
+               type="text"
+               placeholder="Accepted On"
+               [(ngModel)]="emp.offerAcceptedOn"
+               bsDatepicker
+               [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+          >   
+          <br>
+          <div class="lbl">Weekly work hrs</div>
+          <input type="text" class="stdd w40"  [(ngModel)]="emp.weeklyHours" >
+          <br>
+          <div class="lbl">contract Period</div>
+          <input type="number" class="stdd w40" [(ngModel)]="emp.contractPeriodInMonths" >
+          <div class="stdd w50">months</div>
+          <br>
+          <div class="lbl">Annual Leave</div>
+          <input type="number" class="stdd w40"  [(ngModel)]="emp.leavePerYearInDays" >
+          <div class="lbl">days, after </div>
+          <input type="number" class="stdd w40" [(ngModel)]="emp.leaveAirfareEntitlementAfterMonths" >
+          <div class="stdd w40"> months</div>
+     </div>
+     <div class="stdd col-5 mx-2 my-2 vAlignTop" style="border-style:inset;">
+          <div class="lbl">Salary p.m.</div>
+          <input type="text" class="stdd w80"  [(ngModel)]="emp.salary">
+          <div class="stdd w80" >Currency</div>
+          <input type="text" class="stdd w40"   [(ngModel)]="emp.salaryCurrency">
+          <br>
+     
+          <div class="lbl">Charges</div>
+          <input type="number"  class="stdd w80 ml-50" [(ngModel)]="emp.charges" >
+          <br><br>
+          <div class="stdd b w150">Provision</div>
+          <div class="stdd b w125">Allowance</div>
+          <div class="stdd b w50">free</div>
+          
+          <br>
+          <div class="stdd w150">Housing Allowance</div>
+          <input type="number" class="stdd w80 mx-2 alignR" [(ngModel)]="emp.housingAllowance">
+          <input type="checkbox" 
+               class="checkbox" 
+               [checked]="emp.housingProvidedFree"
+               (change)="emp.housingProvidedFree=!emp.housingProvidedFree"
+               [(ngModel)]="emp.housingProvidedFree"
+          >
+          <br>
+          <div class="stdd w150">Food</div>
+          <input type="number" class="stdd w80 mx-2 alignR" [(ngModel)]="emp.foodAlowance">
+          <input type="checkbox" 
+               class="checkbox" 
+               [checked]="emp.foodProvidedFree"
+               (change)="emp.foodProvidedFree=!emp.foodProvidedFree"
+               [(ngModel)]="emp.foodProvidedFree">
+          <br>
+          <div class="stdd w150">Transport</div>
+          <input type="number" class="stdd w80 mx-2 alignR" [(ngModel)]="emp.transportAllowance">
+          <input type="checkbox" 
+               class="checkbox" 
+               [checked]="emp.transportProvidedFree" 
+               (change)="emp.transportProvidedFree=!emp.transportProvidedFree"
+               [(ngModel)]="emp.transportProvidedFree"
+          >
+          <br>
+          <div class="stdd w150">Other Allowance</div>
+          <input type="number"  class="stdd w80 mx-2 alignR" [(ngModel)]="emp.otherAllowance">
+               
+     </div>
+     
+</div>
+

@@ -1,0 +1,18 @@
+.stdd {
+     display: inline-block !important;
+     margin: 2px;
+     padding: 2px;
+     font-size: small;
+     vertical-align: top;
+}
+.b {font-weight: bold;}
+.vAlignTop {vertical-align: top;}
+.vAlignMiddle {vertical-align: middle;}
+.hAlignCentre {text-align: center;}
+
+.w35 {width: 35px;}
+.w50 {width: 50px;}
+.w100 {width: 100px;}
+.w150 {width: 150px;}
+.w300 {width: 300px;}
+.w400 {width: 400px;}

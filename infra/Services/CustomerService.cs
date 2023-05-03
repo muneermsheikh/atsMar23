@@ -6,10 +6,12 @@ using core.Entities;
 using core.Entities.Admin;
 using core.Entities.Identity;
 using core.Interfaces;
+using core.Specifications;
 using infra.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MimeKit;
 
 namespace infra.Services
 {
@@ -355,6 +357,15 @@ namespace infra.Services
                return cust;
           }
 
+          public async Task<CustomerBriefDto> GetCustomerBriefById(int id)
+          {
+               var cust = await _context.Customers 
+                    .Where(x => x.Id == id)
+                    .ProjectTo<CustomerBriefDto>(_mapper.ConfigurationProvider)
+                    .FirstOrDefaultAsync();
+               return cust;
+          }
+
           public Task<CustomerDto> GetCustomerByUserNameAsync(string username)
           {
                throw new System.NotImplementedException();
@@ -383,17 +394,12 @@ namespace infra.Services
                throw new System.NotImplementedException();
           }
 
-          public Task<string> GetCustomerNameFromId(int Id)
-          {
-               throw new System.NotImplementedException();
-          }
-
           public Task<ICollection<CustomerDto>> GetCustomersAsync(string userType)
           {
                throw new System.NotImplementedException();
           }
 
-          public Task<ICollection<CustomerDto>> GetCustomersPaginatedAsync(CustomerParams custParam)
+          public Task<Pagination<CustomerDto>> GetCustomersPaginatedAsync(CustomerParams custParam)
           {
                throw new System.NotImplementedException();
           }
@@ -430,7 +436,8 @@ namespace infra.Services
                          .Where(x => x.CustomerType == "associate" && x.CustomerStatus==EnumCustomerStatus.Active )
                          join o in _context.CustomerOfficials on c.Id equals o.CustomerId where o.IsValid
                          select new CustomerOfficialDto(o.Id, c.Id,  c.CustomerName, c.City, c.Country, o.Title, 
-                              o.OfficialName, o.Designation, o.Email, o.Mobile, c.Introduction, c.KnownAs)
+                              o.OfficialName, o.Designation, o.Email, o.Mobile, c.Introduction, c.KnownAs, 
+                              Convert.ToInt32(c.CustomerStatus)==300 )
                     ).ToListAsync();
                
                return offs;
@@ -442,10 +449,33 @@ namespace infra.Services
                          .Where(x => x.CustomerType == "customer"  && x.CustomerStatus==EnumCustomerStatus.Active )
                          join o in _context.CustomerOfficials on c.Id equals o.CustomerId where o.IsValid && o.Id == CustomerOfficialId
                          select new CustomerOfficialDto(o.Id, c.Id,  c.CustomerName, c.City, c.Country, o.Title, 
-                              o.OfficialName, o.Designation, o.Email, o.Mobile, c.Introduction, c.KnownAs)
+                              o.OfficialName, o.Designation, o.Email, o.Mobile, c.Introduction, c.KnownAs,
+                              Convert.ToInt32(c.CustomerStatus)==300)
                     ).FirstOrDefaultAsync();
                
                return off;
           }
+
+          public async Task<ICollection<CustomerDto>> GetCustomersBriefAsync(CustomerSpecParams custParam)
+          {
+               var briefs = _context.Customers.AsQueryable();
+
+               if(!string.IsNullOrEmpty(custParam.CustomerType)) briefs = briefs.Where(x => x.CustomerType==custParam.CustomerType);
+               if(!string.IsNullOrEmpty(custParam.CustomerCityName)) briefs = briefs.Where(x => x.City==custParam.CustomerCityName);
+               //if(custParam.IndustryId != 0) briefs = briefs.Where(x => (x.CustomerIndustries.Where(x => x.IndustryId==custParam.IndustryId)));
+
+               return (ICollection<CustomerDto>)await briefs.ProjectTo<CustomerBriefDto>(_mapper.ConfigurationProvider).ToListAsync();
+          }
+          
+          public async Task<string> GetCustomerNameFromId(int officialId)
+          {
+               var custId = await _context.CustomerOfficials.FindAsync(officialId);
+
+               var nmm = await _context.Customers.Where(x => x.Id==custId.CustomerId).Select(x => x.KnownAs).FirstOrDefaultAsync();
+
+               return nmm;
+
+          }
+          
      }
 }

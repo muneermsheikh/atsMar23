@@ -1,0 +1,54 @@
+<form [formGroup]="forwardsForm" (ngSubmit)="onSubmit()">
+	<div formArrayName="forwards">
+  
+		<div *ngFor="let forward of forwards().controls; let ti=index">
+		    <div [formGroupName]="ti"
+			  style="border: 1px solid blue; padding: 10px; width: 100%; display: inline-block; margin: 5px;">
+			  Forward Name :
+			  <input type="text" formControlName="orderNo">
+			  <input type="text" formControlName="customerName">
+			  <button (click)="removeForward(ti)">Remove</button>
+			  <button type="button" (click)="addCategory(ti)">Add Category</button>
+		
+			  <div formArrayName="categories">
+				<div *ngFor="let category of categories(ti).controls; let bi=index">
+				    <div [formGroupName]="bi" style="border: 1px solid red; padding: 10px; margin: 5px; float:left">
+		    
+					  Category Name :
+					  <input type="text" formControlName="categoryName">
+					  <input type="text" formControlName="charges">
+					  <button (click)="removeCategory(ti,bi)">Remove forward</button>
+					  <button (click)="addOfficial(ti,bi)">Add Official</button>
+			
+					  <div formArrayName="officials">
+						<div *ngFor="let category of categories(ti).controls; let si=index">
+						  <div [formGroupName]="si" style="border: 1px solid blue; padding: 2px; ">
+						    Official :
+						    <input type="text" formControlName="agentName">
+						    <input type="text" formControlName="customerOfficialId">
+						    <button (click)="removeOfficial(ti,bi,si)">Remove Official</button>
+						  </div>
+						</div>
+					  </div>
+					  
+				    </div>
+				</div>
+			  </div>
+    
+		    </div>
+		</div>
+    
+	  </div>
+	
+	  <p>
+	    <button type="button" (click)="addForward()">Add DL Forward</button>
+	  </p>
+	  <p>
+	    <button type="submit">Submit</button>
+	  </p>
+     
+</form>
+
+<div class="ml-5">
+	{{this.forwardsForm.value | json}}
+</div>

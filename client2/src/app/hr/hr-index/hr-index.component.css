@@ -1,0 +1,10 @@
+.stdd {
+     display: inline-block;
+     margin-left: 5px;
+     margin-right: 5px;
+     color: rgb(38, 0, 255);
+     background-color: rgba(127, 232, 255, 0.45);
+     width: 125px;
+     height: 6em;
+     font-size: small;
+}

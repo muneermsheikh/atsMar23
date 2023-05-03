@@ -38,7 +38,7 @@ namespace core.Entities.HR
         public int ReferredById { get; set; }
         public string ReferredByName { get; set; }
         public string CandidateStatusName { get; set; }
-        public UserProfession UserProfession {get; set;}
+        //public UserProfession UserProfession {get; set;}
         public ICollection<UserProfession> UserProfessions {get; set;}
     }
 }

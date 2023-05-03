@@ -8,7 +8,7 @@ namespace core.Dtos
 
           public CustomerOfficialDto(int officialid, int customerId, string customerName, 
             string city, string counry, string title, string officialName, string designation, 
-            string officialEmailId, string mobileNo, string aboutCompany, string knownas)
+            string officialEmailId, string mobileNo, string aboutCompany, string knownas, bool isblocked)
           {
                OfficialId = officialid;
                CustomerId = customerId;
@@ -22,6 +22,7 @@ namespace core.Dtos
                Designation = designation;
                OfficialEmailId = officialEmailId;
                MobileNo = mobileNo;
+               CustomerIsBlacklisted = isblocked;
           }
 
         public int OfficialId { get; set; }
@@ -39,6 +40,6 @@ namespace core.Dtos
         public bool Checked {get; set;}
         public bool CheckedPhone {get; set;}
         public bool CheckedMobile {get; set;}
-
+        public bool CustomerIsBlacklisted { get; set; }
     }
 }

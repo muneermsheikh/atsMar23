@@ -14,6 +14,7 @@ using core.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Office.Interop.Excel;
 
 namespace api.Controllers
 {
@@ -21,6 +22,7 @@ namespace api.Controllers
      public class CandidateController : BaseApiController
      {
           //private readonly IUnitOfWork _unitOfWork;
+          static DateTime TimeLast;
           private readonly IMapper _mapper;
           private readonly UserManager<AppUser> _userManager;
           private readonly SignInManager<AppUser> _signInManager;
@@ -53,6 +55,7 @@ namespace api.Controllers
                _empService = empService;
                _host = host;
                _userGetAndUpdateService = userGetAndUpdateService;
+               CandidateController.TimeLast=new DateTime();
           }
 
      
@@ -144,7 +147,7 @@ namespace api.Controllers
           }
           */
 
-          [Authorize(Roles ="Admin, HRManager, HRSupervisor, HRExecutive")]
+          [Authorize]    //(Roles ="Admin, HRManager, HRSupervisor, HRExecutive")]
           [HttpPost("attachment/{candidateAppUserId}")]
           public async Task<ActionResult<bool>> UploadUserAttachments(ICollection<IFormFile> files, int candidateAppUserId)
           {
@@ -207,7 +210,7 @@ namespace api.Controllers
 
           }
 
-           [Authorize(Roles ="Admin, HRManager, HRSupervisor, HRExecutive, Candidate")]
+          [Authorize]    //(Roles ="Admin, HRManager, HRSupervisor, HRExecutive, Candidate")]
           [HttpDelete("deleteUploadedFile")]
           public async Task<ActionResult<bool>> DeleteUploadedFile(FileUpload fileupload)
           {
@@ -284,7 +287,7 @@ namespace api.Controllers
                return errorString;
           }
 
-           [Authorize(Roles ="Admin, HRManager, HRSupervisor, HRExecutive, HRTrainee")]
+          [Authorize]    //(Roles ="Admin, HRManager, HRSupervisor, HRExecutive, HRTrainee")]
           [HttpPut("edituserprof")]
           public async Task<ActionResult<UserAndProfessions>> EditUserProfessions(UserAndProfessions userProfessions)
           {
@@ -295,9 +298,9 @@ namespace api.Controllers
                return Ok(new UserAndProfessions{CandidateId = userProfessions.CandidateId, CandidateProfessions = profs});
           }
      
-          [Authorize(Roles ="Admin, HRManager, HRSupervisor, HRTrainee")]
+          [Authorize]    //(Roles ="Admin, HRManager, HRSupervisor, HRTrainee")]
           [HttpPut]
-          public async Task<ActionResult<Candidate>> EditCandidate(Candidate candidate)
+          public async Task<ActionResult<Candidate>> EditCandidate([FromBody]Candidate candidate)
           {
                var cand = await _userGetAndUpdateService.UpdateCandidateAsync(candidate);
                if (cand == null) return BadRequest(new ApiResponse(404, "Failed to update the candidate"));
@@ -340,10 +343,11 @@ namespace api.Controllers
 
                try
                {
-                    var files = Request.Form.Files;
                     var modelData = JsonSerializer.Deserialize<Candidate>(Request.Form["data"],  
                          new JsonSerializerOptions {
                          PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+                    
+                    //var modelData = Request.Form["data"];
                          
                     var candidateObjectDto = await _userGetAndUpdateService.UpdateCandidateAsync(modelData);
                     var candidateObject = candidateObjectDto.Candidate;
@@ -358,7 +362,7 @@ namespace api.Controllers
                     pathToSave = pathToSave.Replace(@"\\\\", @"\\");          
 
                     //var attachmentTypes = modelData.UserAttachments;
-
+                    var files = Request.Form.Files;
                     foreach (var file in files)
                     {
                          if(file.Length == 0) continue;

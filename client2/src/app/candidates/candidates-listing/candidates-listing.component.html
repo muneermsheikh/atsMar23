@@ -1,0 +1,80 @@
+<div class="stdd mt-5 col-2">
+          
+     <!-- <div *ngIf="candidateCities && professions && agents "> -->
+          <div class="stdd w50 b" >Sort</div>
+          <select name="" id="" class="custom-select mb-2" (change)="onSortSelected($event)">
+               <option *ngFor="let sort of sortOptions"
+                    [value] = "sort.value"
+               >{{sort.name}}</option>
+          </select>
+          <div class="stdd w50 b">City</div>
+          <select name="" id="" class="custom-select mb-2"  (change)="onCitySelected($event)">
+               <option *ngFor="let city of candidateCities"
+                    [value] = "city.city"
+                    [class.active]="city.city === cvParams.city"
+               >{{city.city}}</option>
+          </select>
+          <div class="stdd b w50" >Agents</div>
+          <select name="" id="" class="custom-select mb-2" (change)="onAgentSelected($event)">
+               <option *ngFor="let agent of agents"
+                    [value] = "agent.id"
+                    [class.active]="agent.id === cvParams.agentId"
+               >{{agent.customerName}}</option>
+          </select>
+
+          <div class="stdd b w50">Professions</div>
+          <select name="" id="" class="custom-select mb-2" (change)="onCategorySelected($event)" >
+               <option *ngFor="let cat of professions"
+                    [value] = "cat.id"
+                    [class.active]="cat.id === cvParams.professionId"
+                    (click)="onCategorySelected(cat.id)"
+               >{{cat.name}}</option>
+          </select>
+     </div>
+
+<!-- </div> -->
+
+<div class="stdd mt-5 col-10">
+     <div class="d-flex justify-contents-between align-items-center">
+          <app-paging-header 
+               [totalCount]="totalCount" 
+               [pageNumber]="cvParams.pageNumber" 
+               [pageSize]="cvParams.pageSize"
+          ></app-paging-header>
+          <app-paging 
+               [pageSize]="cvParams.pageSize" 
+               [totalCount]="totalCount" 
+               [pageNumber]="cvParams.pageNumber" 
+               (pageChanged)="onPageChanged($event)"  
+          > </app-paging>
+
+          <div class="ml-5 d-flex justify-contents-between align-items-center">
+               <div class="form-inline mt-2" *ngIf="cvs">
+                    <input (keyup.enter)="onSearch()" type="text" title="enter name or app nos, separated by commma" class="form-control ml-5 w300" #search placeholder="Search">
+                    <button type="button" (click)="onSearch()" class="btn btn-outline-primary mx-1 my-1" style="font-size: small;">Search</button>
+                    <button type="button" (click)="onReset()" class="btn btn-outline-success mx-1 my-1" style="font-size: small;">Reset</button>
+                    <button type="button" class="btn btn-outline-success ml-2 my-1 fa fa-plus" routerLink="/candidates/add"></button>
+               </div>
+          </div>
+     </div>
+     <div class="stdd b">
+          <div class="stddM w15"></div>
+          <div class="stddM w45">Appl No</div>
+          <div class="stddM w180 mx-2">Candidate Name</div>
+          <div class="stddM w100 mx-1">City</div>
+          <div class="stddM w200 mx-1">Agent</div>
+          <div class="stddM w200 mx-1">Professions</div>
+     </div>
+     <div class="row" *ngFor="let cv of cvs" >
+          <app-candidate-item [cv]="cv" 
+               (msgEvent)="showDocumentViewerEvent($event)" 
+               (downloadEvent)="downloadFileEvent($event)" 
+               (cvAssessEvent)="cvAssessEvent($event)"
+               (cvCheckedEvent)="cvCheckedEvent($event)"
+               (cvEditEvent)="cvEditClicked($event)"
+          ></app-candidate-item>
+     </div>
+     <div class="d-flex justify-content-between align-items-center mt-2" *ngIf="totalCount > 0">
+     </div>
+
+</div>

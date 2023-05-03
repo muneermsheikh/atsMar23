@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using core.Entities.Orders;
-
 namespace core.Dtos
 {
-    public class OrderBriefDto
+     public class OrderBriefDto
     {
         public int Id { get; set; }
         public int OrderNo { get; set; }

@@ -409,7 +409,7 @@ namespace infra.Services
                          loggedInEmployeeId=u.loggedInEmployeeId,
                          Username = u.UserName,
                          DisplayName = u.DisplayName,
-                         Roles = u.UserRoles.Select(r => r.Role.Name).ToList()
+                         //Roles = u.UserRoles.Select(r => r.Role.Name).ToList()
                     })
                 .AsQueryable();
 

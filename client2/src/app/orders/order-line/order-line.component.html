@@ -1,0 +1,54 @@
+<div *ngIf="order===null">
+     No Order data available
+</div>
+<div *ngIf="order!==null && order !== undefined">
+     <div style="display: inline-block; width: max-content;" >
+          <div class="stdd w70" title="click to View this order"  
+               (click)="viewClicked()"
+          >{{order.orderNo}}</div>
+          
+          <div class="stdd w100" >{{order.orderDate | date: 'dd-MMM-yy'}}</div>
+
+          <div *ngIf="order.status != 'concluded' "
+               class="stdd w200" title="this order cannot be edited as it is concluded"  
+               (click)="editClicked()" 
+          >
+               {{order.customerName}}
+          </div>
+          
+          <div class="stdd w100" 
+          >
+               {{order.cityOfWorking}}
+          </div>
+          
+          <div class="stdd w150">{{order.contractReviewStatusId | reviewStatuName }}</div>
+          
+          <div class="stdd w100" title="click for technical & commercial review of this order" 
+               (click)="contractReviewClicked()"     
+          >
+               {{order.reviewStatus===null ? 'Not Reviewed' : order.reviewedOn | date: 'dd-MMM-yy'}}
+          </div>
+              <!-- <div *ngIf="order.forwardedToHRDeptOn?.getFullYear < 2000 || order.forwardedToHRDeptOn===null" title="forward this DL to HR Department"
+                    (click)="dlForwardToHRClicked()" > Not Forwarded
+               </div>
+          -->
+               <div class="stdd w100" title="VIEW this Order forwarded to HR Department"
+                    (click)="dlForwardToHRClicked()"> {{order.forwardedToHRDeptOn | date: 'dd-MMM-yy'}}
+               </div>
+
+          <div class="stdd w150" title="click to forward this order to associates"
+               (click)="dlForwardToAssociatesClicked()"
+               title="click to forward this order to associates (to be selected)" >
+               {{order.status}}
+          </div>
+          
+          <div style="display: inline-block; width: 250px;"> 
+               <button class="stdd fa fa-pencil" title="edit this DL" type="button"
+               
+               (click)="editClicked()"
+               ></button>
+               <button class="stdd fa fa-trash red" title="delete the DL" type="button" (click)="deleteClicked()"></button>
+          </div>
+     </div>
+</div>
+

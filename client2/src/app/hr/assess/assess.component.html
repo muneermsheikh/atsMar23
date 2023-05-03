@@ -1,0 +1,9 @@
+<div class="container">
+     <div *ngFor="let item of order!.orderItems">
+          <div class="stdd w35">{{item.srNo}}</div>
+          <div class="stdd w150">{{item.categoryName}}</div>
+          <div class="stdd w35">{{item.quantity}}</div>
+          <button class="stdd btn fa fa-question" (click)="displayQ(item.id)">questions</button>
+          <app-assess-q></app-assess-q>
+     </div>
+</div>

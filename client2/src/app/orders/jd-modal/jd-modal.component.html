@@ -1,0 +1,58 @@
+
+<div *ngIf="jd !== null && jd !== undefined" class="mx-2 my-1">
+     <div class="mx-2">
+          <div>
+               <strong>Customer: </strong> {{jd.customerName}}
+          </div>
+          <div>
+               <strong>Order No.:</strong> {{jd.orderNo}} dt {{jd.orderDate | date}}
+          </div>
+          <div>
+               <strong>Category: </strong>{{jd.categoryName}}
+          </div>
+     
+     </div>
+     <div class="modal-body">
+          <!-- <div>
+               <input type="text" id="orderitemid" name="orderitemid" class="form-text-input stdd w50" style="visibility: hidden;" [(ngModel)]="orderItemId" >
+               <input type="text" id="id" name="id" class="form-text-input stdd w50" style="visibility: hidden;" [(ngModel)]="id" >
+          </div>
+     -->
+          <form #jdForm="ngForm" id="jdForm">
+              
+               <strong>Qualification</strong>
+               <input class="form-text-input" 
+                    id="qualificationDesired" name = "qualificationDesired" 
+                    [(ngModel)]="jd.qualificationDesired" type="text" style="width: 400px;" > 
+               
+               <br><label style="font-weight: bold; margin-right: 2px;">Exp (in yrs):</label>
+               <label style="font-weight: bold; margin-right: 2px;" for="expDesiredMin">From: </label>
+                    <input class="form-text-input stdd w50" type="text" id="expDesiredMin" name="expDesiredMin" [(ngModel)]="jd.expDesiredMin">
+               <label style="font-weight: bold; margin-left: 2px;" for="expDesiredMax">to: </label> 
+                    <input class="form-text-input stdd w50" type="text" id="expDesiredMax" name="expDesiredMax" [(ngModel)]="jd.expDesiredMax">
+               
+               <br><label style="font-weight: bold; margin-right: 2px;">Age (in yrs):</label>
+               <label style="font-weight: bold; margin-right: 2px;" for="minAge">From: </label>
+                    <input class="form-text-input stdd w50" type="text" id="minAge" name="minAge" [(ngModel)]="jd.minAge">
+               <label style="font-weight: bold; margin-left: 2px;" for="maxAge">to: </label> 
+                    <input class="form-text-input stdd w50" type="text" id="maxAge" name="maxAge" [(ngModel)]="jd.maxAge">
+     
+               <br><strong>Job Description</strong>
+               <br><textarea type="text" 
+                    id="jobDescInBrief"
+                    name="jobDescInBrief"
+                    class="form-text-input"
+                    [(ngModel)]="jd.jobDescInBrief"     
+                    cols="60" rows="8"
+               > </textarea>
+     
+          
+               </form>
+     
+     </div>
+     <div class="modal-footer">
+          <button type="button" class="btn btn-success fa fa-save" (click)="confirm()"></button>
+          <button type="button" class="btn btn-secondary btn-danger fa fa-close" (click)="decline()"></button>
+     </div>
+     
+</div>
