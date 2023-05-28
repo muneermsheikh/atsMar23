@@ -1,55 +1,71 @@
-<div >
 
-	<button type="button" class="btn btn-success" (click)="updateAgentsSelected()">Submit</button>
- 
-     <div class="stdd headerTitle w100" style="margin-left: 3px;">Official Name</div>
-     <div class="stdd headerTitle mx-1 w200">Customer Name</div>
-     <div class="stdd headerTitle mx-1 w75">City</div>
-     <div class="stdd headerTitle w150">Email</div>
-     <div class="stdd headerTitle mx-1 w100">Phone No</div>
-     <div class="stdd headerTitle w100">WhatsApp No</div>
+
+<br><br>
+<div class="b">Requirements forwarded to Associates</div>
+<div *ngIf="forwards === undefined" >
+	Undefined Order forwards
+</div>
+
+<div *ngIf="forwards !== undefined" class="ml30 mt20" >
+	<div class="stdd vAlignMiddle w150"><strong>Order No:</strong>{{forwards.orderNo}}</div>
+	<div class="stdd vAlignMiddle w150"><strong>dated:</strong>{{forwards.orderDate | date: 'dd-MMM-yy'}}</div>
+	<div class="stdd vAlignMiddle w300"><strong>Customer:</strong>{{forwards.customerName}}</div>
+	<br>
+	<div class="stdd b vAlignMiddle w150">Date forwarded</div>
+	<div class="stdd b vAlignMiddle w400">Associate Name</div>
+	<div class="stdd b vAlignMiddle mx-1 w200" style="margin-left: 3px;">Official Name</div>
+	<div class="stdd b vAlignMiddle w200">Email</div>
+    <div class="stdd b vAlignMiddle mx-1 w150">Phone No</div>
+    <div class="stdd b vAlignMiddle w150">WhatsApp No</div>
+	<button type="button" class="stdd w35 vAlignMiddle btn btn-success fa fa-check" (click)="updateAgentsSelected()"></button>
+	<button type="button" class="stdd w35 vAlignMiddle btn mx-1 btn-secondary fa fa-close" (click)="close()"></button>
      <hr  >
      <form #agentsForm="ngForm" id="agentsForm">
-	   <div class="form-check stdd" *ngFor="let cat of forwardedCategories">
-		<div class="stdd  mx-1 w200">{{cat.orderItemId | categoryRefCode}}</div>
-		
-		<div class="stdd w100" style="padding-left:0px;">{{cat.categoryName}}</div>
-		 <br>
-		<div *ngFor="let off of cat.dlForwardCategoryOfficials">
-			<div>entered second loop: {{off.emailIdForwardedTo}}</div>
-			<span class="form-check stdd " >
-				<input type="checkbox" 
-				    class="form-check-input"
-				    [checked]="off.checked"
-				    (change)="off.checked = !off.checked" 
-				>
-			</span>
+	   	<div *ngIf="forwards === undefined">
+			No Assciates defined for the Order Id selected
+	   	</div>
 
-			<span class="stdd form-check-label mx-1 w150" >{{off.emailIdForwardedTo}}</span>
+		<div *ngFor="let cat of forwards.forwardedCategories">
+			<div class="stdd w400 textUL"><strong>Category Code: </strong>{{cat.categoryRefAndName}}</div>
+			<div class="stdd w150 textUL"><strong>Charges:</strong>{{cat.charges}}</div>
+			<br>
+			<div *ngFor="let off of cat.forwardedOfficials">
+				<span class="form-check stdd " >
+					<input type="checkbox" 
+						class="form-check-input"
+						[checked]="off.checked"
+						(change)="off.checked = !off.checked" 
+					>
+				</span>
+				<div class="stdd w150">{{off.dateTimeForwarded | date: 'dd-MMM-yy hh:mm' }}</div>
+				<div class="stdd w400">{{off.agentName}}</div>
+				<div class="stdd w200">{{off.officialName}}</div>
+				<span class="stdd form-check-label mx-1 w200" >{{off.emailIdForwardedTo}}</span>
+				<!--
+				<span class="stdd form-check-label w35" >
+					<input type="checkbox" 
+					class="form-check-input"
+					[checked]="off.checkedPhone"
+					(change)="off.checkedPhone = !off.checkedPhone" 
+					>
+				</span>
+			-->
+				<span class="stdd form-check-label w150 mx-1" >{{off.phoneNoForwardedTo}}</span>
 			<!--
-			<span class="stdd form-check-label w35" >
-			    <input type="checkbox" 
-				  class="form-check-input"
-				  [checked]="off.checkedPhone"
-				  (change)="off.checkedPhone = !off.checkedPhone" 
-			    >
-			</span>
-		-->
-			<span class="stdd form-check-label w100 mx-1" >{{off.phoneNoForwardedTo}}</span>
-		<!--
-			<span class="form-check stdd w35" >
-			    <input type="checkbox" 
-				class="form-check-input"
-				[checked]="off.checkedMobile"
-				(change)="off.checkedMobile = !off.checkedMobile" 
-			    >    
-			</span>
-		-->
-			<span class="stdd w100 mx-1 ">{{off.whatsAppNoForwardedTo}}</span>
-		  </div> 
-
+				<span class="form-check stdd w35" >
+					<input type="checkbox" 
+					class="form-check-input"
+					[checked]="off.checkedMobile"
+					(change)="off.checkedMobile = !off.checkedMobile" 
+					>    
+				</span>
+			-->
+				<span class="stdd w150 mx-1 ">{{off.whatsAppNoForwardedTo}}</span>
+			</div> 
+			<br>
 		</div>
-		 
+
+	 
      </form>
 
 </div>

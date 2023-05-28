@@ -6,6 +6,7 @@ using core.Interfaces;
 using core.Dtos;
 using infra.Data;
 using Microsoft.EntityFrameworkCore;
+using core.Dtos.Admin;
 
 namespace infra.Services
 {
@@ -153,11 +154,72 @@ namespace infra.Services
         }
 
         
-        public async Task<ICollection<DLForwardCategory>> OrderItemForwardedToStats (int OrderId)
+        public async Task<DLForwardedDateDto> OrderItemForwardedToStats (int OrderId)
         {
-           var qry  = await _context.DLForwardCategories.Where(x => x.OrderId == OrderId)
-                .Include(x => x.DlForwardCategoryOfficials).ToListAsync();
-            return qry;
+            var order =  await (from o in _context.Orders
+                join c in _context.Customers on o.CustomerId equals c.Id 
+                where o.Id ==OrderId 
+                select new {o.Id, o.OrderNo, o.OrderDate, c.CustomerName})
+                .FirstOrDefaultAsync();
+            
+            var forwardedDto = new DLForwardedDateDto();
+            forwardedDto.OrderId=OrderId;
+            forwardedDto.OrderNo=order.OrderNo;
+            forwardedDto.CustomerName = order.CustomerName;
+
+            var orderitems = await _context.OrderItems
+                .Where(x => x.OrderId==OrderId)
+                .Select(x => new {x.Id, x.SrNo, x.Charges})
+                .ToListAsync();
+            var orderitemids = orderitems.Select(x => x.Id).ToList();
+
+            var officialIds  = await _context.DLForwardCategoryOfficials
+                .Where(x => orderitemids.Contains(x.OrderItemId))
+                .Select(x => x.CustomerOfficialId).Distinct().ToListAsync();
+
+            var officialIdAndNames = await _context.CustomerOfficials.Where(x => officialIds.Contains(x.Id))
+                .Select(x => new {x.Id, x.OfficialName, x.Customer.CustomerName})
+                .ToListAsync();
+
+            var categories= await _context.DLForwardCategories  
+                .Where(x => x.OrderId == OrderId)
+                .Include(x => x.DlForwardCategoryOfficials)
+                .ToListAsync();
+
+            var officialDto = new List<ForwardedOfficialDto>();
+            var FwdCategoriesDto = new List<ForwardedCategoryDto>();
+            foreach(var cat in categories)
+            {
+                var orderitem = orderitems.Where(x => x.Id==cat.OrderItemId).FirstOrDefault();
+                
+                var FwdCategoryDto = new ForwardedCategoryDto {
+                    Id = cat.Id,
+                    OrderItemId = cat.OrderItemId,
+                    CategoryRefAndName = order.OrderNo + "-" + orderitem.SrNo + "-" + cat.CategoryName,
+                    Charges = orderitem.Charges
+                };
+                var offs = new List<ForwardedOfficialDto>();
+                foreach(var official in cat.DlForwardCategoryOfficials) {
+                    var off=new ForwardedOfficialDto{
+                        ForwardCategoryId = cat.Id,
+                        OfficialName=officialIdAndNames.Where(x => x.Id==official.CustomerOfficialId).Select(x => x.OfficialName).FirstOrDefault(),
+                        AgentName=officialIdAndNames.Where(x => x.Id==official.CustomerOfficialId).Select(x => x.CustomerName).FirstOrDefault(),
+                        DateTimeForwarded=official.DateTimeForwarded,
+                        EmailIdForwardedTo = official.EmailIdForwardedTo,
+                        PhoneNoForwardedTo = official.PhoneNoForwardedTo,
+                        WhatsAppNoForwardedTo = official.WhatsAppNoForwardedTo,
+                        LoggedInEmployeeId = official.LoggedInEmployeeId
+                    };
+                    offs.Add(off);
+                }
+
+                FwdCategoryDto.ForwardedOfficials = offs;
+                FwdCategoriesDto.Add(FwdCategoryDto);
+            }
+            
+            forwardedDto.ForwardedCategories=FwdCategoriesDto;
+
+            return forwardedDto;
         }
 
         

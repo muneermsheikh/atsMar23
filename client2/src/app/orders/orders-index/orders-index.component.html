@@ -1,4 +1,4 @@
-<div class="row" >
+<div class="row mt-5" >
      <div class="col-2" >
           <ng-container>
                <div class="stdd b w50 blue">Sort</div>
@@ -40,7 +40,6 @@
                          <button (click)="onSearch()" class="btn btn-outline-primary my-1">Search</button>
                          <button (click)="onReset()" class="btn btn-outline-success mx-2 my-1">Reset</button>
                          <button class="btn btn-outline-success ml-2 my-1 fa fa-plus" routerLink="/orders/add" ></button>
-                         <button class="btn btn-outline mx-2 my-1" routerLink="/orders/dlforward">Forward To Agents</button>
                     </div>
                </div>
           </div>
@@ -61,7 +60,8 @@
                     (editEvent)="editOrder($event)"
                     (contractReviewEvent)="contractReviewOrder($event)"
                     (dlForwardedToHREvent)="dlForwardedToHRDept($event)"
-                    (dlFwdToAssciatesEvent)="dlForwardToAssociates($event)"
+                    (dlFwdToAssociatesEvent)="dlForwardToAssociates($event)"
+                    (dlForwardedToAssociatesEvent)="dlForwardedToAssociates($event)"
                     (deleteEvent)="deleteOrder($event)"
                     (dlFwdToHREvent)="dlForwardToHRDept($event)"
                ></app-order-line>

@@ -2,12 +2,13 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { AssessmentQBank, IAssessmentQBank, IAssessmentQBankItem } from 'src/app/shared/models/admin/assessmentQBank';
+import { IAssessmentQBank, IAssessmentQBankItem } from 'src/app/shared/models/admin/assessmentQBank';
 import { IUser } from 'src/app/shared/models/admin/user';
 import { IProfession } from 'src/app/shared/models/masters/profession';
 import { qBankParams } from 'src/app/shared/params/admin/qBankParams';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { QbankService } from '../qbank.service';
+
 
 @Component({
   selector: 'app-assessment-qbank',
@@ -17,13 +18,13 @@ import { QbankService } from '../qbank.service';
 export class AssessmentQbankComponent implements OnInit {
 
   @ViewChild('search', {static: false}) searchTerm: ElementRef | undefined;
-  qs: IAssessmentQBank[]=[];
+  qsForSelectedCategory: IAssessmentQBank[]=[];
   q: IAssessmentQBank|undefined;
   categories: IProfession[]=[];
   user?: IUser;
   
   qBankParams = new qBankParams();
-  totalCount: number=0;
+  totalMark: number=0;
   assessmentParameters: string[]=[];
   existingQBankCats: IProfession[]=[];
   selectedCategoryId?: IProfession
@@ -39,16 +40,16 @@ export class AssessmentQbankComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(data => { 
-      this.qs = data.qs,
+      this.qsForSelectedCategory = data.qsForSelectedCategory,
       this.categories = data.categories
     })
-
+    console.log('categories:', this.qsForSelectedCategory);
     this.createForm();  
   }
 
   createForm() {
     this.form = this.fb.group({
-      id: [null],
+      id: 0,
       categoryId: 0,
       categoryName: '',
       assessmentQBankItems: this.fb.array([])
@@ -107,28 +108,45 @@ export class AssessmentQbankComponent implements OnInit {
   }
 
   update(){
-    this.service.update(this.form.value).subscribe((response:any) => {
-      if (response) {
-        this.toastr.success('updated the Assessment Question');
-      } else {
-        this.toastr.warning('failed to update the assessment Question');
-      }
-  }, (error: any) => {
-    this.toastr.error('failed to udpate', error);
-  })
+
+    if(this.q?.id===0 || this.q?.id===null || this.q?.id===undefined) {
+      console.log('inserting..');
+      this.service.insert(this.form.value).subscribe((response: any) => {
+        if(response) {
+          this.toastr.success('the assessment Qustions inserted');
+        } else {
+          this.toastr.warning('failed to insert the Assessment Questions');
+        }
+      }, error => this.toastr.error('failed to insert the assessmet questions', error )
+      )
+    } else {
+      console.log('updating');
+        this.service.update(this.form.value).subscribe((response:any) => {
+          if (response) {
+            this.toastr.success('updated the Assessment Question');
+          } else {
+            this.toastr.warning('failed to update the assessment Question');
+          }
+      }, (error: any) => {
+        this.toastr.error('failed to udpate', error);
+      })
+    }
 }
 
-  assessmentQBankItems() : FormArray {
+  get assessmentQBankItems() : FormArray {
     return this.form.get('assessmentQBankItems') as FormArray;
   }
 
+  reCalculate(){
+    this.totalMark =  this.assessmentQBankItems.value.map((x:any) => x.maxPoints).reduce((a:number, b: number) => a + b,0);
+  }
 
   clearItemsArray() {
     const control = <FormArray>this.form.controls['assessmentQBankItems'];
     for(let i = control.length-1; i >= 0; i--) {
       control.removeAt(i)
   }
-
+  this.reCalculate();
   }
   editQBank(qb: IAssessmentQBank|undefined) {
     console.log('in editQBank, qb is: ', qb);
@@ -145,6 +163,8 @@ export class AssessmentQbankComponent implements OnInit {
     if (qb.assessmentQBankItems !== null) {
         this.form.setControl('assessmentQBankItems', this.setExistingItems(qb.assessmentQBankItems));
     }
+
+    this.reCalculate();
   }
 
   setExistingItems(items: IAssessmentQBankItem[]): FormArray {
@@ -176,21 +196,22 @@ export class AssessmentQbankComponent implements OnInit {
   }
 
   addAssessmentQBankItem() {
-    this.assessmentQBankItems().push(this.newAssessmentQBankItem());
+    this.assessmentQBankItems.push(this.newAssessmentQBankItem());
   }
 
   removeAssessmentQBankItem(qItemIndex: number) {
-    this.assessmentQBankItems().removeAt(qItemIndex);
-    this.assessmentQBankItems().markAsDirty();
-    this.assessmentQBankItems().markAsTouched();
+    this.assessmentQBankItems.removeAt(qItemIndex);
+    this.assessmentQBankItems.markAsDirty();
+    this.assessmentQBankItems.markAsTouched();
+    this.reCalculate();
   }
 
   loadQBank(){
-    this.form.patchValue(this.qs);
-    this.qs.forEach(q => {
+    this.form.patchValue(this.qsForSelectedCategory);
+    this.qsForSelectedCategory.forEach(q => {
       if(q.assessmentQBankItems !== null) {
           for(const item of q.assessmentQBankItems) {
-            this.assessmentQBankItems().push(new FormControl(q));
+            this.assessmentQBankItems.push(new FormControl(q));
           }
       }
     })
@@ -202,6 +223,7 @@ export class AssessmentQbankComponent implements OnInit {
 
   onCategoryChange(category: string) {
     console.log(category);
+    this.showQ();
   }
 
   /*

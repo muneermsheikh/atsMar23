@@ -1,8 +1,10 @@
-<div class="container">
+<br>
+<div class="container" style="margin-top: 20px;">
      <div *ngIf="!stddqs">
           No standard assessment questions on record
      </div>
-     <button type="button" class="btn btn-primary d-flex float-right fa fa-window-close" routerLink="./hr" ></button>
+     <button type="button" class="btn btn-primary d-flex float-right fa fa-window-close" (click)="close()" ></button>
+     <div class="b">Standard Assessment Questions</div>
      <label class="lbl mx-2 w75">Q. No.</label>
      <label class="lbl mx-2 w150">Parameter</label>
      <label class="lbl mx-2 w400">Question</label>
@@ -16,6 +18,7 @@
                <div class="stdd mx-2 w75">{{q.maxPoints}}</div>
                <div class="stdd m-2 w75 fa fa-trash alignR red" (click)="deletestddq(q.id)"></div>
           </div>
+          <div style="margin-left: 625px;" class="stdd w75 alignR"><strong>total: </strong>{{totalPoints}}</div>
      </div>
      
 </div>

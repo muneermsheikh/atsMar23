@@ -24,7 +24,7 @@ namespace infra.Services
                          CustomerName = c.CustomerName, OrderDate = o.OrderDate,
                          CategoryId = i.CategoryId, 
                          Quantity = i.Quantity,
-                         CategoryRefAndName = o.OrderNo + "-" + i.SrNo + cat.Name,
+                         CategoryRefAndName = o.OrderNo + "-" + i.SrNo + "-" + cat.Name,
                     }).AsQueryable();
 
                var qry = await q.ToListAsync();
@@ -32,5 +32,20 @@ namespace infra.Services
                return qry;
 
 		}
-	}
+
+        public async Task<string> GetOrderRefCode(int orderitemid)
+        {
+               var  q = await (from i in _context.OrderItems where i.Id == orderitemid 
+               join o in _context.Orders on i.OrderId equals o.Id
+               join c in _context.Customers on o.CustomerId equals c.Id
+               join cat in _context.Categories on i.CategoryId equals cat.Id
+               select cat.Name
+               ).FirstOrDefaultAsync();
+
+               if(string.IsNullOrEmpty(q)) return "undefined";
+
+               return q;
+
+        }
+    }
 }

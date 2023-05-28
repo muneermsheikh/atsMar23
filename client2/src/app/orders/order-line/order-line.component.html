@@ -21,7 +21,11 @@
                {{order.cityOfWorking}}
           </div>
           
-          <div class="stdd w150">{{order.contractReviewStatusId | reviewStatuName }}</div>
+          <div class="stdd w150"
+               [ngClass]="order.contractReviewStatusId===4?'green':order.contractReviewStatusId===2?'blue': 'red'" 
+          >
+               {{order.contractReviewStatusId | reviewStatuName }}
+          </div>
           
           <div class="stdd w100" title="click for technical & commercial review of this order" 
                (click)="contractReviewClicked()"     
@@ -42,11 +46,23 @@
                {{order.status}}
           </div>
           
-          <div style="display: inline-block; width: 250px;"> 
-               <button class="stdd fa fa-pencil" title="edit this DL" type="button"
+          <div class="stdd w150" 
                
-               (click)="editClicked()"
+               title="click to forward this order to associates (to be selected)" >
+               {{order.status}}
+          </div>
+
+          <div style="display: inline-block; width: 250px;"> 
+               <button class="stdd w15 fa fa-pencil" title="edit this DL" type="button"
+                    (click)="editClicked()"
+                    
                ></button>
+               <button class="stdd w15 fa fa-arrow-right" title="edit this DL" type="button"
+                    title="ALREADY forwarded to associates"
+                    (click)="dlForwardedToAssociatesClicked()"
+               ></button>
+
+               <!-- <button class="stdd w15 fa fa-step-forward" title="display Forward details for this DL" type="button" (click)="dlForwardToAssociatesClicked()"></button> -->
                <button class="stdd fa fa-trash red" title="delete the DL" type="button" (click)="deleteClicked()"></button>
           </div>
      </div>

@@ -16,7 +16,7 @@ namespace api.Controllers
                _customerReviewService = customerReviewService;
           }
 
-          [Authorize(Roles="Admin, DocumentControllerAdmin, DocumentControllerProcess, HRManager, HRSupervisor, HRExecutive")]
+          [Authorize]    //(Roles="Admin, DocumentControllerAdmin, DocumentControllerProcess, HRManager, HRSupervisor, HRExecutive")]
           [HttpGet("{customerId}")]
           public async Task<CustomerReview> GetCustomerReview (int customerId)
           {
@@ -25,7 +25,7 @@ namespace api.Controllers
                return rvw;
           } 
           
-          [Authorize(Roles="Admin, DocumentControllerAdmin, DocumentControllerProcess, HRManager, HRSupervisor, HRExecutive")]
+          [Authorize]    //(Roles="Admin, DocumentControllerAdmin, DocumentControllerProcess, HRManager, HRSupervisor, HRExecutive")]
           [HttpGet("customerReviewData")]
           public async Task<ICollection<CustomerReviewData>> GetCustomerReviewStatusData()
           {
@@ -33,7 +33,7 @@ namespace api.Controllers
                return data;
           }
           
-          [Authorize(Roles="Admin, DocumentControllerAdmin, DocumentControllerProcess, HRManager")]
+          [Authorize]    //(Roles="Admin, DocumentControllerAdmin, DocumentControllerProcess, HRManager")]
           [HttpPut]
           public async Task<bool> UpdateCustomerReview(CustomerReview customerReview)
           {

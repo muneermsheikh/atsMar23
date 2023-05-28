@@ -29,7 +29,8 @@ import { OrdersRoutingModule } from './orders-routing.module';
     ContractReviewItemModalComponent,
     RemunerationModalComponent,
     ChooseAgentsModalComponent,
-    ForwardsComponent
+    ForwardsComponent,
+    
   ],
   imports: [
     CommonModule,

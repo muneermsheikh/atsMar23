@@ -1,11 +1,13 @@
 <div class="modal-header">
-
-     <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Cancel</button>
-     <button type="button" class="btn btn-success" (click)="updateAgentsSelected()">Submit</button>
-
-     <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
-       <span aria-hidden="true">&times;</span>
-     </button>
+    <div class="stdd" style="font-weight: bold">{{title}}</div>
+    <div class="pull-right">
+        <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="updateAgentsSelected()">Submit</button>
+   
+        <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     
 </div>
 

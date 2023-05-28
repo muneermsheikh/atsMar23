@@ -10,15 +10,17 @@ export class CategoryRefCodePipe implements PipeTransform {
 
   transform(value: number) {
     
-    //console.log('entered pipe');
+    console.log('entered pipe- orderitemid:', value);
     
     if(value===0 || value===null || value===undefined ) {
       return 'undefined';
     }
 
-    this.service.getOrderItem(value).subscribe(response => {
-      return response.categoryRef;
+    this.service.getOrderItemRefCode(value).subscribe(response => {
+      console.log('categorrefcodeipe response', response);
+      return response;
     }, error => {
+      console.log('error in value-', value, error);
       return 'undefined';
     })
     

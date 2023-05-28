@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, NgForm, ValidatorFn, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, NgForm, ValidatorFn, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { IJDDto } from 'src/app/shared/dtos/admin/jdDto';
 import { IRemunerationDto } from 'src/app/shared/dtos/admin/remunerationDto';
@@ -33,6 +33,7 @@ import { dLForwardToAgent } from 'src/app/shared/models/admin/dlforwardToAgent';
 import { IDLForwardCategory, dLForwardCategory } from 'src/app/shared/models/admin/dlForwardCategory';
 import { dLForwardCategoryOfficial } from 'src/app/shared/models/admin/dlForwardCategoryOfficial';
 import { IOrderAssignmentDto, orderAssignmentDto } from 'src/app/shared/dtos/admin/orderAssignmentDto';
+import { IDLForwardToAgent } from 'src/app/shared/models/admin/dlforwardToAgent';
 
 @Component({
   selector: 'app-order-edit',
@@ -45,7 +46,7 @@ export class OrderEditComponent implements OnInit {
 
   routeId: string;
 
-  member?: IOrder;
+  member?: IOrder | undefined;
   user?: IUser;
   
   form: FormGroup = new FormGroup({});
@@ -93,7 +94,7 @@ export class OrderEditComponent implements OnInit {
   hasHRRole=false;
 
   bolNavigationExtras: boolean=false;
-  returnUrl: string='';
+  returnUrl: string='/orders';
 
   orderReviewItemStatus: IReviewItemStatus[]=[];
 
@@ -106,7 +107,6 @@ export class OrderEditComponent implements OnInit {
       private modalService: BsModalService,
       private activatedRoute: ActivatedRoute, 
       private router: Router, 
-      private sharedService: SharedService, 
       private rvwService: ReviewService,
       private confirmService: ConfirmService,
       private toastr: ToastrService, 
@@ -154,10 +154,21 @@ export class OrderEditComponent implements OnInit {
 
     createForm() {
         this.form = this.fb.group({
-          id: [null],  orderNo: 0, orderDate: [new Date, Validators.required],
+          id: [null],  
+          orderNo: new FormControl({value:0
+              //, disabled: !this.isAddMode
+            }), 
+          orderDate: [new Date, Validators.required],
           customerId: [0, Validators.required], orderRef: '', salesmanId: 0, projectManagerId: [0, Validators.required],
           medicalProcessInchargeEmpId: 0, visaProcessInchargeEmpId: 0, emigProcessInchargeId: 0,
-          travelProcessInchargeId: 0, cityOfWorking: '', country: '', completeBy: ['', Validators.required],
+          travelProcessInchargeId: 0, 
+          cityOfWorking: new FormControl({value:''
+            //, disabled:true
+          }), 
+          country: new FormControl({value:''
+            //, disabled:true
+          }), 
+          completeBy: ['', Validators.required],
           status: 'Not Started', forwardedToHRDeptOn: '', contractReviewStatusId:0,
           orderItems: this.fb.array([])
         } //, {validator: MustMatch('password', 'confirmPassword')}
@@ -205,10 +216,13 @@ export class OrderEditComponent implements OnInit {
       var maxSrNo = this.orderItems.length===0 ? 1 : Math.max(...this.orderItems.value.map((x:any) => x.srNo))+1;
 
       return this.fb.group({
-        selected: false, 
-        id: 0, orderId: 0, srNo: maxSrNo, categoryId: [0,[Validators.required, Validators.min(1)]], ecnr: false, isProcessingOnly: false, industryId: 0,
-        sourceFrom: 'India', quantity: [0, Validators.min(1)], minCVs: 0, maxCVs: 0, requireInternalReview: false, requireAssess: false,
-        completeBefore: ['', Validators.required], hrExecId: 0, hrSupId: 0, hrmId: 0, charges: 0, feeFromClientINR: 0, status: 'Not Started',
+        selected: new FormControl({value:false
+            //, disabled: !this.form.dirty
+          }), 
+        id: 0, orderId: 0, srNo: maxSrNo, categoryId: [0,[Validators.required, Validators.min(1)]], ecnr: false, 
+        isProcessingOnly: false, industryId: 0, sourceFrom: 'India', quantity: [0, Validators.min(1)], 
+        minCVs: 0, maxCVs: 0, requireInternalReview: false, requireAssess: false,completeBefore: ['', Validators.required], 
+        hrExecId: 0, hrSupId: 0, hrmId: 0, charges: 0, feeFromClientINR: 0, status: 'Not Started',
         reviewItemStatusId: 0, noReviewBySupervisor: false })
     }
 
@@ -277,8 +291,13 @@ export class OrderEditComponent implements OnInit {
     getQnty(index: number) {
       return this.getControls()[index].value.quantity;
     }
+
     getMinCVs(index: number) {
       return this.getControls()[index].value.minCVs;
+    }
+
+    getReviewItemStatusId(index: number) {
+      return this.getControls()[index].value.reviewItemStatusId;
     }
 
     setMinCVs(index: number, newValue: number) {
@@ -298,6 +317,7 @@ export class OrderEditComponent implements OnInit {
     }
 
     openReviewModal(index: number) {
+      if(this.isAddMode) return;
 
       if(index===undefined) return;
       
@@ -351,6 +371,7 @@ export class OrderEditComponent implements OnInit {
     }
 
     openJDModal(index: number) {
+      if(this.isAddMode) return;
       var orderitemid = this.getName(index);
         this.service.getJD(orderitemid).subscribe(response => {
             var jd = response;
@@ -379,6 +400,7 @@ export class OrderEditComponent implements OnInit {
     }
 
     openRemunerationModal(index: number) {
+      if(this.isAddMode) return;
       var orderitemid = this.getName(index);
         this.service.getRemuneration(orderitemid).subscribe(response => {
             //this.remun=response;
@@ -405,13 +427,18 @@ export class OrderEditComponent implements OnInit {
     }
 
     forwardDLToHRDept() {
-
+      if(this.isAddMode) return;
       if(this.member === null || this.member === undefined) return;
 
-      if (this.member.forwardedToHRDeptOn!.getFullYear() > 2000) {
-        this.toastr.warning('this DL has been forwarded earlier on ' + this.forwardDLToHRDept);
-        return;
+      if (this.member.forwardedToHRDeptOn!==null && this.member.forwardedToHRDeptOn !== undefined ) {
+        console.log(this.member.forwardedToHRDeptOn);
+          if(new Date(this.member.forwardedToHRDeptOn).getFullYear() > 2000) {
+            this.toastr.warning('this DL has been forwarded earlier on ' + this.member.forwardedToHRDeptOn);
+            console.log('this DL has been forwarded earlier on ' + this.member.forwardedToHRDeptOn);
+            return;
+          }
       }
+      
       //create task
       var completeBy = new Date();
       completeBy.setDate(completeBy.getDate() + 7);
@@ -434,18 +461,26 @@ export class OrderEditComponent implements OnInit {
         this.service.updateOrderWithDLFwdToHROn(this.member!.id, new Date()).subscribe(() => {
           //this.getMember(+this.routeId);
           console.log('updated Order for date forwarded');
+          //update HTML
+          const doc = document.getElementById('forwardedToHRDeptOn');
+          doc!.innerHTML=completeBy.toString();
+          this.member!.forwardedToHRDeptOn=completeBy;
         }, error => {
-          console.log('failed to update order with dateforwarded to DL', error);
+          console.log(error.message);
+
         })
         this.toastr.success('Task created in the name of the HR Supervisor');
       }, error => {
-        this.toastr.error('failed to create task in the name of the HR Supervisor', error);
+        //if(error is {})
+        console.log(error.message);
+        this.toastr.error('failed to create task in the name of the HR Supervisor', error.message);
       })
 
     }
 
   
     forwardDLtoAgents() {
+      if(this.isAddMode) return;
       
       if(this.member === null || this.member === undefined) return;
 
@@ -454,7 +489,7 @@ export class OrderEditComponent implements OnInit {
       //var orderItemValues = this.orderItems.value;
       var selectedOrderItems = this.orderItems.value.filter((x:any) => x.selected===true && (x.reviewItemStatusId===1 || x.reviewItemStatusId===2 ));
       if (selectedOrderItems.length===0) {
-        selectedOrderItems = this.orderItems.value.filter((x:any) => x.reviewItemStatusId===1 ||x.reviewItemStatusId===2 ); //select all that are accepted
+        selectedOrderItems = this.orderItems.value.filter((x:any) => x.reviewItemStatusId===7 ); //select all that are accepted
         if(selectedOrderItems.length===0) {
           this.toastr.error('only items that are reviewed and accepted can be forwarded to agents');
           return;
@@ -462,11 +497,12 @@ export class OrderEditComponent implements OnInit {
       }
 
       let agents = this.associates;
+      var title="Choose Associates";
       const config = {
         class: 'modal-dialog-centered modal-lg windowlarge',
         //windowClass: 'large-Modal',
         initialState: {
-          //order,
+          title,
           agents
         }
       }
@@ -481,16 +517,17 @@ export class OrderEditComponent implements OnInit {
             //items -  charges, categoryname
         //dldates - customerofficialid, emailidforwardedto
           var dlforward = new dLForwardToAgent();
+              
+              dlforward.orderId = this.member?.id!;
+              dlforward.orderNo = this.member?.orderNo!;
+              dlforward.orderDate =this.member?.orderDate!;
+              dlforward.customerId = this.member?.customerId!;
+              dlforward.customerCity = this.member?.cityOfWorking!;
+              dlforward.customerName = this.member?.customerName!;
+              dlforward.projectManagerId = this.member?.projectManagerId!;
           
-          dlforward.orderId!= this.member?.id;
-          dlforward.orderNo!= this.member?.orderNo;
-          dlforward.orderDate!=this.member?.orderDate;
-          dlforward.customerId!= this.member?.customerId;
-          dlforward.customerCity!= this.member?.cityOfWorking;
-          dlforward.customerName!= this.member?.customerName;
-          dlforward.projectManagerId!= this.member?.projectManagerId;
-
           var dlforwarditems: IDLForwardCategory[]=[];
+
           selectedOrderItems.forEach((i: any) => {
             var dlforwarditem = new dLForwardCategory();
             
@@ -520,6 +557,7 @@ export class OrderEditComponent implements OnInit {
           })
 
           dlforward.dlForwardCategories = dlforwarditems;
+          console.log('dlforward', dlforward);
           //check for unique constraints - OrderItemId, Dateforwarded.Date, OfficialId ** TODO **
           this.dlforwardService.forwardDLtoSelectedAgents(dlforward).subscribe((response) => {
             if(response ==='' || response===null) {
@@ -535,6 +573,20 @@ export class OrderEditComponent implements OnInit {
     }
   
     assignTasksToHRExecs() {
+      if(this.isAddMode) return;
+
+      /*
+      if(this.form.dirty) {
+        this.toastr.warning('this form has changes that have not been saved.  Changes must be saved before tasks can be assigned');
+        return;
+      }
+      */
+     
+      if(this.member?.projectManagerId===0) {
+        this.toastr.warning('Project Manager needs to be defined before tasks can be assiged');
+        return;
+      }
+      
       var dt = new Date;
       var errors: string[]=[];
 
@@ -579,10 +631,18 @@ export class OrderEditComponent implements OnInit {
         return;
       }
 
-      this.confirmService.confirm("Confirm to proceed","Following error found: " + 
-        errors.flat() + '. Do you want to exclude these tasks in the tasks?', 
+      this.confirmService.confirm("Confirm to proceed", errors.length>0 
+        ? "Following errors found: " + errors.flat() + '. Do you want to exclude these tasks in the tasks?'
+        : 'Press Yes to proceed, No to cancel', 
         "Yes, Proceed", "No, Cancel").subscribe(result => {
           if(!result) return;
+          console.log('reached tasksevice.createorerassignmntasks');
+          return this.taskService.createOrderAssignmentTasks(assignments).subscribe(resposne => {
+            this.toastr.success('tasks created for the chosen order items');
+          }, error => {
+            this.toastr.error(error, 'failed to create tasks for the chosen order items');
+          })
+
         }, error => {
           this.toastr.error(error);
           return;
@@ -593,11 +653,8 @@ export class OrderEditComponent implements OnInit {
         this.confirmService.confirm('you must select the DL Items that need to be assigned to HR Executives', 'order items not selected');
         return;
       };
-      return this.taskService.createOrderAssignmentTasks(assignments).subscribe(resposne => {
-        this.toastr.success('tasks created for the chosen order items');
-      }, error => {
-        this.toastr.error(error, 'failed to create tasks for the chosen order items');
-      })
+
+     
 
     }      
     
@@ -642,6 +699,10 @@ export class OrderEditComponent implements OnInit {
 
     showProcess() {
       
+    }
+
+    close() {
+      this.router.navigateByUrl(this.returnUrl);
     }
 
     reviewItems() {

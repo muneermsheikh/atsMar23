@@ -353,7 +353,8 @@ namespace infra.Services
                          x.Position,
                          x.Email,
                          x.AppUserId,
-                         x.EmployeePhones
+                         x.EmployeePhones,
+                         x.Id
                     }).FirstOrDefaultAsync();
                if (emp == null) return null;
                var empAppUser = await _userManager.FindByIdAsync(emp.AppUserId.ToString());
@@ -363,6 +364,7 @@ namespace infra.Services
                     EmployeeName = emp.FirstName + " " + emp.SecondName + " " + emp.FamilyName,
                     KnownAs = emp.KnownAs,
                     Position = emp.Position,
+                    EmployeeId = emp.Id,
                     //OfficialPhoneNo = emp.EmployeePhones?.Where(x => x.IsMain && x.IsOfficial && x.IsValid).Select(x => x.MobileNo).FirstOrDefault(),
                     OfficialMobileNo = emp.EmployeePhones?.Where(x => x.IsMain && x.IsValid && x.IsOfficial).Select(x => x.MobileNo).FirstOrDefault(),
                     OfficialEmailAddress = emp.Email,

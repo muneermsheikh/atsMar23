@@ -1,6 +1,7 @@
 .stdd {
      margin: 1px;
-     padding: 1px;
+     padding-left: 1px;
+     padding-right: 1px;
      display: inline-block !important;
      line-height: 1em;
      vertical-align: top;
@@ -32,3 +33,4 @@
      border: aqua;
 }
 
+.w15 {width: 25px;}

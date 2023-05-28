@@ -134,7 +134,16 @@ namespace api.Controllers
                return (ICollection<CustomerCity>)await _orderService.GetOrderCityNames();
           }
 
-          [Authorize(Roles = "Admin, HRManager, HRSupervisor")]
+          [HttpGet("refcodefromorderitemid/{orderitemid}")]
+          public async Task<string> GetOrderRefCodeFromOrderItemId(int orderitemid)
+          {
+               var s = await _ordersGetService.GetOrderRefCode(orderitemid);
+               if(string.IsNullOrEmpty(s)) return "undefined";
+               return s;
+          }
+
+
+          [Authorize]    //(Roles = "Admin, HRManager, HRSupervisor")]
           [HttpPost]
           public async Task<ActionResult<Order>> CreateOrder(OrderToCreateDto dto)
           {
@@ -146,7 +155,7 @@ namespace api.Controllers
                return Ok(order);
           }
 
-          [Authorize(Roles = "Admin, HRManager, HRSupervisor")]
+          [Authorize]    //(Roles = "Admin, HRManager, HRSupervisor")]
           [HttpPost("orders")]
           public async Task<ActionResult<ICollection<Order>>> CreateOrders(ICollection<OrderToCreateDto> dtos)
           {
@@ -159,7 +168,7 @@ namespace api.Controllers
                return Ok(order);
           }
 
-          [Authorize(Roles = "Admin, HRManager, HRSupervisor")]
+          [Authorize]    //(Roles = "Admin, HRManager, HRSupervisor")]
           [HttpPut]
           public async Task<ActionResult<bool>> EditOrder(Order order)
           {
@@ -169,7 +178,7 @@ namespace api.Controllers
 
 
           
-          [Authorize(Roles = "Admin, DocumentControllerAdmin")]
+          [Authorize]    //(Roles = "Admin, DocumentControllerAdmin")]
           [HttpDelete("order/{orderid}")]
           public async Task<bool> DeleteOrder(int orderid)
           {
@@ -177,7 +186,7 @@ namespace api.Controllers
           }
 
           
-          [Authorize(Roles = "Admin, HRManager, HRSupervisor, HRExecutive, DocumentControllerAdmin")]
+          [Authorize]    //(Roles = "Admin, HRManager, HRSupervisor, HRExecutive, DocumentControllerAdmin")]
           [HttpPut("updatedlfwd")]
           public async Task<bool> UpdateOrderDLForwardedToHR(IdAndDate idanddate)
           {
@@ -185,7 +194,7 @@ namespace api.Controllers
           }
 
           //remunerations
-          [Authorize(Roles = "Admin, HRManager, HRSupervisor, DocumentControllerAdmin")]
+          [Authorize]    //(Roles = "Admin, HRManager, HRSupervisor, DocumentControllerAdmin")]
           [HttpPost("remun")]
           public async Task<ActionResult<Remuneration>> CreateRemuneration(Remuneration remuneration)
           {
@@ -207,7 +216,7 @@ namespace api.Controllers
 
           }
 
-          [Authorize(Roles = "Admin, HRManager, HRSupervisor, DocumentControllerAdmin")]
+          [Authorize]    //(Roles = "Admin, HRManager, HRSupervisor, DocumentControllerAdmin")]
           [HttpGet("remuneration/{orderitemid}")]
           public async Task<ActionResult<RemunerationFullDto>> GetOrCreateRemuneration(int orderitemid)
           {
@@ -221,7 +230,7 @@ namespace api.Controllers
           }
 
 
-          [Authorize(Roles = "Admin, HRManager, HRSupervisor")]
+          [Authorize]    //(Roles = "Admin, HRManager, HRSupervisor")]
           [HttpPut("jd")]
           public async Task<ActionResult<bool>> UpdateJD (JDDto jddto)
           {
@@ -229,7 +238,7 @@ namespace api.Controllers
           }
 
           
-          [Authorize(Roles = "Admin, HRManager, HRSupervisor")]
+          [Authorize]    //(Roles = "Admin, HRManager, HRSupervisor")]
           [HttpPut("remuneration")]
           public async Task<ActionResult<bool>> UpdateRemuneration (RemunerationFullDto dto)
           {

@@ -1,15 +1,15 @@
-
-<div class="ml-2">
+<br>
+<div style="margin-top: 20px;">
      <div class="stdd col-4">
           <div *ngIf="!categories">
                Failed to retrieve category items
           </div>
           <br>
-          <ng-select *ngIf="categories" class="stdd w350"
+          <div class="b">Choose a category from the dropdown</div>
+          <ng-select *ngIf="categories" class="stdd w350" style="border:double"
                [items]="categories"
                bindLabel="name"
                [(ngModel)]="selectedCategoryId"
-               placeholder="Select a Category"
                clearAllText="Clear"
                (change)="onCategoryChange($event)"
                >
@@ -25,23 +25,24 @@
                <form [formGroup]="form" (ngSubmit)="onSubmit()">
                     <div class="stdd b w50">Q No.</div>
                     <div class="stdd b w225">Assessment Parameter</div>
-                    <div class="stdd b w475">Question</div>
+                    <div class="stdd b w450">Question</div>
                     <div class="stdd b w100">Max Marks</div>
                     <button type="button" (click)="addAssessmentQBankItem()" class="btn btn-default fa fa-plus" style="color: blue;"></button>
-                    <button type="button" (click)="update()" class="mx-md-10 btn btn-success fa fa-save" style="color: blue;"></button>
+                    <button type="button" (click)="update()" class="mx-md-10 btn btn-primry fa fa-save" style="color: blue;"></button>
                     <button type="button" class="stdd btn btn-primary fa fa-window-close" routerLink='/hr' ></button>
                     <div formArrayName="assessmentQBankItems">
-                         <div *ngFor="let q of assessmentQBankItems().controls; let i=index">
+                         <div *ngFor="let q of assessmentQBankItems.controls; let i=index">
                               <div [formGroupName]="i">
                                    <div >
                                         <input class="stdd w45" type="text" formControlName="qNo" >
                                         <input class="stdd mx-2 w210" type="text" formControlName="assessmentParameter" >
                                         <textarea class="stdd mx-2" formControlName="question" rows="2" cols="50"></textarea>     
-                                        <input class="stdd mx-2 w50" type="number" formControlName="maxPoints">
+                                        <input class="stdd mx-2 w50" (change)="reCalculate()" type="number" formControlName="maxPoints">
                                         <button (click)="removeAssessmentQBankItem(i)" class="stdd btn fa fa-trash red" ></button>
                                    </div>
                               </div>
                          </div>
+                         <div style="margin-left:600px;"><strong>total Marks:  </strong>{{totalMark}}</div>
                     </div>
                </form>            
                <!-- <div class="d-flex justify-content-between align-items-center mt-2" *ngIf="totalCount > 0">

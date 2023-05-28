@@ -1,5 +1,6 @@
 using api.Errors;
 using api.Extensions;
+using core.Dtos.Admin;
 using core.Entities.Admin;
 using core.Entities.Identity;
 using core.Entities.Tasks;
@@ -25,7 +26,7 @@ namespace api.Controllers
                _dlfwdService = dlfwdService;
           }
 
-          [Authorize(Roles = "DocumentControllerAdmin, HRSupervisor, HRExecutive, HRTrainee" )]
+          [Authorize]  //(Roles = "DocumentControllerAdmin, HRSupervisor, HRExecutive, HRTrainee" )]
           [HttpPost]
           public async Task<ActionResult<string>> ForwardDLToAgents(DLForwardToAgent dlforward)
           {
@@ -59,7 +60,7 @@ namespace api.Controllers
           }
 
           [HttpGet("associatesforwardedForOrderId/{orderid}")]
-          public async Task<ActionResult<ICollection<DLForwardCategory>>> DLCategoriesForwardedToAgents (int orderid)
+          public async Task<ActionResult<DLForwardedDateDto>> DLCategoriesForwardedToAgents (int orderid)
           {
                var forwarded = await _dlfwdService.OrderItemForwardedToStats(orderid);
 
@@ -68,7 +69,7 @@ namespace api.Controllers
                return Ok(forwarded);
           }
      
-          [Authorize(Roles="DocumentControllerAdmin, Admin")]
+          [Authorize]  //(Roles="DocumentControllerAdmin, Admin")]
           [HttpPost("addtaskdltohr/{orderid}")]
           public async Task<ActionResult<ApplicationTask>> NewDLTaskForHRDept(int orderid)
           {

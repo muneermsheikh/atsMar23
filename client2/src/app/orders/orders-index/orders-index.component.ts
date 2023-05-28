@@ -97,7 +97,6 @@ export class OrdersIndexComponent implements OnInit {
     });
   }
 
-
   getProfessions() {
     this.mastersService.getCategoryList().subscribe({
       next: response => this.professions = [{id: 999999, name: 'All'}, ...response],
@@ -251,8 +250,6 @@ export class OrdersIndexComponent implements OnInit {
     //this.navigateByRoute(id, 'orders/edit', true);
   }
 
-
-
   contractReviewOrder(id: number) {
     this.navigateByRoute(id, 'orders/review', true);
   }
@@ -284,10 +281,16 @@ export class OrdersIndexComponent implements OnInit {
   }
 
   dlForwardToAssociates(event: any) {
-    var id = event?.target.value;
-    this.navigateByRoute(id, 'orders/edit', true);
+    console.log('dl forward clicked');
+    var id = event;
+     this.navigateByRoute(id, 'orders/forwards', true);
   }
 
+  dlForwardedToAssociates(event: any) {
+    console.log('dlforwarded clicked');
+    var id = event;
+     this.navigateByRoute(id, 'admin/forwarded', true);
+  }
 
   navigateByRoute(id: number, routeString: string, editable: boolean) {
     let route =  routeString + '/' + id;

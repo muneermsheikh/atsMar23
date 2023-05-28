@@ -50,14 +50,14 @@ namespace api.Controllers
 
         
         [HttpPost]
-        [Authorize(Roles ="Admin, HRManager, HRSupervisor")]
+        [Authorize] //(Roles ="Admin, HRManager, HRSupervisor")]
         public async Task<ActionResult<AssessmentQBank>> InsertAssessmentQ(AssessmentQBank qbank)
         {
             var q = await _service.InsertAssessmentQBank(qbank);
             if (q == null) return BadRequest(new ApiResponse(400, "Bad Request - this probably means the Assessment Question for the chosen category already exists"));
             return Ok(q);
         }
-        [Authorize(Roles ="Admin, HRManager, HRSupervisor")]
+        [Authorize] //(Roles ="Admin, HRManager, HRSupervisor")]
         [HttpPut]
         public async Task<AssessmentQBank> UpdateAssessmentQ(AssessmentQBank qBank)
         {

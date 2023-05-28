@@ -13,7 +13,7 @@ export interface IDLForwardToAgent
 	dlForwardCategories: IDLForwardCategory[];
 }
 
-export class dLForwardToAgent implements IDLForwardToAgent
+export class dLForwardToAgent 
 {
 	id= 0;
 	orderId= 0;

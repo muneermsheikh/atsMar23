@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-     [Authorize(Roles = "Admin, HRManager, HRSupervisor")]
+     [Authorize]    //(Roles = "Admin, HRManager, HRSupervisor")]
     public class OrderAssignmentController : BaseApiController
     {
         private readonly UserManager<AppUser> _userManager;

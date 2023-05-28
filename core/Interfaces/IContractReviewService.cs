@@ -29,6 +29,6 @@ namespace core.Interfaces
         Task<ICollection<ReviewItemStatus>> GetReviewItemStatus();
         Task<ICollection<ContractReviewItemDto>> GetContractReviewItemsWithOrderDetails(ContractReviewItemSpecParams cParams);
         Task<ContractReviewItemDto> GetOrAddReviewResults(int orderitemid);
-        Task<int> UpdateOrderReviewStatusBasedOnOrderItemReviewStatus(int orderid, int loggedInEmployeeId);
+        Task<int> UpdateOrderReviewStatusBasedOnOrderItemReviewStatus(Order order, int loggedInEmployeeId);
     }
 }

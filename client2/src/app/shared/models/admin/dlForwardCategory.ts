@@ -6,7 +6,7 @@ export interface IDLForwardCategory
 	id: number;
 	orderId: number;
 	orderItemId: number;
-	dlForwardId: number;
+	dlForwardToAgentId: number;
 	categoryId: number;
 	categoryName: string;
 	charges: number;
@@ -19,7 +19,7 @@ export class dLForwardCategory implements IDLForwardCategory
 	id= 0;
 	orderId= 0;
 	orderItemId= 0;
-	dlForwardId= 0;
+	dlForwardToAgentId= 0;
 	categoryId= 0;
 	categoryName= '';
 	charges= 0;

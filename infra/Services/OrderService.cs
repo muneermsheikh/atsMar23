@@ -27,17 +27,18 @@ namespace infra.Services
           private readonly ITaskService _taskService;
           private readonly ICommonServices _commonServices;
           private readonly IConfiguration _config;
+          private readonly IContractReviewService _reviewService;
           public OrderService(IUnitOfWork unitOfWork, IComposeMessagesForAdmin composeMessages
                , ATSContext context, UserManager<AppUser> userManager, ICommonServices commonServices
                , IGenericRepository<OrderItem> orderItemRepo, IMapper mapper, ITaskService taskService
-               , IConfiguration config)
+               , IConfiguration config, IContractReviewService reviewService)
           {
                _taskService = taskService;
                _context = context;
                _commonServices = commonServices;
-          
                //_paymentService = paymentService;
                _userManager = userManager;
+               _reviewService = reviewService;
                _unitOfWork = unitOfWork;
                _orderItemRepo = orderItemRepo;
                _mapper = mapper;
@@ -325,6 +326,11 @@ namespace infra.Services
                          OrderItemUpdated=true;
                     }
                }
+               DateTime dt = Convert.ToDateTime(order.ForwardedToHRDeptOn);
+
+               if(dt.Year<2000) dt= DateTime.ParseExact("1900-01-01", "yyyy-MM-dd",System.Globalization.CultureInfo.InvariantCulture);
+
+               order.ForwardedToHRDeptOn=dt;
 
                if (OrderItemUpdated) await _context.SaveChangesAsync();
 
@@ -431,8 +437,12 @@ namespace infra.Services
                          _context.Entry(newItem).State = EntityState.Added;
                     }
                }
+               
                _context.Entry(existingOrder).State = EntityState.Modified;
 
+               //update order.contractReview status
+               var recAffected=await _reviewService.UpdateOrderReviewStatusBasedOnOrderItemReviewStatus(existingOrder, loggedInUserId);
+               
                if (await _context.SaveChangesAsync() > 0)
                {
                     if (_context.Entry(order).State != EntityState.Unchanged) 

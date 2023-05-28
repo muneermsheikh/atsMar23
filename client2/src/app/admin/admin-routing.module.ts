@@ -37,7 +37,8 @@ const routes = [
   */
  
   {path: 'messages', component: MessagesComponent, canActivate: [SelectionsGuard], data: {breadcrumb: 'Email Messages'}},
-  {path: 'forwards/:orderid', component: DlForwardComponent, canActivate: [SelectionsGuard], data: {breadcrumb: 'DL Forwards to Agents'},
+  
+  {path: 'forwarded/:orderid', component: DlForwardComponent, canActivate: [SelectionsGuard], data: {breadcrumb: 'DL Forwards to Agents'},
     resolve: {forwards: AssociateForwardsForADLResolver}  
   },
   {path: 'categories', component: CategoriesComponent, 

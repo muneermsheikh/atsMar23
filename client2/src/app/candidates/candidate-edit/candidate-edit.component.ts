@@ -9,7 +9,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { ActivatedRoute } from '@angular/router';
 import { AccountService } from 'src/app/account/account.service';
 import { ToastrService } from 'ngx-toastr';
-import { debounceTime, map, switchMap, take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { of, timer } from 'rxjs';
 import { FileService } from 'src/app/shared/services/file.service';
 import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';

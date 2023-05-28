@@ -17,17 +17,15 @@ namespace infra.Services
           private readonly ATSContext _context;
           private readonly IMapper _mapper;
           private readonly IComposeMessagesForHR _composeMsg;
-          private readonly IOrderService _orderService;
           private readonly int _OperationsManagementId;
           private readonly IEmailService _emailService;
           private readonly IComposeMessagesForAdmin _msgForAdmin;
           public ContractReviewService(IUnitOfWork unitOfWork, ATSContext context, IMapper mapper, IComposeMessagesForAdmin msgForAdmin,
-               IComposeMessagesForHR composeMsg, IOrderService orderService, IConfiguration config, IEmailService emailService)
+               IComposeMessagesForHR composeMsg, IConfiguration config, IEmailService emailService)
           {
                _msgForAdmin = msgForAdmin;
                _emailService = emailService;
                _OperationsManagementId = Convert.ToInt32(config.GetSection("OperationsManagementId").Value);
-               _orderService = orderService;
                _composeMsg = composeMsg;
                _mapper = mapper;
                _context = context;
@@ -235,7 +233,8 @@ namespace infra.Services
                updated.OrderReviewStatus=(int) EnumReviewStatus.NotReviewed;               
                if(await _context.SaveChangesAsync() > 0) {
                     //update order.contractReviewStatus
-                    updated.OrderReviewStatus = await UpdateOrderReviewStatusBasedOnOrderItemReviewStatus(model.OrderId, loggedInEmployeeId);
+                    var order = await _context.Orders.Include(x => x.OrderItems).Where(x => x.Id == model.OrderId).FirstOrDefaultAsync();
+                    updated.OrderReviewStatus = await UpdateOrderReviewStatusBasedOnOrderItemReviewStatus(order, loggedInEmployeeId);
                }
 
                return updated;
@@ -583,74 +582,109 @@ namespace infra.Services
           }
 
 		//based on status of ALL orderItem.ReviewItemStatusId, update OrderReviewStatus field
-          public async Task<int> UpdateOrderReviewStatusBasedOnOrderItemReviewStatus(int orderid, int loggedInEmployeeId)
+          public async Task<int> UpdateOrderReviewStatusBasedOnOrderItemReviewStatus(Order order, int loggedInEmployeeId)
 		{
                
                int orderReviewStatusIdUpdated=(int)EnumReviewStatus.NotReviewed;       //default
                
                //if any item is not reviewed, return false
-               var items= await _context.OrderItems.Where(x => x.OrderId==orderid).Select(x => new {x.Id, x.ReviewItemStatusId}).ToListAsync();
+               var orderitems = order.OrderItems.ToList();
+               int orderReviewStatus=0;
                
-               //if(items==null || items.Count ==0) return 0;
-               if(items.Any(x => x.ReviewItemStatusId==0 || x.ReviewItemStatusId==7)) return 0;
+               var reviewitems = await _context.ContractReviewItems
+                    .Include(x => x.ReviewItems.Where(x => x.ReviewParameter=="Service Charges in INR"))
+                    .Where(x => orderitems.Select(x => x.Id).ToList().Contains(x.OrderItemId))
+                    .ToListAsync();
                
-               if(!items.Any(x => x.ReviewItemStatusId != 1)) {       //none of the review items are anyting other than accepted
-                    orderReviewStatusIdUpdated = await UpdateOrderReviewStatus(1, orderid,loggedInEmployeeId);
-               } else if(items.Any(x => x.ReviewItemStatusId > 1 && x.ReviewItemStatusId < 8) && items.Any(x => x.ReviewItemStatusId ==1)) { 
-                    //atleast 1 record is selected and other records are rejected
-                    orderReviewStatusIdUpdated = await UpdateOrderReviewStatus(2, orderid,loggedInEmployeeId);     //2-accepted withr egrets
-               } else {
-                    orderReviewStatusIdUpdated = await UpdateOrderReviewStatus(3, orderid,loggedInEmployeeId);     //3-rejected;
+               if(orderitems.Count > reviewitems.Count) {
+                    order.Status="Awaiting Review";
+                    await UpdateOrderReviewStatusAndContractReview(1, order, loggedInEmployeeId);
+                    return 0;
                }
 
+               if(orderitems.Any(x => x.ReviewItemStatusId==1)) {
+                    order.Status="Awaiting Review";
+                    await UpdateOrderReviewStatusAndContractReview(1, order, loggedInEmployeeId);
+                    return 0;
+               }
+
+               //copy reviewItem.Charges to orderitem.
+               foreach(var item in orderitems) {
+                    var reviewitem = reviewitems .Where(x => x.OrderItemId==item.Id).FirstOrDefault();
+                    if(reviewitem==null) {
+                         order.Status="Awaiting Review";
+                         await UpdateOrderReviewStatusAndContractReview(1, order, loggedInEmployeeId);
+                         return 0;
+                    }
+                    var chargeRecord = reviewitem.ReviewItems.Select(x => x.ResponseText).FirstOrDefault();
+                    if(chargeRecord==null) return 0;
+                    int charges = Convert.ToInt32(chargeRecord);
+                    if(item.ReviewItemStatusId != reviewitem.ReviewItemStatus || item.Charges != charges) {
+                         item.ReviewItemStatusId = reviewitem.ReviewItemStatus;
+                         item.Charges = charges;
+                    }
+
+               }
+
+
+               if(!orderitems.Any(x => x.ReviewItemStatusId==7)) {     //atleast 1 item is regretted
+                    if(orderitems.Any(x => x.ReviewItemStatusId==7)) {
+                         //atleast 1 item is approed, and 1 items is regretted
+                         orderReviewStatus=3;          //accepted with regrets
+                    } else {
+                         orderReviewStatus=2;
+                    }
+               } else {  //all items accepted
+                    orderReviewStatus=4;     //accepte
+               }
+
+               //update order, contract review
+               
+               orderReviewStatusIdUpdated = await UpdateOrderReviewStatusAndContractReview(orderReviewStatus, order, loggedInEmployeeId);
+               //this is saved by calling program
                return orderReviewStatusIdUpdated;
 		}
 
-          private async Task<int> UpdateOrderReviewStatus(int reviewStatusId, int orderid, int loggedInEmployeeId) {
+          private async Task<int> UpdateOrderReviewStatusAndContractReview(int reviewStatusId, Order order, int loggedInEmployeeId) {
                
-               int currentStatus=0;
+               string currentStatus="";
+               int ContractReviewStatusId=0;
                //update Order table
-               var order = await _context.Orders.Where(x => x.Id == orderid)
-                    //.Select(x => new {x.ContractReviewStatusId, x.Status})
-                    .FirstOrDefaultAsync();
-               currentStatus = order.ContractReviewStatusId;
-               
 
-               //_context.Entry(order).State=EntityState.Modified;
+               //update Order.Status field - enumOrderReviewStatus
+               switch(reviewStatusId) {
+                    case 4:        //Accepted:
+                         currentStatus="Accepted";
+                         ContractReviewStatusId=4;
+                         break;
+                    case 2:        //AcceptedWithSomeRegrets:
+                         currentStatus="Accepted With some regrets";  
+                         ContractReviewStatusId=3;
+                         break;
+                    case 3:        //Regretted:
+                         currentStatus="Regretted";         //Regretted;
+                         ContractReviewStatusId=2;
+                         break;
+                    default:
+                         currentStatus="Awaiting Review";
+                         ContractReviewStatusId=1;
+                         break;
+               }
+               order.ContractReviewStatusId=reviewStatusId;
+               order.Status=currentStatus;
+               order.ContractReviewStatusId=ContractReviewStatusId;
+
+               _context.Entry(order).State=EntityState.Modified;
 
                //update ContractReview table
-               var contractReview = await _context.ContractReviews.Where(x => x.OrderId==orderid).FirstOrDefaultAsync();
+               var contractReview = await _context.ContractReviews.Where(x => x.OrderId==order.Id).FirstOrDefaultAsync();
                contractReview.ReviewedBy=loggedInEmployeeId;
                contractReview.ReviewedOn=DateTime.Now;
                contractReview.RvwStatusId=(int)reviewStatusId;
 
                _context.Entry(contractReview).State = EntityState.Modified;
 
-               //update Order.Status field - enumOrderReviewStatus
-               switch(reviewStatusId) {
-                    case 1:        //Accepted:
-                         currentStatus=1;
-                         break;
-                    case 2:        //AcceptedWithSomeRegrets:
-                         currentStatus=2;  
-                         break;
-                    case 3:        //Regretted:
-                         currentStatus=3;         //Regretted;
-                         break;
-                    default:
-                         break;
-               }
-               if(order.ContractReviewStatusId != currentStatus) {
-                    order.ContractReviewStatusId=(int)currentStatus;
-                    _context.Entry(order).State=EntityState.Modified;
-                    if (await _context.SaveChangesAsync() > 0) {
-                         return contractReview.Id;
-                    } else {
-                         return 0;
-                    };
-               } else {
-                    return currentStatus;
-               }
+               return 0;
           }
 	}
 }

@@ -17,7 +17,7 @@ export class OrderLineComponent implements OnInit {
   @Output() dlForwardToHREvent = new EventEmitter<number>();
   @Output() dlFwdToAssociatesEvent = new EventEmitter<number>();
   @Output() deleteEvent = new EventEmitter<number>();
-  
+  @Output() dlForwardedToAssociatesEvent = new EventEmitter<number>();
 
   menuTopLeftPosition =  {x: 0, y: 0}
 
@@ -66,6 +66,10 @@ export class OrderLineComponent implements OnInit {
     */
   }
   
+  
+  dlForwardedToAssociatesClicked() {
+    this.dlForwardedToAssociatesEvent.emit(this.order?.id);
+  }
 
   dlForwardToAssociatesClicked() {
     this.dlFwdToAssociatesEvent.emit(this.order?.id);

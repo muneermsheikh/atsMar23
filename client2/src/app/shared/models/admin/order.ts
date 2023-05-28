@@ -23,7 +23,7 @@ export interface IOrder
      contractReviewStatusId: number;
      estimatedRevenue: number;
      status: string; 
-     forwardedToHRDeptOn?: Date; 
+     forwardedToHRDeptOn: Date; 
      orderItems: IOrderItem[];
      
 }
@@ -51,7 +51,7 @@ export class Order implements IOrder
      contractReviewStatusId= 0;
      estimatedRevenue= 0;
      status= ''; 
-     forwardedToHRDeptOn?= new Date; 
+     forwardedToHRDeptOn= new Date('1900-01-01'); 
      orderItems: IOrderItem[]=[];
      
 }

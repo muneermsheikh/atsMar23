@@ -16,49 +16,50 @@ export class ForwardsComponent implements OnInit {
   
   constructor(private fb: FormBuilder, private activatedRouter: ActivatedRoute) {
     this.forwardsForm = this.fb.group({
-      forwards: this.fb.array([]),
+      dlforward: this.fb.array([]),
     });
   }
 
   ngOnInit(): void {
     this.activatedRouter.data.subscribe(response => {
       this.data = response.dlforwarddata;
+      
     })
+    console.log('dlforward:', this.data);
     this.patchValue2();
   }
 
  
  //teachers: forwards, batches: category, students: officials
-
   /** Forwards */
-  forwards(): FormArray {
-    return this.forwardsForm.get("forwards") as FormArray
+  dlforward(): FormArray {
+    return this.forwardsForm.get("dlforward") as FormArray
   }
- 
+
   newForward(): FormGroup {
     return this.fb.group({
       orderNo: '',
       orderDate: '',
       customerName: '',
-      categories: this.fb.array([])
+      dlForwardCategories: this.fb.array([])
     })
   }
  
  
   addForward() {
-    this.forwards().push(this.newForward());
+    this.dlforward().push(this.newForward());
   }
  
  
   removeForward(ti: number) {
-    this.forwards().removeAt(ti);
+    this.dlforward().removeAt(ti);
   }
  
  
   /** batches */
  
-  categories(ti: number): FormArray {
-    return this.forwards().at(ti).get("categories") as FormArray
+  dlForwardCategories(ti: number): FormArray {
+    return this.dlforward().at(ti).get("dlForwardCategories") as FormArray
   }
  
  
@@ -66,22 +67,22 @@ export class ForwardsComponent implements OnInit {
     return this.fb.group({
       categoryName: '',
       charges: 0,
-      officials: this.fb.array([])
+      dlForwardCategoryOfficials: this.fb.array([])
     })
   }
  
   addCategory(ti: number) {
-    this.categories(ti).push(this.newCategory());
+    this.dlForwardCategories(ti).push(this.newCategory());
   }
  
   removeCategory(ti: number, bi: number) {
-    this.categories(ti).removeAt(ti);
+    this.dlForwardCategories(ti).removeAt(ti);
   }
  
   /** students */
  
-  officials(ti: number, bi: number): FormArray {
-    return this.categories(ti).at(bi).get("officials") as FormArray
+  dlForwardCategoryOfficials(ti: number, bi: number): FormArray {
+    return this.dlForwardCategories(ti).at(bi).get("dlForwardCategoryOfficials") as FormArray
   }
  
   newOfficial(): FormGroup {
@@ -94,11 +95,11 @@ export class ForwardsComponent implements OnInit {
   }
  
   addOfficial(ti: number, bi: number) {
-    this.officials(ti, bi).push(this.newOfficial());
+    this.dlForwardCategoryOfficials(ti, bi).push(this.newOfficial());
   }
  
   removeOfficial(ti: number, bi: number, si: number) {
-    this.officials(ti, bi).removeAt(si);
+    this.dlForwardCategoryOfficials(ti, bi).removeAt(si);
   }
  
   onSubmit() {
@@ -108,6 +109,9 @@ export class ForwardsComponent implements OnInit {
   patchValue2() {
 
     /*
+    DLForwardToAgents
+    DLForwardcategories
+    DLForwardCateoryOfficial
        var data = {
       teachers: [
         {
@@ -126,14 +130,17 @@ export class ForwardsComponent implements OnInit {
     }
     */
     this.clearFormArray();
-    
+    console.log('tis.data:', this.data);
     this.data.forEach(t => {
       var forward: FormGroup = this.newForward();
-      this.forwards().push(forward);
+      console.log('t', t);
+      console.log('forward', forward);
+
+      this.dlforward().push(forward);
       t.dlForwardCategories.forEach(b => {
         var category = this.newCategory();
    
-        (forward.get("categories") as FormArray).push(category)
+        (forward.get("dlForwardCategories") as FormArray).push(category)
    
         b.dlForwardCategoryOfficials.forEach(s => {
           (category.get("officials") as FormArray).push(this.newOfficial())
@@ -141,14 +148,14 @@ export class ForwardsComponent implements OnInit {
    
       });
     });
-   
+   console.log('forwards:', this.dlforward);
     this.forwardsForm.patchValue(this.data);
   }
    
    
   clearFormArray() {
    
-    this.forwards().clear();
+    this.dlforward().clear();
    
   }
 }

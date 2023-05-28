@@ -65,16 +65,20 @@ namespace api.Controllers
           [HttpPost("create")]
           public async Task<ActionResult<ApplicationTask>> CreateApplicationTask(ApplicationTask t) {
                
-               if(staticTask.TaskDescription==t.TaskDescription && staticTask.TaskDate==t.TaskDate 
+               //during develoment, there is a repeat call for this with same paraeters,
+               //which results in database index errors, so flg will avoid this.
+               /* if(staticTask.TaskDescription==t.TaskDescription && staticTask.TaskDate==t.TaskDate 
                     && staticTask.AssignedToId==t.AssignedToId && staticTask.TaskTypeId==t.TaskTypeId
                     && staticTask.OrderId == t.OrderId) return BadRequest(new ApiResponse(402, "Task already created"));
 
                staticTask = t;
+               */
                var loggedInUser = await _userManager.FindByEmailFromClaimsPrincipal(User);
                if (Convert.ToDateTime((t.CompleteBy)).Year < 2000) t.CompleteBy=null;
                if (Convert.ToDateTime(t.CompletedOn).Year < 2000) t.CompletedOn=null;
                if (string.IsNullOrEmpty(t.TaskOwnerName)) t.TaskOwnerName=loggedInUser.DisplayName;
-               
+               if (t.ResumeId=="") t.ResumeId=null;
+
                var task = await _taskService.GetOrCreateTask(t);
                var calledTask=t;
                if (task!=null) return Ok(task);

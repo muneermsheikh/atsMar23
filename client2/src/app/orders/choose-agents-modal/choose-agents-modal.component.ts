@@ -12,7 +12,7 @@ export class ChooseAgentsModalComponent implements OnInit {
   @Input() updateSelectedOfficialIds = new EventEmitter();
   //order: IOrderBriefDto;
   agents: ICustomerOfficialDto[]=[]; // IChooseAgentDto[]; 
-
+  title: string='';
   constructor(public bsModalRef: BsModalRef) { }
 
   ngOnInit(): void {

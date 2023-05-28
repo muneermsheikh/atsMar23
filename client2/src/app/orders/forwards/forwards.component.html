@@ -1,7 +1,7 @@
-<form [formGroup]="forwardsForm" (ngSubmit)="onSubmit()">
-	<div formArrayName="forwards">
+<form class="mt-5" [formGroup]="forwardsForm" (ngSubmit)="onSubmit()">
+	<div formArrayName="dlforward">
   
-		<div *ngFor="let forward of forwards().controls; let ti=index">
+		<div *ngFor="let forward of dlforward().controls; let ti=index">
 		    <div [formGroupName]="ti"
 			  style="border: 1px solid blue; padding: 10px; width: 100%; display: inline-block; margin: 5px;">
 			  Forward Name :
@@ -10,8 +10,8 @@
 			  <button (click)="removeForward(ti)">Remove</button>
 			  <button type="button" (click)="addCategory(ti)">Add Category</button>
 		
-			  <div formArrayName="categories">
-				<div *ngFor="let category of categories(ti).controls; let bi=index">
+			  <div formArrayName="dlForwardCategories">
+				<div *ngFor="let category of dlForwardCategories(ti).controls; let bi=index">
 				    <div [formGroupName]="bi" style="border: 1px solid red; padding: 10px; margin: 5px; float:left">
 		    
 					  Category Name :
@@ -20,8 +20,8 @@
 					  <button (click)="removeCategory(ti,bi)">Remove forward</button>
 					  <button (click)="addOfficial(ti,bi)">Add Official</button>
 			
-					  <div formArrayName="officials">
-						<div *ngFor="let category of categories(ti).controls; let si=index">
+					  <div formArrayName="dlForwardCategoryOfficials">
+						<div *ngFor="let category of dlForwardCategories(ti).controls; let si=index">
 						  <div [formGroupName]="si" style="border: 1px solid blue; padding: 2px; ">
 						    Official :
 						    <input type="text" formControlName="agentName">

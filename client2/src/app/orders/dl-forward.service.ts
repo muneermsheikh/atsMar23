@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { IDLForwardToAgent } from '../shared/models/admin/dlforwardToAgent';
 import { dLForwardCategory } from '../shared/models/admin/dlForwardCategory';
 import { IApplicationTask } from '../shared/models/admin/applicationTask';
+import { IForwardedCategoryDto } from '../shared/dtos/admin/forwardedCategoryDto';
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +22,11 @@ export class DlForwardService {
 
   //get dlforwards of an orderid
   getDLForwardsOfAnOrderId(orderid: number) {
-    return this.http.get<IDLForwardToAgent>(this.apiUrl + 'DLForward/byorderid/' + orderid );
+    return this.http.get<IDLForwardToAgent[]>(this.apiUrl + 'DLForward/byorderid/' + orderid );
   }
 
   getAssociatesForwardedForADL(orderid: number) {
-    return this.http.get<dLForwardCategory[]>(this.apiUrl + 'DLForward/associatesforwardedForOrderId/' + orderid);
+    return this.http.get<IForwardedCategoryDto[]>(this.apiUrl + 'DLForward/associatesforwardedForOrderId/' + orderid);
   }
 
   forwardDLtoHRHead(orderid: number) {

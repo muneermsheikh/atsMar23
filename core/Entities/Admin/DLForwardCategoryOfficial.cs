@@ -11,7 +11,8 @@ namespace core.Entities.Admin
 		{
 		}
 
-        public DLForwardCategoryOfficial(int customerofficialid, DateTime dateforwarded, string emailid, string phoneno, string whatsappno, int loggedinempid)
+        public DLForwardCategoryOfficial(int customerofficialid, DateTime dateforwarded, string emailid, 
+            string phoneno, string whatsappno, int loggedinempid)
         {
             CustomerOfficialId = customerofficialid;
             DateTimeForwarded = dateforwarded;
@@ -25,6 +26,7 @@ namespace core.Entities.Admin
 		public int DLForwardCategoryId { get; set; }
         public int OrderItemId {get; set;}
         public int CustomerOfficialId { get; set; }
+        //public string OfficialName {get; set;}
         public string AgentName {get; set;}
         public DateTime DateTimeForwarded { get; set; }=DateTime.Now;
         public DateTime DateOnlyForwarded {get; set;}=DateTime.Now.Date;
