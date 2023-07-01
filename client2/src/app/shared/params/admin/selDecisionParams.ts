@@ -20,7 +20,7 @@ export class SelDecisionParams
      includeDeployment: boolean=false;
      
      pageIndex = 1;
-     pageSize=10;
+     pageSize=3;
      sort = "";
      search: string='';
 }

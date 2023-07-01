@@ -7,6 +7,7 @@ namespace core.Dtos
 {
     public class CVReferredDto
     {
+        public bool Checked {get; set;}
         public int CvRefId { get; set; }
         public string CustomerName { get; set; }
         public int OrderId { get; set; }
@@ -19,10 +20,11 @@ namespace core.Dtos
         public int CandidateId { get; set; }
         public int ApplicationNo { get; set; }
         public string CandidateName { get; set; }
+        public string AgentName {get; set;}
         public DateTime ReferredOn { get; set; }
-        public string ReferralDecision { get; set; }
+        public int ReferralDecision { get; set; }
         public DateTime SelectedOn { get; set; }
-        public ICollection<DeployRefDto> Deployments { get; set; }
+        public ICollection<DeployDto> Deployments { get; set; }
     }
 
     

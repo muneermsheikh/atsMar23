@@ -21,7 +21,7 @@ namespace core.Specifications
         {
         }
         public CVRefForCountSpecs(int pageIndex, int pageSize)
-            : base(x => x.DeployStageId < (int)EnumDeployStatus.Concluded)
+            : base(x => x.Sequence < (int)EnumDeployStatus.Concluded)
         {
         }
     }

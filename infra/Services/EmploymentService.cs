@@ -5,6 +5,7 @@ using core.Dtos;
 using core.Specifications;
 using infra.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace infra.Services
 {
@@ -22,17 +23,19 @@ namespace infra.Services
           {
                _unitOfWork.Repository<Employment>().Add(employment);
                if (await _unitOfWork.Complete() > 0) {
-                   var empParams = new EmploymentParams{CVRefId = employment.CVRefId};
-                   var specs = new EmploymentSpecs(empParams);
-
-                   return await _unitOfWork.Repository<Employment>().GetEntityWithSpec(specs);
+                   var empParams = new EmploymentParams{CvRefId = employment.CVRefId};
+                   
+                   return employment;
                } else {
                    return null;
                }
           }
 
-          public async Task<bool> DeleteEmployment(Employment employment)
+          public async Task<bool> DeleteEmployment(int employmentid)
           {
+               var employment = await _context.Employments.FindAsync(employmentid);
+               if(employment == null) return false;
+               
                _unitOfWork.Repository<Employment>().Delete(employment);
                return await _unitOfWork.Complete() > 0;
           }
@@ -45,7 +48,7 @@ namespace infra.Services
                return await _unitOfWork.Complete() > 0;
           }
 
-          public async Task<Employment> GetEmployment(int CVRefId)
+          /*public async Task<Employment> GetEmployment(int CVRefId)
           {
                var emp = await _context.Employments.Where(x => x.CVRefId == CVRefId).FirstOrDefaultAsync();
                if (emp == null) {
@@ -57,7 +60,82 @@ namespace infra.Services
                }
                return emp;
           }
+          */
 
+          public async Task<Pagination<Employment>> GetEmployments(EmploymentParams empParams)
+          {
+               var qry = _context.Employments.AsQueryable(); /*(from emp in _context.Employments 
+                    select new Employment (
+                         emp.CVRefId, emp.WeeklyHours, emp.SelectedOn, emp.SalaryCurrency, emp.Salary, 
+                         emp.ContractPeriodInMonths, emp.HousingProvidedFree, emp.HousingAllowance, emp.FoodProvidedFree, 
+                         emp.FoodAllowance, emp.TransportProvidedFree, emp.TransportAllowance, emp.OtherAllowance, 
+                         emp.LeavePerYearInDays, emp.LeaveAirfareEntitlementAfterMonths, emp.Charges,
+                         emp.CategoryId, emp.CandidateId, emp.ApplicationNo, emp.CandidateName,
+                         emp.CustomerName, emp.OrderItemId, emp.OrderId, emp.OrderNo ))
+                    .AsQueryable();
+                    */
+               if(empParams.OrderId!=0) qry=qry.Where(x => x.OrderId==empParams.OrderId);
+               if(empParams.OrderItemId!=0) qry=qry.Where(x => x.OrderItemId==empParams.OrderItemId);
+               if(empParams.ApplicationNo!=0) qry=qry.Where(x => x.ApplicationNo==empParams.ApplicationNo);      
+               if(empParams.CandidateId!=0) qry=qry.Where(x => x.CandidateId==empParams.CandidateId);
+               //if(!string.IsNullOrEmpty(empParams.CandidateName)) qry=qry.Where(x => Regex.IsMatch(x.CandidateName, WildCardToRegular("*" + empParams.CandidateName + "*")));
+               if(empParams.OrderNo !=0) qry = qry.Where(x => x.OrderNo == empParams.OrderNo);
+
+               if((empParams.SelectionDateFrom.Year > 2000) && (empParams.SelectionDateUpto.Year > 2000)) {
+                    qry = qry.Where(x => x.SelectedOn >= empParams.SelectionDateUpto && x.SelectedOn <= empParams.SelectionDateFrom);
+               } else if ((empParams.SelectionDateFrom.Year > 2000) && (empParams.SelectionDateUpto.Year < 2000)) {
+                    qry = qry.Where(x => x.SelectedOn == empParams.SelectionDateFrom);
+               }
+
+               if(empParams.SelDecisionId !=0) qry = qry.Where(x => x.SelectionDecisionId == empParams.SelDecisionId);
+
+              /* if(!string.IsNullOrEmpty(empParams.Sort)) {
+                    switch (empParams.Sort) {
+                         case "appno":
+                              qry = qry.OrderBy(x => x.ApplicationNo);
+                              break;
+                         case "appnodesc":
+                              qry = qry.OrderByDescending(x => x.ApplicationNo);
+                              break;
+                         case "orderno":
+                              qry = qry.OrderBy(x => x.OrderNo);
+                              break;
+                         case "ordernodesc":
+                              qry = qry.OrderByDescending(x => x.OrderNo);
+                              break;
+                         case "orderitem":
+                              qry = qry.OrderBy(x => x.OrderItemId);
+                              break;
+                         case "orderitemdesc":
+                              qry = qry.OrderByDescending(x => x.OrderItemId);
+                              break;
+                         case "candidatename":
+                              qry = qry.OrderBy(x => x.CandidateName);
+                              break;
+                         case "selectedondesc":  
+                              qry = qry.OrderByDescending(x => x.SelectedOn);
+                              break;
+                         default:
+                              qry = qry.OrderBy(x => x.SelectedOn);
+                              break;
+                    }
+               }*/
+               var count = await qry.CountAsync();
+
+               if(count == 0) return null;
+               
+               var data = await qry.Skip((empParams.PageIndex-1)*empParams.PageSize).Take(empParams.PageSize) .ToListAsync();
+
+               return new Pagination<Employment>(empParams.PageIndex, empParams.PageSize, count, data);
+                    
+          }
+
+          // If you want to implement "*" only
+          private static String WildCardToRegular(String value) {
+               return "^" + Regex.Escape(value).Replace("\\*", ".*") + "$"; 
+          }
+          
+          /*
           public async Task<Employment> GetEmploymentFromSelId(int Id)
           {
                var sel = await _context.SelectionDecisions.Where(x => x.Id == Id).Include(x => x.Employment).FirstOrDefaultAsync();
@@ -138,7 +216,7 @@ namespace infra.Services
                     .ToListAsync();
                return emps;
           }
-
+          */
 
 
      }

@@ -51,7 +51,7 @@ export class CustomersService {
     }
 
     let params = new HttpParams();
-    if (this.custParams.custType !== "") params = params.append('custType', this.custParams.custType);
+    if (this.custParams.customerType !== "") params = params.append('customerType', this.custParams.customerType);
     if (this.custParams.customerCityName !== '') params = params.append('customerCityName', this.custParams.customerCityName!);
     if (this.custParams.customerIndustryId !== 0) params = params.append('customerIndustryId', this.custParams.customerIndustryId!.toString());
     if (this.custParams.search) params = params.append('search', this.custParams.search);
@@ -59,7 +59,7 @@ export class CustomersService {
     params = params.append('sort', this.custParams.sort);
     params = params.append('pageIndex', this.custParams.pageNumber.toString());
     params = params.append('pageSize', this.custParams.pageSize.toString());
-    console.log('params:', params );
+
     return this.http.get<IPagination<ICustomerBriefDto[]>>(this.apiUrl + 
         'customers/customersBrief', {params}).pipe(
       map(response => {
@@ -71,6 +71,7 @@ export class CustomersService {
   }
 
   getCustomer(id: number) {
+    console.log('calling customers/byid/' + id);
     return this.http.get<ICustomer>(this.apiUrl + 'customers/byid/' + id);
   }
 
@@ -90,6 +91,12 @@ export class CustomersService {
   getCustParams() {
     return this.custParams;
   }
+
+  updateCustomer(model: any) {
+    console.log('model in updatecustomer', model);
+    return this.http.put(this.apiUrl + 'customers', model);
+  }
+
 
   //associates
   getAgents() {

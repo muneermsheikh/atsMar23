@@ -1,7 +1,10 @@
+.w30 {width: 30px;}
 .w40 {width: 40px;}
 .w50 {width: 50px;}
+.w70 {width: 70px;}
 .w75 {width: 75px;}
 .w80 {width: 80px;}
+.w90 {width: 90px;}
 .w100 {width: 100px;}
 .w125 {width: 125px;}
 .w150 {width: 150px;}
@@ -11,4 +14,14 @@
 
 .b {font-weight: bold;}
 
-.stdd {display: inline-block;}
+.stdd {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.blue {color: blue}
+.ml5 {margin-left: 5px;}
+.ml40 {margin-left: 40px;}
+.ml300 {margin-left: 300px;}

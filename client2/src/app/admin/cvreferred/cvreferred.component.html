@@ -1,0 +1,60 @@
+<br><br>
+<div class="marginL15">
+    <div class="stdd b w50 blue">Sort</div>
+    <select name="" id="" class="custom-select mb-2 w150" (change)="onSortSelected($event)">
+         <option *ngFor="let sort of sortOptions"
+              [value] = "sort.value"
+         >{{sort.name}}</option>
+    </select>
+    
+    <app-paging-header class="stdd mx5"
+        [totalCount]="totalCount"
+        [pageNumber]="cParams.pageNumber"
+        [pageSize]="cParams.pageSize"
+    >
+    </app-paging-header>
+
+
+    <app-paging  class="stdd mx5"
+        [pageSize]="cParams.pageSize" 
+        [totalCount]="totalCount" 
+        [pageNumber]="cParams.pageNumber" 
+        (pageChanged)="onPageChanged($event)"  >
+    </app-paging>
+
+
+    <div class="stdd form-inline mx5" *ngIf="referred">
+        <input (keyup.enter)="onSearch()" type="text" class="stdd form-control w300" #search placeholder="Search">
+        <button (click)="onSearch()" class="btn btn-outline-primary my-1">Search</button>
+        <button (click)="onReset()" class="btn btn-outline-success mx-2 my-1">Reset</button>
+    </div>
+    <button class="stdd btn btn-outline-success pull-right fa fa-close" (click)="close()" ></button>
+
+<br>
+<hr>
+<div class="form-inline b marginL15">
+
+    <div class="stdd mx1 w200 b" >Customer</div>
+    <div class="stdd mx1 w200 b" >Category Ref and Name</div>
+    <div class="stdd mx1 w100 b">Referred on</div>
+    <div class="stdd mx1 w100 b" >Order date</div>
+
+    <div class="stdd w75 b" >Choose</div>
+
+    <div class="stdd w75 b">App No</div>
+    <div class="stdd w150 b">Candidate name</div>
+    <div class="stdd w150 b">Agent Name</div>
+    <div class="stdd w150 b" >Selection Status</div>
+    <div class="stdd w150 b" >Deployment Status</div>
+</div>
+
+<div class="row" *ngFor="let ref of referred" >
+    <app-cvreferredline 
+         [referred]="ref" 
+         (remindClientForStatusEvent)="remindClient($event)"
+    ></app-cvreferredline>
+</div>
+
+</div>
+
+              

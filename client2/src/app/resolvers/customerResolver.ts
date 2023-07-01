@@ -13,7 +13,12 @@ import { CustomersService } from "../customers/customers.service";
  
      resolve(route: ActivatedRouteSnapshot): Observable<ICustomer|null> {
         var id = route.paramMap.get('id');
-        if(id==='' || id==='0' || id === null) return of(null)
+
+        if(id==='' || id==='0' || id === null) {
+            console.log('customer resolver with id=' + id + ' returned null');
+            return of(null)
+        }
+        console.log('customer resolver, id=' + id);
         return this.customerService.getCustomer(+id);
      }
  

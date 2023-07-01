@@ -1,0 +1,38 @@
+<br><br><br>
+<div *ngIf="cv===undefined">
+     No data to edit
+</div>
+<div class="container" *ngIf="cv!==undefined && cv !== null">
+    <div class="stdd row mb-0">
+
+         <div class="stdd w150 b" >Application No</div>
+         <div class="stdd w75" title="click to view CV" >{{cv.applicationNo}}</div>
+         <button class="btn pull-right fa fa-undo" ></button>
+         <br><div class="stdd w150 b" >Candidate Name</div>
+         <div class="stdd w150" mouseover="style.cursor = 'pointer'" 
+              title="click to display checklist" >{{cv.candidateName}}
+         </div>
+         <br><div class="stdd w150 b" >Referred By</div>
+         <div class="stdd w150" mouseover="style.cursor = 'pointer'" 
+         >{{cv.agentName}}</div>
+         <br><div class="stdd w150 b" >Employer</div>
+         <div class="stdd w100" mouseover="style.cursor = 'pointer'">{{cv.customerName}}</div>
+         <br><div class="stdd w150 b" >Selected As</div>
+         <div class="stdd w250" >{{cv.categoryRef}} - {{cv.categoryName}}</div>
+         
+         
+         <br>
+         <div class="b my-2">Deployment Transactions</div>
+         <div class="stdd w100">Date</div>
+         <div class="stdd w250">Deployment Status</div>
+         <br>
+         <div *ngFor="let dep of cv.deployments">
+            <div class="stdd w100">{{dep.transactionDate | date : 'dd-MMM-yy'}}</div>
+            <div class="stdd w250">{{dep.sequence | depStatus}}</div>
+            <button type="button" class="btn mx-2 btn-primary fa fa-pencil" (click)="addTransaction()"></button>
+            <button type="button" class="btn fa fa-trash red" (click)="deleteTransaction(dep)"></button>
+         </div>
+    </div>
+</div>
+
+         

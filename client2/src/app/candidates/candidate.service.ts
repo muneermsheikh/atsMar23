@@ -39,8 +39,8 @@ export class CandidateService {
     return this.http.get<any>(this.apiUrl + 'candidates/loaddocument');
   }
 
-  getCandidates(useCache: boolean): Observable<IPagination<ICandidateBriefDto[]>> { 
-
+  getCandidates(useCache: boolean=true): Observable<IPagination<ICandidateBriefDto[]>> { 
+    
     if (useCache === false)  this.cache = new Map();
     
     if (this.cache.size > 0 && useCache === true) {
@@ -59,7 +59,7 @@ export class CandidateService {
     params = params.append('sort', this.cvParams.sort);
     params = params.append('pageIndex', this.cvParams.pageNumber.toString());
     params = params.append('pageSize', this.cvParams.pageSize.toString());
-
+    console.log('candparams:', params );
     return this.http.get<IPagination<ICandidateBriefDto[]>>(this.apiUrl + 
         'candidate/candidatepages', {params}).pipe(
       map(response => {

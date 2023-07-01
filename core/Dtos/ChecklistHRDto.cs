@@ -6,6 +6,27 @@ namespace core.Dtos
 {
     public class ChecklistHRDto
     {
+        public ChecklistHRDto()
+        {
+        }
+
+        public ChecklistHRDto(int id, int candidateId, int applicationNo, string candidateName, 
+            int orderItemId, string categoryRef, string orderRef, int userLoggedId, 
+            string userLoggedName, int charges, ICollection<ChecklistHRItem> checklistHRItems)
+        {
+            Id = id;
+            CandidateId = candidateId;
+            ApplicationNo = applicationNo;
+            CandidateName = candidateName;
+            OrderItemId = orderItemId;
+            CategoryRef = categoryRef;
+            OrderRef = orderRef;
+            UserLoggedId = userLoggedId;
+            UserLoggedName = userLoggedName;
+            Charges = charges;
+            ChecklistHRItems = checklistHRItems;
+        }
+
         public int Id {get; set;}
         public int CandidateId { get; set; }
         public int ApplicationNo { get; set; }
@@ -24,6 +45,8 @@ namespace core.Dtos
 
         public String HrExecComments {get; set;}
         public bool ChecklistedOk {get; set;}
+        public bool AssessmentIsNull {get; set;}
+        public bool RequireInternalReview {get; set;}
         public ICollection<ChecklistHRItem> ChecklistHRItems {get; set;}
     }
 }

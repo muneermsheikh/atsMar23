@@ -1,70 +1,89 @@
+
 <div *ngIf="emp !== null && emp!== undefined">
      <div class="modal-header">
-          <div class="b">{{title}}</div>
-          <button class="primary mx-5 fa fa-check" (click)="emitEmployment()"></button>
-          <button class="stdd primary fa fa-close" (click)="bsModalRef.hide()" ></button>
+          <div class="b">Edit Employment data</div>
+          <button class="primary ml300 fa fa-check" (click)="emitEmployment()"></button>
+          <button class="stdd primary pull-right fa fa-close" (click)="bsModalRef.hide()" ></button>
      
      </div>
      <div class="modal-body">
-          <div class="stdd w75 b">Currency:</div>
-          <input type="text" class="stdd w80" [(ngModel)]="emp.salaryCurrency" >
-          <div class="stdd mx-2 w80 b alignR">salary</div>
-          <input type="number" class="stdd w80" [(ngModel)]="emp.salary" >
-          <div class="stdd w75 b alignR">contract</div>
-          <input type="number" class="stdd w40" [(ngModel)]="emp.contractPeriodInMonths" >
-          <div class="stdd mx-2 w50">months</div>
-          <br><div class="stdd w75 b">Leave/Year</div>
-          <input type="number" class="stdd w50" [(ngModel)]="emp.leavePerYearInDays" >
-          <div class="stdd mx-2 w80"> days, after </div>
-          <input type="number" class="stdd mx-2 w40" [(ngModel)]="emp.leaveAirfareEntitlementAfterMonths" >
-          <div class="stdd w40"> months</div>
-          
-          <div class="stdd mx-2 w50 b alignR">SC</div>
-          <input type="number" class="stdd w80" [(ngModel)]="emp.charges" >
-          <div class="stdd w80 mx-2 b">Accepted on</div>
-          <input class="stdd mx-2 w125"
-               type="text"
-               placeholder="Accepted On"
-               [(ngModel)]="emp.offerAcceptedOn"
-               bsDatepicker
-               [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
-          >   
+          <div class="stdd w125 b">Candidate:</div> <div class="stdd">{{emp.applicationNo}} {{emp.candidateName}}</div>
+          <br><div class="stdd w125 b">Selected As:</div> <div class="stdd">{{emp.categoryName}} on {{emp.selectedOn | date: 'ddMMMyy'}} </div>
+          <br><div class="stdd w125 b">Employer:</div> <div class="stdd">{{emp.customerName}}  (Order No. {{emp.orderNo}})</div>
           <hr>
-     
-          <div class="stdd mx-2 b w150">Provision</div>
-          <div class="stdd mx-2 b w125">Allowance</div>
-          <div class="stdd mx-2 b w50">free</div>
-          
+          <div class="stdd b blue">Remuneration Details</div>
           <br>
-          <div class="stdd mx-2 b w150">Housing Allowance</div>
-          <input type="number" class="stdd w80 mx-2 alignR" [(ngModel)]="emp.housingAllowance">
-          <input type="checkbox" 
-               class="form-check-input mx-10 alignCenter" 
-               [checked]="emp.housingProvidedFree"
-               (change)="emp.housingProvidedFree=!emp.housingProvidedFree"
-               [(ngModel)]="emp.housingProvidedFree"
-          >
-          <br>
-          <div class="stdd mx-2 w150">Food</div>
-          <input type="number" class="stdd w80 mx-2 alignR" [(ngModel)]="emp.foodAlowance">
-          <input type="checkbox" 
-               class="form-check-input mx-10 alignCenter" 
-               [checked]="emp.foodProvidedFree"
-               (change)="emp.foodProvidedFree=!emp.foodProvidedFree"
-               [(ngModel)]="emp.foodProvidedFree">
-          <br>
-          <div class="stdd mx-2 w150">Transport</div>
-          <input type="number" class="stdd w80 mx-2 alignR" [(ngModel)]="emp.transportAllowance">
-          <input type="checkbox" 
-               class="form-check-input mx-10 alignCenter" 
-               [checked]="emp.transportProvidedFree" 
-               (change)="emp.transportProvidedFree=!emp.transportProvidedFree"
-               [(ngModel)]="emp.transportProvidedFree"
-          >
-          <br>
-          <div class="stdd mx-2 w150">Other Allowance</div>
-          <input type="number" class="stdd w80 mx-2 alignR" [(ngModel)]="emp.otherAllowance">
-     
+          <div class="stdd col-5">
+               <div class="stdd w100 b">Currency</div>
+               <input type="text" class="stdd w40" [(ngModel)]="emp.salaryCurrency" >
+               <br><div class="stdd w100 b">salary</div>
+               <input type="number" class="stdd w80" [(ngModel)]="emp.salary" >
+               <br><div class="stdd w100 b">contract</div>
+               <input type="number" class="stdd w40" [(ngModel)]="emp.contractPeriodInMonths" >
+               <div class="stdd mx-1 w50">months</div>
+               <br><div class="stdd w100 b">Leave/Year</div>
+               <input type="number" class="stdd w40" [(ngModel)]="emp.leavePerYearInDays" >
+               <div class="stdd mx-2"> days </div>
+               <br><div class="stdd w100 b">after </div><input type="number" class="stdd w40" [(ngModel)]="emp.leaveAirfareEntitlementAfterMonths" >
+               <div class="stdd w40"> months</div>
+               
+               <br><div class="stdd w100 b">SC</div>
+               <input type="number" class="stdd w70" [(ngModel)]="emp.charges" >
+               <br><div class="stdd w150 b">Approved by</div> <div class="stdd w75">{{emp.approvedByEmpId}}</div>
+               <br><div class="stdd w100 b">Approved On</div>
+               <input type="checkbox" 
+                    class="form-check-input stdd"
+                    [(ngModel)]="emp.approved"
+                    [checked]="emp.approved"
+                    
+                    (click)="approvedClicked()"
+               >
+
+               <div class="stdd w30 b">On </div>
+               <input class="stdd mx-2 w125"
+                    type="text"
+                    placeholder="Accepted On"
+                    [(ngModel)]="emp.offerAcceptedOn"
+                    bsDatepicker
+                    [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+               >   
+               
+          </div>
+          <div class="stdd col-6">
+               <div class="stdd b w150">Provision</div>
+               <div class="stdd b w125">Allowance</div>
+               <div class="stdd b w50">free</div>
+               
+               <br>
+               <div class="stdd w150">Housing Allowance</div>
+               <input type="number" class="stdd w80 mx-2 alignR" [(ngModel)]="emp.housingAllowance">
+               <input type="checkbox" 
+                    class="form-check-input ml40 alignCenter" 
+                    [checked]="emp.housingProvidedFree"
+                    (change)="emp.housingProvidedFree=!emp.housingProvidedFree"
+                    [(ngModel)]="emp.housingProvidedFree"
+               >
+               <br>
+               <div class="stdd w150">Food</div>
+               <input type="number" class="stdd w80 mx-2 alignR" [(ngModel)]="emp.foodAllowance">
+               <input type="checkbox" 
+                    class="form-check-input ml40 alignCenter" 
+                    [checked]="emp.foodProvidedFree"
+                    (change)="emp.foodProvidedFree=!emp.foodProvidedFree"
+                    [(ngModel)]="emp.foodProvidedFree">
+               <br>
+               <div class="stdd w150">Transport</div>
+               <input type="number" class="stdd w80 mx-2 alignR" [(ngModel)]="emp.transportAllowance">
+               <input type="checkbox" 
+                    class="form-check-input ml40 alignCenter" 
+                    [checked]="emp.transportProvidedFree" 
+                    (change)="emp.transportProvidedFree=!emp.transportProvidedFree"
+                    [(ngModel)]="emp.transportProvidedFree"
+               >
+               <br>
+               <div class="stdd w150">Other Allowance</div>
+               <input type="number" class="stdd w80 mx-2 alignR" [(ngModel)]="emp.otherAllowance">
+          </div>
      </div>
      
      <div class="modal-footer">

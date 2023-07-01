@@ -95,7 +95,7 @@ namespace infra.Services
 
                //var cvrefs = await _context.CVRefs.Where(x => cvrefids.Contains(x.Id)).ToListAsync();
                var recAffected=0;
-               var dtls = await (from cvref in _context.CVRefs where cvrefids.Contains(cvref.Id)
+               /*var dtls = await (from cvref in _context.CVRefs where cvrefids.Contains(cvref.Id)
                     join item in _context.OrderItems on cvref.OrderItemId equals item.Id
                     join o in _context.Orders on item.OrderId equals o.Id
                     join empE in _context.Employees on item.HrExecId equals empE.Id into empExecutive
@@ -103,7 +103,7 @@ namespace infra.Services
                     select new {item.CategoryName, cvref, item.OrderNo, item.Id, o.Customer.CustomerName,  o.OrderDate,
                          HRExecKnownAs = empExec == null ? "" : empExec.KnownAs, HRExecEmail = empExec == null ? "" : empExec.Email
                     }).ToListAsync();
-
+               */
                //detals is the object that contains all details required:
                //   --   to update CVRef with selection/rejection values
                //   --   to create employment data if selected
@@ -118,8 +118,10 @@ namespace infra.Services
                     //join c in _context.Customers on o.CustomerId equals c.Id
                     join employeeExec in _context.Employees on item.HrExecId equals employeeExec.Id into ExecEmployees
                     from empExec in ExecEmployees.DefaultIfEmpty()
-                    join employeeSup in _context.Employees on item.HrSupId equals employeeSup.Id into SupEmployees
-                    from empSup in SupEmployees.DefaultIfEmpty()
+                    join employeeSup in _context.Employees on item.HrSupId equals employeeSup.Id into empDefault
+                    from empSup in empDefault.DefaultIfEmpty()
+                    join remunerations in _context.Remunerations on item.Id equals remunerations.OrderItemId into remunDefault
+                    from remun in remunDefault.DefaultIfEmpty()
                     join cv in _context.Candidates on cvref.CandidateId equals cv.Id
                     select new {
                          cvref, CVRefId=cvref.Id, CandidateName = cv.FullName, CandidateTitle="Mr.",     //**TODO*8 Add CandidateTitle to candidate
@@ -139,7 +141,15 @@ namespace infra.Services
                          HRSupId = empSup == null ? 0 : empSup.Id, 
                          HRSupName = empSup == null ? "" : empSup.KnownAs, 
                          HRSupEmai = empSup == null ? "" : empSup.Email, 
-                         HRSupGender = empSup == null ? "" : empSup.Gender
+                         HRSupGender = empSup == null ? "" : empSup.Gender,
+
+                         BasicSalary = remun.SalaryMin==0 ? remun.SalaryMax : remun.SalaryMin,
+                         HousingFree = remun.HousingProvidedFree, HousingAllowance = remun.HousingAllowance,
+                         TransportFree = remun.TransportProvidedFree, TransportAllowance= remun.TransportAllowance,
+                         FoodFree = remun.FoodProvidedFree, FoodAllowance = remun.FoodAllowance,
+                         OtherAllowance = remun.OtherAllowance, ContractPeriod = remun.ContractPeriodInMonths,
+                         LvPerYearInDays = remun.LeavePerYearInDays, LvAfterMonths = remun.LeaveAirfareEntitlementAfterMonths,
+                         weeklyHours = remun.WorkHours * 6
                     }).ToListAsync();
                
                foreach(var dtl in details) {
@@ -155,20 +165,23 @@ namespace infra.Services
                     if(cvref.CategoryId==0) cvref.CategoryId = dtl.CategoryId;
                }
                
-               var employments = new List<Employment>();
-
                foreach (var s in selDto)
                {
-                    var cvref = details.Where(x => x.cvref.Id== s.CVRefId)
+                    var cvref = details.Find(x => x.CVRefId == s.CVRefId);
+
+                    /*var cvref = details.Where(x => x.cvref.Id== s.CVRefId)
                          .Select(x => new {x.CVRefId, x.cvref, x.OrderItemId,
                               x.OrderId, x.OrderNo, x.CustomerName,
                               x.CategoryId, x.CategoryName,
                               x.ApplicationNo, x.CandidateName, x.CandidateId, x.CandidateGender, x.CandidateEmail, 
                                    x.CandidateKnownAs, x.CandidateTitle, x.CustomerCity,
                               x.HRExecId, x.HRExecGender, x.HRExecName, x.HRExecEmail,
-                              x.HRSupId, x.HRSupName, x.HRSupEmai, x.HRSupGender
+                              x.HRSupId, x.HRSupName, x.HRSupEmai, x.HRSupGender,
+                              x.ContractPeriod, x.BasicSalary, x.HousingFree, x.HousingAllowance, 
+                              x.FoodFree, x.FoodAllowance, x.TransportFree, x.TransportAllowance, x.OtherAllowance, 
+                              x.LvPerYearInDays, x.LvAfterMonths, x.Charges, x.weeklyHours
                          }).FirstOrDefault();
-
+                    */
                     if(cvref==null)  continue;        //save the error
 
                     var emp=new Employment();
@@ -176,13 +189,20 @@ namespace infra.Services
                     //A1 - create employment record
                     if(s.SelectionStatusId==(int)EnumCVRefStatus.Selected) {
                          var salCurrency = await getSalaryCurrency(cvref.OrderItemId);
-                              emp = await _context.Employments.Where(x => x.CVRefId == cvref.CVRefId).FirstOrDefaultAsync();
-                              if(emp==null) {
-                                   emp = new Employment(cvref.CVRefId, s.DecisionDate,salCurrency,0,24,false,0,false,0,false,0,0,21,24,0 );
-                                   _unitOfWork.Repository<Employment>().Add(emp);
-                                   recAffected++;
-                                   employments.Add(emp);
-                              }
+                         
+                         emp = await _context.Employments.Where(x => x.CVRefId == cvref.CVRefId).FirstOrDefaultAsync();
+                         
+                         if(emp==null) {
+                              emp = new Employment(cvref.CVRefId, cvref.weeklyHours, s.DecisionDate, salCurrency, 
+                                   cvref.BasicSalary,cvref.ContractPeriod, cvref.HousingFree, cvref.HousingAllowance, 
+                                   cvref.FoodFree,cvref.FoodAllowance, cvref.TransportFree, cvref.TransportAllowance, 
+                                   cvref.OtherAllowance,cvref.LvPerYearInDays, cvref.LvAfterMonths, cvref.Charges,
+                                   cvref.CategoryId, cvref.CandidateId, cvref.ApplicationNo, cvref.CandidateName, 
+                                   cvref.CustomerName, cvref.CategoryName);
+
+                              _unitOfWork.Repository<Employment>().Add(emp);
+                              recAffected++;
+                         }
                          
                          //A2 - CREATE THE MAIN SelectionDcision record
                          seldecision = new SelectionDecision( cvref.CategoryId, cvref.CategoryName, cvref.OrderId, cvref.OrderNo, 
@@ -214,9 +234,9 @@ namespace infra.Services
                          var nextStage = await _context.DeployStages.Where(x => x.Id==(int)EnumDeployStatus.Selected).FirstOrDefaultAsync();
                          
                          var deployTrans = new Deploy {
-                              CVRefId=cvref.CVRefId, TransactionDate=s.DecisionDate, StageId=EnumDeployStatus.Selected, 
-                              NextStageId=(EnumDeployStatus)nextStage.NextDeployStageSequence, 
-                              NextEstimatedStageDate=s.DecisionDate.AddDays(nextStage.EstimatedDaysToCompleteThisStage),
+                              CVRefId=cvref.CVRefId, TransactionDate=s.DecisionDate, Sequence=EnumDeployStatus.Selected, 
+                              NextSequence=(EnumDeployStatus)nextStage.NextSequence, 
+                              NextStageDate=s.DecisionDate.AddDays(nextStage.EstimatedDaysToCompleteThisStage),
                               CVRef=cvref.cvref
                          };
 
@@ -238,16 +258,18 @@ namespace infra.Services
                          }
                     
                          //A5 - Update CVRef record with deployment stage information
-                         cvref.cvref.DeployStageId = (int)EnumDeployStatus.Selected;
+                         cvref.cvref.Sequence = (int)EnumDeployStatus.Selected;
                          cvref.cvref.DeployStageDate = dateTimeNow;
-                    } else {
+                         cvref.cvref.NextSequence = (int)EnumDeployStatus.ReferredForMedical;
+                         
+                    } else {       //not selected
                          rejectedMsgsDto.Add(selectedMsgDto);
+                         cvref.cvref.RefStatus = s.SelectionStatusId;
+                         cvref.cvref.RefStatusDate=dateTimeNow;
                     }
                     
                     //this flow is for all selection decisions, as against the above loop only for selected decision
                     //B1 - for all flows - selected and rejected, update CVRef with refStatus and RefStatusDate
-                    cvref.cvref.RefStatus = s.SelectionStatusId;
-                    cvref.cvref.RefStatusDate=dateTimeNow;
                     _unitOfWork.Repository<CVRef>().Update(cvref.cvref);
                     recAffected++;
                     
@@ -281,12 +303,6 @@ namespace infra.Services
                     { foreach (var m in msgs) { messages.Add(m); } }
                }
 
-               var empdtos = new List<EmploymentDto>();
-               
-               if(employments !=null && employments.Count > 0) {
-                    empdtos = (List<EmploymentDto>)_mapper.Map<ICollection<Employment>, ICollection<EmploymentDto>>(employments);
-               }
-
                if(messages.Count > 0 ) {
                     foreach(var m in messages) {
                          _unitOfWork.Repository<EmailMessage>().Add(m);
@@ -296,7 +312,7 @@ namespace infra.Services
                await _unitOfWork.Complete();
                //recAffected=await _context.SaveChangesAsync();
                var cvrefidsAffected = await _context.CVRefs.Where(x => cvrefids.Contains(x.Id) && x.RefStatusDate==dateTimeNow).Select(x => x.Id).ToListAsync();
-               return new SelectionMsgsAndEmploymentsDto{EmailMessages = msgs, EmploymentDtos=empdtos, CvRefIdsAffected=cvrefidsAffected};
+               return new SelectionMsgsAndEmploymentsDto{EmailMessages = msgs, CvRefIdsAffected=cvrefidsAffected};
 
                
           }
@@ -310,7 +326,7 @@ namespace infra.Services
           }
           public async Task<ICollection<SelectionStatus>> GetSelectionStatus()
           {
-               return await _context.SelectionStatuses.OrderBy(x => x.Status).ToListAsync();
+               return await _context.SelectionStatuses.OrderBy(x => x.Id).ToListAsync();
           }
 
           public async Task<Pagination<SelectionsPendingDto>> GetPendingSelections(CVRefSpecParams specParams)

@@ -115,14 +115,12 @@ namespace api.Controllers
                var loggedInEmpId = userdto.LoggedInEmployeeId;
 
                var msgs = await _candidateAssessService.EditCandidateAssessment(candidateAssessment, loggedInEmpId, userdto.LoggedIAppUsername);
-               if (!string.IsNullOrEmpty(msgs.ErrorString))
-               {
-                    return BadRequest(new ApiResponse(400, msgs.ErrorString));
+               if(msgs==null) {
+                    return BadRequest(new ApiResponse(400, "failed to update candidate assessment"));
                }
-               else
-               {
-                    return Ok(true);
-               }
+               
+               return Ok(msgs);
+               
           }
 
           [Authorize]    //(Roles ="HRManager, HRSupervisor, HRExecutive")]
@@ -171,15 +169,31 @@ namespace api.Controllers
           {
                var loggedInUser = await _userManager.FindByEmailFromClaimsPrincipal(User);
                var loggedInEmployeeId = loggedInUser.loggedInEmployeeId;
+
                var assessment = await _candidateAssessService.GetCandidateAssessmentAndChecklist(candidateId, orderItemId, loggedInEmployeeId);
                if (assessment != null) {
                     if(assessment.Assessed != null) assessment.Assessed.AssessedByName=loggedInUser.DisplayName;
                     return Ok(assessment);
                } else {
-                    return null;
+                    assessment = new CandidateAssessmentAndChecklistDto();
+                    assessment.ErrorString ="failed to get candidate assessment.  A possible reason could be: The ";
                }
+
+               return Ok(assessment);
           }
 
+          [Authorize]
+          [HttpGet("checklist/{orderitemid}/{candidateid}")]
+          public async Task<ActionResult<ChecklistHR>> CreateChecklist(int orderitemid, int candidateid)
+          {
+               var loggedInUser = await _userManager.FindByEmailFromClaimsPrincipal(User);
+               var loggedInEmployeeId = loggedInUser.loggedInEmployeeId;
+
+               var checklist = await _candidateAssessService.CreateChecklist(candidateid, orderitemid, loggedInEmployeeId);
+               if(checklist != null) return Ok(checklist);
+
+               return BadRequest(new ApiResponse(400, "failed to create new checklist"));
+          }
           
           [Authorize]    //(Roles ="Admin, HRManager, HRSupervisor, HRExecutive")]
           [HttpGet("assessedandapproved")]

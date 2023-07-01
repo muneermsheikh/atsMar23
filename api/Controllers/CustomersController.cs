@@ -60,7 +60,7 @@ namespace api.Controllers
         }
 
         [HttpGet("customersBrief")]
-        public async Task<ActionResult<ICollection<CustomerBriefDto>>> GetCustomersBrief([FromQuery]CustomerSpecParams custParams)
+        public async Task<ActionResult<Pagination<CustomerBriefDto>>> GetCustomersBrief([FromQuery]CustomerSpecParams custParams)
         {
             var briefs = await _customerService.GetCustomersBriefAsync(custParams);
             if(briefs==null) return NotFound("No data returned");

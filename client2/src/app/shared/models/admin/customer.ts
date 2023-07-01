@@ -1,5 +1,6 @@
 import { IAgencySpecialty } from "./agencySpecialty";
 import { ICustomerIndustry } from "./customerIndustry";
+import { ICustomerOfficial } from "./customerOfficial";
 import { ICustomerOfficialDto } from "./customerOfficialDto";
 
 
@@ -24,8 +25,9 @@ export interface ICustomer {
      createdOn: Date;
      introduction: string;
      customerIndustries: ICustomerIndustry[];
-     customerOfficials: ICustomerOfficialDto[];
+     customerOfficials: ICustomerOfficial[];
      agencySpecialties: IAgencySpecialty[];
+     lastActive: Date;
  }
 
  export class Customer implements ICustomer {
@@ -47,8 +49,10 @@ export interface ICustomer {
     logoUrl?= '';
     customerStatus= 0;
     createdOn = new Date('1900-01-01');
+
     introduction= '';
     customerIndustries: ICustomerIndustry[]=[];
-    customerOfficials: ICustomerOfficialDto[]=[];
+    customerOfficials: ICustomerOfficial[]=[];
     agencySpecialties: IAgencySpecialty[]=[];
+    lastActive = new Date('1900-01-01');
  }

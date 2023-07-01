@@ -23,7 +23,7 @@ import { MastersService } from "../masters/masters.service";
      */
  
      resolve(): Observable<IPagination<IQualification[]> | undefined | null > {
-        var qs = this.qService.getQuaifications(false);
+        var qs = this.qService.getQualifications(false);
         return qs;
      }
 

@@ -1,0 +1,28 @@
+.stdd {display: inline-block;
+	font-size: medium;
+	margin-left: 1px;
+	margin-right: 1px;
+    vertical-align: top;
+}
+
+.b {font-weight: bold;}
+
+.w50 {width: 50px;}
+.w100 {width: 100px;}
+.w125 {width: 125px;}
+.w150 {width: 150px;}
+.w225 {width: 225px;}
+.w250 {width: 250px;}
+.w300 {width: 300px;}
+.w350 {width: 350px;}
+
+.ng-select.custom {
+	max-width: 350px;
+	display: inline-block;
+	font-size: medium;
+	vertical-align: top;
+}
+
+.ng-select.dropdown {
+	border: 2px solid black;
+} 

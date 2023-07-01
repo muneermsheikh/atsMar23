@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ReplaySubject, of } from 'rxjs';
+import { Observable, ReplaySubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
@@ -20,6 +20,10 @@ export class MastersService {
   private currentUserSource = new ReplaySubject<IUser>(1);
   currentUser$ = this.currentUserSource.asObservable();
   mParams = new paramsMasters();
+  empParams = new paramsMasters();
+  empKnownAs?: IEmployeeIdAndKnownAs;
+  empsKnownAs: IEmployeeIdAndKnownAs[]=[];
+
   paginationCategory?: IPagination<IProfession[]>;
   paginationQualification?: IPagination<IQualification[]>;
 
@@ -30,16 +34,13 @@ export class MastersService {
 
   cacheCat = new Map();
   cacheQ = new Map();   //qualifications
+  cacheEmp = new Map();
 
   constructor(private http: HttpClient) { }
   
   getCategoryList() {
 
       return this.http.get<IProfession[]>(this.apiUrl + 'masters/categories', {});
-  }
-
-  getCategoryPaginated() {
-    return this.http.get<IPagination<IProfession[]>>(this.apiUrl + 'masters/categorylist');
   }
 
   getCategories(useCache: boolean) { 
@@ -61,13 +62,13 @@ export class MastersService {
     params = params.append('pageIndex', this.mParams.pageNumber.toString());
     params = params.append('pageSize', this.mParams.pageSize.toString());
       
-    return this.http.get<IPagination<IQualification[]>>(this.apiUrl + 'masters/qpaginated', 
+    return this.http.get<IPagination<IProfession[]>>(this.apiUrl + 'masters/cpaginated', 
         {observe: 'response', params})
         .pipe(
           map(
             (response) => {
               this.cacheCat.set(Object.values(this.mParams).join('-'), response.body?.data);
-              this.paginationQualification = response.body!;
+              this.paginationCategory = response.body!;
               return response.body!;
           })
         )
@@ -77,6 +78,7 @@ export class MastersService {
   getQualificationList(){
     return this.http.get<IQualification[]>(this.apiUrl + 'masters/qualificationList');
   }
+
   getCategory(id: number) {
     let category: IProfession;
     this.cacheCat.forEach((categories: IProfession[]) => {
@@ -92,13 +94,13 @@ export class MastersService {
   }
 
 //quaifications
-  getQuaifications(useCache: boolean) { 
+  getQualifications(useCache: boolean): Observable<IPagination<IQualification[]> | null|undefined> { 
 
     if (useCache === false)  this.cacheQ = new Map();
     
     if (this.cacheQ.size > 0 && useCache === true) {
       if (this.cacheQ.has(Object.values(this.mParams).join('-'))) {
-        this.paginationQualification!.data = this.cacheCat.get(Object.values(this.mParams).join('-'));
+        this.paginationQualification!.data = this.cacheQ.get(Object.values(this.mParams).join('-'));
         return of(this.paginationQualification);
       }
     }
@@ -111,7 +113,7 @@ export class MastersService {
     params = params.append('pageIndex', this.mParams.pageNumber.toString());
     params = params.append('pageSize', this.mParams.pageSize.toString());
       
-    return this.http.get<IPagination<IQualification[]>>(this.apiUrl + 'masters/cpaginated', 
+    return this.http.get<IPagination<IQualification[]>>(this.apiUrl + 'masters/qpaginated', 
         {observe: 'response', params})
         .pipe(
           map(
@@ -139,6 +141,10 @@ export class MastersService {
     return this.http.get<IQualification>(this.apiUrl + 'masters/qualification/' + id);
   }
 
+  updateQualification(id: number, name: string) {
+    var prof: IQualification = {id: id, name: name};
+    return this.http.put<IQualification>(this.apiUrl + 'masters/editqualification', prof);
+  }
 
 //industries
 

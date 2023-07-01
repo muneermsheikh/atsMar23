@@ -1,24 +1,41 @@
 <div *ngIf="cv!==undefined && cv !== null" class="col-12">
      <div class="stdd row mb-0">
+          <div class="stdd w100" mouseover="style.cursor = 'pointer'">{{cv.customerName}}</div>
+          <div class="stdd w250" >{{cv.categoryRef}}</div>
+          
           <div class="stdd form-check mx-1 w10">
-               <input type="text" 
+               <input type="checkbox" 
                     class="form-check-input"
                     [checked]="cv.checked"
                     value="cv.id"
-                    (change)="cvChecked(cv.id, cv.checked)"
+                    (change)="cv.checked = !cv.checked" 
+                    (click)="cvChecked(cv.checked)"
+                    title="disabled if charges not agreed"
                >
           </div>
-          <div class="stdd w150" mouseover="style.cursor = 'pointer'">{{cv.customerName}}</div>
-          <div class="stdd w50" >{{cv.orderItemRef}}</div>
-          <div class="stdd w150" >{{cv.applicationNo}}</div>
+          <div class="stdd w75" title="click to view CV" (click)="displayCV()" >{{cv.applicationNo}}</div>
+
           <div class="stdd w150" mouseover="style.cursor = 'pointer'" 
-               (click)="displayChecklistModal(cv)" 
-               
-          >{{cv.candidateName}}</div>
-          <div class="stdd w150" >{{cv.assessedOn | date}}</div>
-          <div class="stdd w150" >{{cv.assessedByName}}</div>
-          <div class="stdd w150" >{{cv.assessedResult}}</div>
-          <div class="stdd w75" title="click to display HR Checklist, which includes charges fixed and agreed by candidate" >
+               title="click to display checklist" >{{cv.candidateName}}
+          </div>
+
+          <div class="stdd w150" mouseover="style.cursor = 'pointer'" 
+          >{{cv.agentName}}</div>
+
+          <div class="stdd w150" >{{cv.assessedOn | date: 'ddMMMyy'}}</div>
+          <div class="stdd w100" >{{cv.assessedByName}}</div>
+          <div class="stdd w150" 
+               [ngClass]="cv.assessedResult==='Good' || 
+                    cv.assessedResult==='Very Good' || 
+                    cv.assessedResult==='Excellent' ||
+                    cv.assessedResult==='Not Required'
+                    ? 'green' : 'red'"
+               >{{cv.assessedResult}}</div>
+          
+          <div class="stdd w75 fa fa-listcheck" 
+               title="click to display HR Checklist, which includes charges fixed and agreed by candidate" 
+               (click)="showHRChecklist()" style="cursor: pointer;"
+               >
                {{cv.charges}}
           </div>
      </div>

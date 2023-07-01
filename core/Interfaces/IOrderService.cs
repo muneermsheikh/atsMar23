@@ -1,4 +1,5 @@
 using core.Dtos;
+using core.Entities.EmailandSMS;
 using core.Entities.Orders;
 using core.Params;
 
@@ -20,6 +21,8 @@ namespace core.Interfaces
             Task<OrderBriefDtoR> GetOrderBrief(int OrderId);
             //Task<ICollection<OrderBriefDtoR>> GetOpenOrdersBrief();
 
+            Task<EmailMessage> ComposeMsg_AckToClient(int orderid);
+            
         //order items
             Task<IReadOnlyList<OrderItem>> GetOrderItemsByOrderIdAsync(int OrderId);
             Task<ICollection<OrderItemBriefDto>> GetOrderItemsBriefDtoByOrderId(int OrderId);

@@ -15,7 +15,6 @@ import { IProfession } from 'src/app/shared/models/masters/profession';
 import { OrderService } from '../order.service';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
-import { SharedService } from 'src/app/shared/shared.service';
 import { ReviewService } from '../review.service';
 import { ConfirmService } from 'src/app/shared/services/confirm.service';
 import { ToastrService } from 'ngx-toastr';
@@ -33,7 +32,8 @@ import { dLForwardToAgent } from 'src/app/shared/models/admin/dlforwardToAgent';
 import { IDLForwardCategory, dLForwardCategory } from 'src/app/shared/models/admin/dlForwardCategory';
 import { dLForwardCategoryOfficial } from 'src/app/shared/models/admin/dlForwardCategoryOfficial';
 import { IOrderAssignmentDto, orderAssignmentDto } from 'src/app/shared/dtos/admin/orderAssignmentDto';
-import { IDLForwardToAgent } from 'src/app/shared/models/admin/dlforwardToAgent';
+import { AccountService } from 'src/app/account/account.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-order-edit',
@@ -111,9 +111,12 @@ export class OrderEditComponent implements OnInit {
       private confirmService: ConfirmService,
       private toastr: ToastrService, 
       private taskService: UserTaskService,
+      private accountsService: AccountService,
       private fb: FormBuilder) {
           this.routeId = this.activatedRoute.snapshot.params['id'];
           this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+
+          this.accountsService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);
 
           //navigationExtras
           let nav: Navigation|null = this.router.getCurrentNavigation() ;
@@ -122,11 +125,12 @@ export class OrderEditComponent implements OnInit {
               this.bolNavigationExtras=true;
               if(nav.extras.state.returnUrl) this.returnUrl=nav.extras.state.returnUrl as string;
 
-              if( nav.extras.state.tasktoedit) {
+              if( nav.extras.state.user) {
                 this.user = nav.extras.state.user as IUser;
                 //this.hasEditRole = this.user.roles.includes('AdminManager');
                 //this.hasHRRole =this.user.roles.includes('HRSupervisor');
               }
+              //if(nav.extras.state.object) this.orderitem=nav.extras.state.object;
           }
           this.bcService.set('@editOrder',' ');
    }
@@ -244,6 +248,10 @@ export class OrderEditComponent implements OnInit {
           this.toastr.warning('updating order ...');
           this.UpdateOrder();
       }
+    }
+
+    acknowledgeToClient() {
+      
     }
 
     private CreateOrder() {
@@ -375,8 +383,7 @@ export class OrderEditComponent implements OnInit {
       var orderitemid = this.getName(index);
         this.service.getJD(orderitemid).subscribe(response => {
             var jd = response;
-            console.log('jd retrieved from api: ', jd);
-
+ 
             const initialState = {
               class: 'modal-dialog-centered modal-lg',
                title: 'job description',
@@ -709,6 +716,13 @@ export class OrderEditComponent implements OnInit {
       
     }
 
+    assessItem(index: number){
+      var orderitembrief = this.getControls()[index].value;
+      var orderitemid = orderitembrief.id;
+
+      this.navigateByRoute('/hr/itemassess/' + orderitemid, orderitembrief, true);
+    }
+
     formChanged() {
       console.log('form changed event');
     }
@@ -718,6 +732,20 @@ export class OrderEditComponent implements OnInit {
 
       var q = +this.getQnty(index);
       this.setMinCVs(index, q*3);
+    }
+
+    navigateByRoute(routeString: string, obj: any,  editable: boolean) {
+      let route =  routeString;
+      this.router.navigate(
+          [route], 
+          { state: 
+            { 
+              user: this.user, 
+              object: obj,
+              toedit: editable, 
+              returnUrl: '/orders/edit/' + this.routeId
+            } }
+        );
     }
 
 }

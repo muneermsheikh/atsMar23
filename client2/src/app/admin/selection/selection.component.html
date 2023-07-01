@@ -1,3 +1,4 @@
+<br><br>
 <div class="mx-3">
      <div *ngIf="selectionsPending.length===0">
           no selections pending
@@ -97,17 +98,17 @@
                     <label class="stdd mx-2 w150">{{item.customerName}}</label>
                     <label class="stdd mx-2 w150">{{item.categoryRefAndName}}</label>
                     <label class="stdd mx-2 w75">{{item.referredOn | date : 'd-MMM-yy'}}</label>
-                    <ng-select *ngIf="selectionStatus" class="stdd ml5 w300"
+                    <ng-select *ngIf="selectionStatus" class="custom"
                          name="selectionStatusId"
                          [items]="selectionStatus"
                          bindLabel="status"
                          bindValue="id"
                          labelForId="status"
-                         placeholder="Selection status"
                          clearAllText="Clear"
                          [(ngModel)]="item.selectionStatusId"
                     >
                     </ng-select>
+                    <!--style="border-style: inset; list-style: inside;"-->
                     <input type="text" class="stdd w300 ml2" name="remarks" [(ngModel)]="item.remarks" >
                     <!-- 
                          <button class="stdd mx-2 btn btn-outline-primary fa fa-usd" [disabled]="item.selectionStatusId !== statusSelected" 
@@ -117,5 +118,7 @@
           </form>
 
 </div>
-
+<div>
+     {{form.value | json}}
+</div>
 

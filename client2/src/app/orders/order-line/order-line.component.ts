@@ -18,6 +18,8 @@ export class OrderLineComponent implements OnInit {
   @Output() dlFwdToAssociatesEvent = new EventEmitter<number>();
   @Output() deleteEvent = new EventEmitter<number>();
   @Output() dlForwardedToAssociatesEvent = new EventEmitter<number>();
+  @Output() acknowledgeToClientEvent = new EventEmitter<number>();
+  @Output() cvreferredEvent = new EventEmitter<number>();
 
   menuTopLeftPosition =  {x: 0, y: 0}
 
@@ -75,4 +77,11 @@ export class OrderLineComponent implements OnInit {
     this.dlFwdToAssociatesEvent.emit(this.order?.id);
   }
 
+  AcknowledgeClicked() {
+    this.acknowledgeToClientEvent.emit(this.order?.id);
+  }
+
+  cvReferredClicked() {
+    this.cvreferredEvent.emit(this.order?.id);
+  }
 }

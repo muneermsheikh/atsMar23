@@ -3,9 +3,11 @@ export interface ICandidateAssessedDto
      id: number;
      checked: boolean;
      orderItemId: number;
-     orderItemRef: string;
+     categoryRef: string;
      categoryName: string;
      applicationNo: number;
+     agentName: string;
+     cityName: string;
      customerName: string;
      requireInternalReview: boolean;
      candidateId: number;
@@ -26,9 +28,11 @@ export class CandidateAssessedDto implements ICandidateAssessedDto
      id= 0;
      checked= false;
      orderItemId= 0;
-     orderItemRef= '';
+     categoryRef= '';
      categoryName= '';
      applicationNo= 0;
+     agentName = '';
+     cityName = '';
      customerName= '';
      requireInternalReview= false;
      candidateId= 0;

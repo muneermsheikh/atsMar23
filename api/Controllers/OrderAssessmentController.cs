@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+     [Authorize]
      public class OrderAssessmentController : BaseApiController
      {
           private readonly IOrderAssessmentService _orderAssessmentService;
@@ -16,14 +17,14 @@ namespace api.Controllers
                _orderAssessmentService = orderAssessmentService;
           }
 
-          [Authorize(Roles = "HRManager, HRSupervisor, HRExecutive")]
+          //[Authorize]    //(Roles = "HRManager, HRSupervisor, HRExecutive")]
           [HttpPost("copystddq/{orderitemid}")]
           public async Task<OrderItemAssessment> CopyStddQToOrderItemAssessment(int orderitemid)
           {
                return await _orderAssessmentService.CopyStddQToOrderAssessmentItem(orderitemid);
           }
 
-          [Authorize(Roles = "HRManager, HRSupervisor")]
+          //[Authorize]    //(Roles = "HRManager, HRSupervisor")]
           [HttpPost("{orderId}")]
           public async Task<ActionResult<OrderItemAssessment>> AddAssessmentItemsForNewOrderId(int orderId) 
           {
@@ -35,7 +36,7 @@ namespace api.Controllers
 
           }
 
-          [Authorize(Roles = "HRManager, HRSupervisor, HRExecutive")]
+          //[Authorize]    //(Roles = "HRManager, HRSupervisor, HRExecutive")]
           [HttpGet("stddqsbysubject")]
           public async Task<ActionResult<Pagination<AssessmentQBank>>> GetStddQsBySubject(AssessmentStddQsParams stddQParams)
           {
@@ -43,7 +44,7 @@ namespace api.Controllers
                return Ok(new Pagination<AssessmentQBank>(stddQParams.PageIndex, stddQParams.PageSize, data.Count, data));
           }
 
-          [Authorize(Roles = "HRManager, HRSupervisor, HRExecutive")]
+          //[Authorize]    //(Roles = "HRManager, HRSupervisor, HRExecutive")]
           [HttpGet("itemassessment/{orderitemid}")]
           public async Task<ActionResult<OrderItemAssessment>> GetOrderItemAssessmentQs(int orderitemid)
           {
@@ -51,7 +52,7 @@ namespace api.Controllers
                return itemassessment;
           }
 
-          [Authorize]
+          //[Authorize]
           [HttpGet("itemassessmentQ/{orderitemid}")]
           public async Task<ICollection<OrderItemAssessmentQ>> GetItemAssessmentQs(int orderitemid)
           {
@@ -59,7 +60,7 @@ namespace api.Controllers
                return qs;
           }
 
-          [Authorize]
+          //[Authorize]
           [HttpGet("orderassessment/{orderid}")]
           public async Task<ActionResult<ICollection<OrderItemAssessment>>> GetOrderAssessment(int orderid)
           {
@@ -71,28 +72,28 @@ namespace api.Controllers
 
           
 
-          [Authorize(Roles = "HRManager, HRSupervisor, HRExecutive")]
+          //[Authorize]    //(Roles = "HRManager, HRSupervisor, HRExecutive")]
           [HttpPut("editassessment")]
           public async Task<ActionResult<bool>> EditOrderItemAssessment(OrderItemAssessment orderItemAssessment)
           {
                return await _orderAssessmentService.EditOrderAssessmentItem(orderItemAssessment);
           }
 
-          [Authorize(Roles = "HRManager, HRSupervisor, HRExecutive")]
+          //[Authorize]    //(Roles = "HRManager, HRSupervisor, HRExecutive")]
           [HttpPut("updateassessmentqs")]
           public async Task<ActionResult<bool>> EditOrderItemAssessments(ICollection<OrderItemAssessmentQ> assessmentQs)
           {
                return await _orderAssessmentService.EditOrderAssessmentQs(assessmentQs);
           }
 
-          [Authorize(Roles = "HRManager, HRSupervisor, HRExecutive")]
+          //[Authorize]         //(Roles = "HRManager, HRSupervisor, HRExecutive")]
           [HttpDelete("assessmentq/{assessmentQId}")]
           public async Task<ActionResult<bool>> DeleteOrderItemAssessmentQ(int assessmentQId)
           {
                return await _orderAssessmentService.DeleteAssessmentItemQ(assessmentQId);
           }
 
-          [Authorize(Roles = "HRManager, HRSupervisor, HRExecutive")]
+          //[Authorize]    //(Roles = "HRManager, HRSupervisor, HRExecutive")]
           [HttpDelete("assessment/{orderitemid}")]
           public async Task<ActionResult<bool>> DeleteAssessment(int orderitemid)
           {

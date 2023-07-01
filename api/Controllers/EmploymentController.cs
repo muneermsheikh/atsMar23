@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using core.Entities.HR;
 using core.Interfaces;
 using core.Params;
@@ -11,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-     public class EmploymentController : BaseApiController
+    public class EmploymentController : BaseApiController
      {
           private readonly IUnitOfWork _unitOfWork;
           private readonly IEmploymentService _employmentService;
@@ -21,20 +18,17 @@ namespace api.Controllers
                _unitOfWork = unitOfWork;
           }
 
-          [Authorize(Roles = "Admn, HRManager, HRSupervisor, HRExecutive, DocumentControllerAdmin, DocumentControllerProcess")]
+          [Authorize]   //(Roles = "Admn, HRManager, HRSupervisor, HRExecutive, DocumentControllerAdmin, DocumentControllerProcess")]
           [HttpGet]
-          public async Task<ActionResult<Pagination<Employment>>> GetEmployments(EmploymentParams employmentParams)
+          public async Task<ActionResult<Pagination<Employment>>> GetEmployments([FromQuery] EmploymentParams employmentParams)
           {
-               var spec = new EmploymentSpecs(employmentParams);
-               var specCount = new EmploymentForCountSpecs(employmentParams);
-               var emps = await _unitOfWork.Repository<Employment>().ListAsync(spec);
-               var ct = await _unitOfWork.Repository<Employment>().CountAsync(specCount);
+              var emps = await _employmentService.GetEmployments(employmentParams);
+              if(emps == null) return BadRequest("failed to return matching records");
 
-               return Ok(new Pagination<Employment>(employmentParams.PageIndex,
-                    employmentParams.PageSize, ct, emps));
+              return Ok(emps);
           }
 
-          [Authorize(Roles = "Admn, HRManager, HRSupervisor, DocumentControllerAdmin")]
+          [Authorize] //Roles = "Admn, HRManager, HRSupervisor, DocumentControllerAdmin")]
           [HttpPost]
           public async Task<ActionResult<Employment>> AddEmployment(Employment employment)
           {
@@ -42,21 +36,18 @@ namespace api.Controllers
               var sel = await _unitOfWork.Repository<SelectionDecision>().GetByIdAsync(employment.SelectionDecisionId);
               if (sel == null) return null;
 
-              _unitOfWork.Repository<Employment>().Add(employment);
+                var emp = await _employmentService.AddEmployment(employment);
 
-              if (await _unitOfWork.Complete() > 0) {
-                  return await _unitOfWork.Repository<Employment>().GetEntityWithSpec(
-                      new EmploymentSpecs(new EmploymentParams{CVRefId=employment.CVRefId})
-                  );
-              } else {
-                  return null;
-              }
+                if(emp == null) return BadRequest("failed to add the employment data");
+
+              return Ok(emp);
           }
 
-        [Authorize]
+        /*[Authorize]
         [HttpGet("employment/{cvrefid}")]
         public async Task<Employment> GetEmployment (int cvrefid)
         {
+            
             return await _employmentService.GetEmployment(cvrefid);
         }
 
@@ -88,14 +79,21 @@ namespace api.Controllers
         {
             return await _employmentService.GetEmploymentFromSelId(id);
         }
+        */
 
-        [Authorize(Roles = "Admn, HRManager, HRSupervisor, DocumentControllerAdmin")]
+        [Authorize] //Roles = "Admn, HRManager, HRSupervisor, DocumentControllerAdmin")]
         [HttpPut("employment")]
         public async Task<bool> UpdateEmployment(Employment employment)
         {
             return await _employmentService.EditEmployment(employment);
         }
 
+        [Authorize] //Roles = "Admn, HRManager, HRSupervisor, DocumentControllerAdmin")]
+        [HttpDelete("{employmentid}")]
+        public async Task<bool> UpdateEmployment(int employmentid)
+        {
+            return await _employmentService.DeleteEmployment(employmentid);
+        }
 
 
      }

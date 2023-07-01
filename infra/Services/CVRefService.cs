@@ -8,6 +8,8 @@ using core.Dtos;
 using infra.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using core.Params;
+using core.Entities.Process;
 
 namespace infra.Services
 {
@@ -101,7 +103,7 @@ namespace infra.Services
                var shortlistedCVsNotReferred = await _context.CandidateAssessments.Where(x => CandidateAssessmentIds.Contains(x.Id) && x.CvRefId == 0 ).ToListAsync();
                var dbChanged=false;          //if true, it writes to DB at line 167
 
-               if (shortlistedCVsNotReferred == null && shortlistedCVsNotReferred.Count == 0) return null;
+               if (shortlistedCVsNotReferred == null || shortlistedCVsNotReferred.Count == 0) return null;
 
                //extract data for writing to CVRef table and to compose messages
                var itemdetails = await (from r in _context.CandidateAssessments where shortlistedCVsNotReferred.Select(x => x.Id).ToList().Contains(r.Id) 
@@ -123,21 +125,20 @@ namespace infra.Services
                          CandidateId = cand.Id,
                          SrNo = i.SrNo, 
                          Ecnr = cand.Ecnr,
-                         ApplicationNo = 0, //cand.ApplicationNo,
+                         ApplicationNo = cand.ApplicationNo,
                          CandidateName = cand.FullName,
                          HRExecId = i.HrExecId?? 0,
                          CandidateAssessmentId = r.Id,
                          candAssessment = r,
                          DocControllerAdminTaskId = r.TaskIdDocControllerAdmin,
                          ChargesAgreed = checklist==null ? 0 : checklist.ChargesAgreed,
-                         Charges = checklist == null || checklist.Charges == 0 
+                         Charges = checklist.Charges   /* checklist == null || checklist.Charges == 0 
                               ? "Undefined" 
                               : checklist == null ? "undefined" :  checklist.Charges == checklist.ChargesAgreed
                                    ? "Agreed" 
-                                   : "Disparity",
-                         
-                         candassessmentid=r.Id, orderid=ordr.Id, 
-                         taskdescription= "CV approved to send to client: Application No.:" + 
+                                   : "Disparity" */
+                         , candassessmentid=r.Id, orderid=ordr.Id
+                         , taskdescription= "CV approved to send to client: Application No.:" + 
                               cand.ApplicationNo + ", Candidate: " + cand.FullName +
                               "forward to: " +  ordr.Customer.CustomerName + " against requirement " + 
                               ordr.OrderNo + "-" + i.SrNo + "-" + i.Category.Name +
@@ -166,7 +167,7 @@ namespace infra.Services
                          cvref =new CVRef(q.OrderItemId, q.CategoryId, q.OrderId, q.OrderNo,
                               q.CustomerName, q.CategoryName, q.CandidateId, q.Ecnr, q.ApplicationNo,
                               q.CandidateName, dateTimeNow
-                              ,0    //, (int)q.ChargesAgreed
+                              , q.Charges    //, (int)q.ChargesAgreed
                               , (int)q.HRExecId , 
                               q.CandidateAssessmentId);
                          _unitOfWork.Repository<CVRef>().Add(cvref);                      //1. create cvref record
@@ -488,5 +489,90 @@ namespace infra.Services
                          }).ToListAsync();
                }
           }
-     }
+
+          public async Task<Pagination<CVReferredDto>> GetCVReferredDto(CVRefSpecParams refParams)
+          {
+               var qry =(from cvref in _context.CVRefs where cvref.OrderId==refParams.OrderId
+                    join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
+                    join cv in _context.Candidates on cvref.CandidateId equals cv.Id 
+                    join o in _context.Orders on cvref.OrderId equals o.Id 
+                    join cat in _context.Categories on item.CategoryId equals cat.Id 
+                    join cust in _context.Customers on o.CustomerId equals cust.Id 
+
+               select new CVReferredDto {
+                    CvRefId = cvref.Id,
+                    CustomerName = cust.KnownAs,
+                    OrderId = Convert.ToInt32(refParams.OrderId),
+                    OrderNo = o.OrderNo,
+                    OrderDate = o.OrderDate,
+                    OrderItemId = item.Id,
+                    CategoryName = cat.Name,
+                    CategoryRef = o.OrderNo + "-" + item.SrNo,
+                    CustomerId = o.CustomerId,
+                    CandidateId = cvref.CandidateId,
+                    ApplicationNo = cv.ApplicationNo,
+                    CandidateName = cv.FullName,
+                    ReferredOn = cvref.ReferredOn,
+                    ReferralDecision = cvref.RefStatus,
+                    SelectedOn = cvref.RefStatusDate
+               }).AsQueryable();
+
+               qry = qry.OrderByDescending(x => x.OrderItemId).ThenByDescending(x => x.ReferredOn);
+
+               var totalItems = await qry.CountAsync();
+
+               var data = await qry.Skip((refParams.PageIndex-1)*refParams.PageSize).Take(refParams.PageSize) .ToListAsync();
+               
+               return new Pagination<CVReferredDto>(refParams.PageIndex, refParams.PageSize, totalItems, data);
+          }
+
+          public async Task<CVReferredDto> GetCVRefWithDeploys(int CVRefId)
+          {
+
+               var deps = new List<DeployDto>();
+               
+               var qry =  await (from cvref in _context.CVRefs where cvref.Id==CVRefId
+                    join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
+                    join cv in _context.Candidates on cvref.CandidateId equals cv.Id 
+                    join o in _context.Orders on cvref.OrderId equals o.Id 
+                    join cat in _context.Categories on item.CategoryId equals cat.Id 
+                    join cust in _context.Customers on o.CustomerId equals cust.Id 
+                    
+
+               select new CVReferredDto {
+                    CvRefId = cvref.Id,
+                    CustomerName = cust.KnownAs,
+                    OrderId = o.Id,
+                    OrderNo = o.OrderNo,
+                    OrderDate = o.OrderDate,
+                    OrderItemId = item.Id,
+                    CategoryName = cat.Name,
+                    CategoryRef = o.OrderNo + "-" + item.SrNo,
+                    CustomerId = o.CustomerId,
+                    CandidateId = cvref.CandidateId,
+                    ApplicationNo = cv.ApplicationNo,
+                    CandidateName = cv.FullName,
+                    ReferredOn = cvref.ReferredOn,
+                    ReferralDecision = cvref.RefStatus,
+                    SelectedOn = cvref.RefStatusDate,
+                    Deployments = deps
+               }).FirstOrDefaultAsync();
+
+               if (qry != null) {
+               var deploys = (from d in _context.Deploys where d.CVRefId==CVRefId
+                    select new DeployDto(d.Id, d.CVRefId, d.TransactionDate, Convert.ToInt32(d.Sequence), 
+                    Convert.ToInt32(d.NextSequence), d.NextStageDate))
+                    .AsQueryable();
+
+                    deploys.OrderByDescending(x => x.TransactionDate);
+               
+                    var deployments = await deploys.ToListAsync();
+                    qry.Deployments=deployments;
+
+                    return qry;
+               }
+
+               return null;
+          }
+    }
 }

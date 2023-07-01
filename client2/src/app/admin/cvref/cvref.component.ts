@@ -15,6 +15,7 @@ import { IChecklistHRDto } from 'src/app/shared/dtos/hr/checklistHRDto';
 import { ChecklistModalComponent } from 'src/app/candidates/checklist-modal/checklist-modal.component';
 import { ICheckedAndBoolean } from 'src/app/shared/dtos/admin/checkedAndBooean';
 
+
 @Component({
   selector: 'app-cvref',
   templateUrl: './cvref.component.html',
@@ -79,31 +80,58 @@ export class CvrefComponent implements OnInit {
         this.cvsAssessed = response.data;
         this.totalCount = response.count;
       }
-      //console.log('cvassessed', this.cvAssessed);
+      console.log('cvassessed', this.cvsAssessed);
     }, (error: any) => {
       console.log(error);
     })
   }
  
-  cvChecked(event$: ICheckedAndBoolean)
-  {
-    var item: CandidateAssessedDto;
+  updatecvsAssessedSelected(dto: CandidateAssessedDto) {
 
-    var index = this.cvsAssessedSelected.findIndex(x => x.id === event$.id);
-    if(index===null) {  //new item
-      index=this.cvsAssessed.findIndex(x => x.id===event$.id);
-      if(index===null)  { //this should never happen
-        console.log('error in logic');
-        return;
-      } else {
-        item=this.cvsAssessed[index];
-        item.checked=event$.checked;
-        this.cvsAssessedSelected.push(item);
-      }
+    var index = this.cvsAssessedSelected.findIndex(x => x.id==dto.id);
+
+    if (dto.checked) {
+        if (index===null) {  
+            var newItem = new CandidateAssessedDto();
+            newItem.checked=true;
+            newItem.id=dto.id;
+            this.cvsAssessedSelected.push(newItem);
+        } else {
+          this.cvsAssessedSelected[index].checked=dto.checked;
+        }
     } else {
-      this.cvsAssessedSelected[index].checked=event$.checked;
+        if(index!==null) {
+          this.cvsAssessedSelected.splice(index,1);
+        }
     }
+  }
 
+  cvChecked(obj: ICheckedAndBoolean)
+  {
+    console.log('obj:', obj);
+    var index = this.cvsAssessedSelected.findIndex(x => x.id==obj.id);
+
+    if (obj.checked) {
+      console.log('obj checked');
+        if (index===-1) {  
+          console.log('checked, and add new');
+            var newItem = new CandidateAssessedDto();
+            newItem.checked=true;
+            newItem.id=obj.id;
+            this.cvsAssessedSelected.push(newItem);
+        } else {
+          console.log('obj not checked');
+          this.cvsAssessedSelected[index].checked=obj.checked;
+          this.cvsAssessedSelected.splice(index,1);
+        }
+    } else {
+      console.log('spliced, index=', index, this.cvsAssessedSelected);
+        if(index!==-1) {
+          this.cvsAssessedSelected.splice(index,1);
+        }
+    }
+    
+    console.log(this.cvsAssessedSelected);
   }
 
   onSearch() {
@@ -169,14 +197,16 @@ export class CvrefComponent implements OnInit {
     }
   }
 
-
+  goBack() {
+      this.router.navigateByUrl('/admin');
+  }
 
   forwardSelected() {
     this.assessmentids = this.cvsAssessed.filter(x => x.checked===true).map(x => x.id);
     
     this.cvrefService.referCVs(this.assessmentids).subscribe(response => {
       console.log('response from api;', response);
-      if (response.errorMessage==='' || response.errorMessage===null) {
+      if (response.errorString==='' || response.errorString===null) {
           this.toastr.success('CVs referred and email messages composed');
 
           //delete records tha are forwarded from the pending list, i.e. 
@@ -191,8 +221,8 @@ export class CvrefComponent implements OnInit {
             });
           this.totalCount-=assessmentIdsForwarded.length;  
       } else {
-        console.log('failed to forward cvs:', response.errorMessage);
-        this.toastr.warning('failed to forward CVs -- ', response.errorMessage);
+        console.log('failed to forward cvs:', response.errorString);
+        this.toastr.warning('failed to forward CVs -- ', response.errorString);
       }
       
     }, error => {

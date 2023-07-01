@@ -1,0 +1,41 @@
+<div class="marginL15" *ngIf="referred===null">
+    No referred data avaiable for the criteria selected
+</div>
+
+<div *ngIf="referred !== null && referred !== undefined">
+    <div class="stdd marginL35 w200" mouseover="style.cursor = 'pointer'">{{referred.customerName}}</div>
+    <div class="stdd mx1 w75" >{{referred.categoryRef}}</div>
+    <div class="stdd w125" >{{referred.categoryName}}</div>
+    <div class="stdd mx1 w100">{{referred.referredOn | date: 'ddMMMyy'}}</div>
+    <div class="stdd mx1 w100">{{referred.orderDate | date: 'ddMMMyy'}}</div>
+    
+    <div class="stdd form-check w70 vAlignTop">
+        <input type="checkbox" 
+        class="form-check-input"
+        style="margin-left: 2px;"
+        [checked]="referred.checked"
+        value="referred.id"
+        (change)="referred.checked = !referred.checked" 
+    >
+    </div>
+
+    <div class="stdd w75" style="margin-left: 55px;" title="click to view CV" >{{referred.applicationNo}}</div>
+
+    <div class="stdd w150" mouseover="style.cursor = 'pointer'" 
+        (click)="displayChecklistModal()" title="click to display checklist" >{{referred.candidateName}}
+    </div>
+
+    <div class="stdd w150" mouseover="style.cursor = 'pointer'" 
+        >{{referred.agentName}}</div>
+
+    <div class="stdd w150 fa fa-listcheck"  >
+            {{referred.referralDecision | refDecision}}
+        </div>
+    <div class="stdd w150">{{
+        referred.referralDecision > 200 ? 
+            'Rejected' : referred.referralDecision === 100 ?
+                referred.deployments.length > 0 ? 'In Process' : 'not started'
+            : 'not Selected'
+        }}
+    </div>
+</div>

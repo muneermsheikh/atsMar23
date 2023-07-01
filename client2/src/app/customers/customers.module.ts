@@ -7,14 +7,15 @@ import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { CustomersRoutingModule } from './customers-routing.module';
 import { CustomersIndexComponent } from './customers-index/customers-index.component';
-
+import { TabsModule } from 'ngx-bootstrap/tabs';
 
 
 @NgModule({
   declarations: [
     CustomerListComponent,
     CustomerItemComponent,
-    CustomersIndexComponent
+    CustomersIndexComponent,
+   
   ],
   imports: [
     CommonModule,
@@ -22,7 +23,8 @@ import { CustomersIndexComponent } from './customers-index/customers-index.compo
     ReactiveFormsModule,
     RouterModule,
     CustomersRoutingModule,
-    SharedModule
+    SharedModule,
+    TabsModule
   ]
 })
 export class CustomersModule { }

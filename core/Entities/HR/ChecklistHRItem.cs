@@ -14,8 +14,9 @@ namespace core.Entities.HR
                Parameter = parameter;
           }
           
-          public ChecklistHRItem(int srNo, string parameter, string response, string exceptions)
+          public ChecklistHRItem(int checklistHRId, int srNo, string parameter, string response, string exceptions)
           {
+               ChecklistHRId = checklistHRId;
                SrNo = srNo;
                Parameter = parameter;
                Response = response;

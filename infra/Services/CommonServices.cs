@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using core.Entities.HR;
 using core.Entities.Orders;
 using core.Dtos;
+using core.Entities.Tasks;
 
 namespace infra.Services
 {
@@ -212,7 +213,7 @@ namespace infra.Services
                          CategoryName = cat.Name, 
                          OrderNo = ordr.OrderNo,
                          OrderItemSrNo = i.SrNo,
-                         DeployStageId = d.Status.StageId,
+                         DeployStageId = d.Status.Sequence,
                          RequireInternalReview = i.RequireInternalReview,
                          HRSupId = (int)i.HrSupId,
                          HRMId = (int)i.HrmId
@@ -222,9 +223,9 @@ namespace infra.Services
                
           }
 
-          public async Task<string> DeploymentStageNameFromStageId(int stageId)
+          public async Task<string> DeploymentStageNameFromStageId(int Sequence)
           {
-               return await _context.DeployStages.Where(x => x.Id == stageId).Select(x => x.Status).FirstOrDefaultAsync();
+               return await _context.DeployStages.Where(x => x.Id == Sequence).Select(x => x.Status).FirstOrDefaultAsync();
           }
 
           public async Task<CustomerBriefDto> CustomerBriefDetailsFromCustomerId(int customerId)
@@ -354,5 +355,37 @@ namespace infra.Services
                var candidatename = await _context.Candidates.Where(x => x.Id == CandidateId).Select(x => x.FullName).FirstOrDefaultAsync();
                return candidatename;
           }
+
+          private async Task<int> GetChecklistHRId(int candidateid, int orderitemid)
+          {
+               var checklist = await _context.ChecklistHRs.Where(x => x.CandidateId == candidateid && x.OrderItemId==orderitemid)
+                    .Select(x => x.Id).FirstOrDefaultAsync();
+               return checklist;
+          }
+
+          private async Task<OrderItemDetailForMsgDto> GetOrderItemDetailForMessage(int OrderItemId, int CandidateId)
+            {
+                var qry = await (from i in _context.OrderItems where i.Id == OrderItemId
+                    from cv in _context.Candidates where cv.Id == CandidateId
+                    join o in _context.Orders on i.OrderId equals o.Id
+                    // join c in _context.Customers on o.CustomerId equals c.Id
+                    // join cat in _context.Categories on i.CategoryId equals cat.Id
+                    select new  OrderItemDetailForMsgDto{
+                        SrNo = i.SrNo,  
+                        HrSupId= i.HrSupId==null ? 0 : (int)i.HrSupId, 
+                        HrmId= i.HrmId==null ? 0 : (int)i.HrmId, 
+                        CategoryName=i.Category.Name, 
+                        OrderId=o.Id, 
+                        OrderNo=o.OrderNo, 
+                        OrderDate=o.OrderDate, 
+                        CustomerName=o.Customer.CustomerName, 
+                        CustomerCity= o.Customer.City, 
+                        ApplicationNo=cv.ApplicationNo, 
+                        FullName=cv.FullName, 
+                        NoReviewBySupervisor=i.NoReviewBySupervisor})
+                    .FirstOrDefaultAsync();
+                
+                return qry;
+            }
      }
 }

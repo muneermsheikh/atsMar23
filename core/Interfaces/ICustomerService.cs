@@ -16,7 +16,7 @@ namespace core.Interfaces
         Task<CustomerDto> GetCustomerByIdAsync(int id);
         Task<CustomerBriefDto> GetCustomerBriefById(int id);
         Task<Pagination<CustomerDto>> GetCustomersPaginatedAsync(CustomerParams custParam);
-        Task<ICollection<CustomerDto>> GetCustomersBriefAsync(CustomerSpecParams custParam);
+        Task<Pagination<CustomerBriefDto>> GetCustomersBriefAsync(CustomerSpecParams custParam);
 
         Task<CustomerDto> GetCustomerByUserNameAsync(string username);
         Task<string> GetCustomerNameFromId (int Id);

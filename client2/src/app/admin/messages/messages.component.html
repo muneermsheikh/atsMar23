@@ -1,3 +1,4 @@
+<br><br><br>
 <div class="stdd col-4">
      <div class="mb-4">
           <div class="btn-group" name='container'>
@@ -17,21 +18,8 @@
                     (click)="getDraftMessages()">
                     <i class="fa fa-plane"></i> Drafts
                </button>
-               <label class="stdd mx-2 b">click a recipient/sender to display its message</label>
-          <div class="stdd d-flex mt-2" *ngIf="totalCount > 0">
-               <app-paging-header 
-                    [totalCount]="totalCount" 
-                    [pageNumber]="mParams.pageIndex" 
-                    [pageSize]="mParams.pageSize"
-               ></app-paging-header>
-
-               <app-paging 
-                    [pageSize]="mParams.pageSize" 
-                    [totalCount]="totalCount" 
-                    [pageNumber]="mParams.pageIndex" 
-                    (pageChanged)="onPageChanged($event)"  >
-               </app-paging>
           </div>
+          <div class="mx-2 b"><strong>{{container}}</strong>Click a message to display </div>
           <div class="stdd w125 b" *ngIf="container==='sent' || container==='draft' ">Recipient</div>
           <div class="stdd w125 b" *ngIf="container==='inbox'">Sender</div>
           <div class="stdd w70 b" *ngIf="container==='sent'">Sent On</div>
@@ -41,22 +29,38 @@
           <div *ngIf="container==='sent' || container==='draft'">
                <div *ngFor="let msg of messages" style="font-size: smaller;">
                     <div class="stdd w125" title="click to display the message" (click)="setMessageFromUsername(msg)">{{msg.recipientUserName}}</div>
-                    <div class="stdd w70">{{msg.messageComposedOn | date:'ddMMMyy hh:mm'}}</div>
-                    <div class="stdd w125">{{msg.subject.substr(30)}}</div>
+                    <div class="stdd w70">{{msg.messageComposedOn | date:'ddMMMyy'}}</div>
+                    <div class="stdd w150">{{msg.subject.substr(30)}}</div>
                </div>
           </div>
           <div *ngIf="container==='inbox'">
                <div *ngFor="let msg of messages" style="font-size: smaller;" >
                     <div class="stdd w125" title="click to display the message" (click)="setMessageFromUsername(msg)">{{msg.senderUserName}}</div>
-                    <div class="stdd w70">{{msg.messageSentOn | date: 'ddMMMyy hh:mm'}}</div>
-                    <div class="stdd w125">{{msg.subject.substr(30)}}</div>
+                    <div class="stdd w70">{{msg.messageSentOn | date: 'ddMMMyy'}}</div>
+                    <div class="stdd w150">{{msg.subject.substr(30)}}</div>
                </div>
           </div>
      </div>
 </div>
 
 <div class="stdd col-8" style="vertical-align: top;" >
-     <div class="row" *ngIf="messages?.length === 0">
+                    
+     <div class="stdd d-flex mt-2" *ngIf="totalCount > 0">
+          <app-paging-header 
+               [totalCount]="totalCount" 
+               [pageNumber]="mParams.pageIndex" 
+               [pageSize]="mParams.pageSize"
+          ></app-paging-header>
+
+          <app-paging 
+               [pageSize]="mParams.pageSize" 
+               [totalCount]="totalCount" 
+               [pageNumber]="mParams.pageIndex" 
+               (pageChanged)="onPageChanged($event)"  >
+          </app-paging>
+     </div>
+
+     <div class="stdd" *ngIf="messages?.length === 0">
           <div *ngIf="mParams.container==='Inbox'">No Inbox messages for the logged in user </div>
           <div *ngIf="mParams.container==='sent'">No Sent messages for the logged in user</div>
           <div *ngIf="mParams.container==='draft'">No Draft messages in outbox for the logged in user</div>
@@ -85,9 +89,10 @@
                <div class="stdd b w50 my-1">Subject</div>
                <input class="stdd mx-1 w600" disabled="controlsDisabled" type="text" [(ngModel)]="message.subject" id="message.subject" name = "message.subject">
                <button type="button" class="btn mx-2 btn-success fa fa-paper-plane" 
-                    disabled="controlsDisabled"  (click)="sendMessage()"
-                    style="text-align:right;" ></button>
-               <button type="button" class="fa fa-trash" (click)="deleteMessage(message.id)" 
+                    [disabled]="controlsDisabled"  (click)="sendMessage()"
+                    style="text-align:right;"
+               ></button>
+               <button type="button" class="fa fa-trash red pull-right" (click)="deleteMessage(message.id)" 
                      style="text-align:right;" ></button>
                <!--disabled="controlsDisabled" -->               
           </div>

@@ -3,8 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './account/login/login.component';
 import { RegisterComponent } from './account/register/register.component';
-import { CandidatesListingComponent } from './candidates/candidates-listing/candidates-listing.component';
-import { AdminGuard } from './guards/admin.guard';
+import { DeployListComponent } from './deploys/deploy-list/deploy-list.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent, data: {breadcrumb: 'Home'}},
@@ -13,7 +12,7 @@ const routes: Routes = [
   {path: 'account', loadChildren: () => import('./account/account.module').then(mod => mod.AccountModule), data: {breadcrumb: {skip: true}}},
 
   {path: 'master values', loadChildren:() => import('./masters/masters.module').then(mod => mod.MastersModule), data: {breadcrumb: 'Master Values'}},
-
+  
   {path: 'candidates', loadChildren:() => import('./candidates/candidates.module').then(mod => mod.CandidatesModule), data: {breadcrumb: 'Candidates'}},
   {path: 'hr', loadChildren:() => import('./hr/hr.module').then(mod => mod.HrModule), data: {breadcrumb: 'HR'}},
   /* {path: 'candidatelist', component: CandidatesListingComponent, data: {breadcrumb: 'Candidate Listing'}}, */
@@ -32,19 +31,26 @@ const routes: Routes = [
   {path: 'admin', loadChildren:() => import('./admin/admin.module').then(mod => mod.AdminModule), 
     //canActivate: [AdminGuard], 
     data: {breadcrumb: 'Admin'}},
+  
+  {path: 'employments', loadChildren:() => import('./employments/employment.module').then(mod => mod.EmploymentModule),
+    data: {breadcrumb: 'Employments'}},
+
   /*
   {path: 'callrecords', loadChildren:() => import('./prospectives/prospective.module').then(mod => mod.ProspectiveModule), 
     canActivate: [AdminGuard], data: {breadcrumb: 'Prospectives'}},
   {path: 'qualifications',component: QualificationsComponent, canActivate: [AuthorizedGuard], data: {breadcrumb: 'Qualifications'}}, 
-    {path: 'masters', loadChildren:() => import('./masters/masters.module')
+  {path: 'masters', loadChildren:() => import('./masters/masters.module')
       .then(mod => mod.MastersModule), data: {breadcrumb: 'Masters'}},
-  
-      {path: 'processing', loadChildren:() => import('./process/process.module').then(mod => mod.ProcessModule), 
-      data: {breadcrumb: 'Cadidate departure process'}},
+  */  
+  {path: 'processing', loadChildren:() => import('./deploys/deploy.module').then(mod => mod.DeployModule), 
+      data: {breadcrumb: 'Deployment process'}},
+
+  /* {path: 'processing', component: DeployListComponent, data: {breadcrumb: 'process list'}}, */
   
   {path: 'prospectives', loadChildren:() => import('./prospectives/prospective.module').then(mod => mod.ProspectiveModule), 
       data: {breadcrumb: 'Prospective Candidates'}},
-  {path: 'notfound', component: NotFoundComponent, data: {breadcrumb: 'not-found errr'}},
+  /*
+      {path: 'notfound', component: NotFoundComponent, data: {breadcrumb: 'not-found errr'}},
   {path: 'messages', component: MessagesComponent, data: {breadcrumb: 'messages for loggedin user'}},
   {path: 'teachers', component: TeachersComponent},
   {path: 'process', loadChildren:() => import('./process/process.module').then(mod => mod.ProcessModule), data: {breadcrumb: 'Process'}},

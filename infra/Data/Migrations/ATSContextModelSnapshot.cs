@@ -1349,7 +1349,7 @@ namespace infra.Data.Migrations
                     b.Property<int>("HRExecId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("NextStageId")
+                    b.Property<int>("NextSequence")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("OrderId")
@@ -1372,6 +1372,9 @@ namespace infra.Data.Migrations
 
                     b.Property<DateTime>("ReferredOn")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -1690,8 +1693,20 @@ namespace infra.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("AgentName")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("ApplicationNo")
                         .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ApprovedByEmpId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("ApprovedOn")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("CVRefId")
                         .HasColumnType("INTEGER");
@@ -1710,9 +1725,6 @@ namespace infra.Data.Migrations
 
                     b.Property<int>("Charges")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("TEXT");
 
                     b.Property<int>("ContractPeriodInMonths")
                         .HasColumnType("INTEGER");
@@ -1778,6 +1790,9 @@ namespace infra.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("TransportProvidedFree")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("WeeklyHours")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -2286,6 +2301,9 @@ namespace infra.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsMandatory")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Parameter")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -2314,7 +2332,7 @@ namespace infra.Data.Migrations
                     b.Property<int>("EstimatedDaysToCompleteThisStage")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("NextDeployStageSequence")
+                    b.Property<int>("NextSequence")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Sequence")
@@ -3029,13 +3047,13 @@ namespace infra.Data.Migrations
                     b.Property<int?>("CVRefId1")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("NextEstimatedStageDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("NextStageId")
+                    b.Property<int>("NextSequence")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("StageId")
+                    b.Property<DateTime>("NextStageDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Sequence")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("TransactionDate")
@@ -3324,7 +3342,6 @@ namespace infra.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("KnownAs")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("LastActive")

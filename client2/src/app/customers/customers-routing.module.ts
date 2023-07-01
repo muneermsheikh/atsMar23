@@ -7,9 +7,18 @@ import { IndustriesResolver } from '../resolvers/industriesResolver';
 import { CustomersBriefResolver } from '../resolvers/customersBriefResolver';
 import { ClientEditComponent } from './clients/client-edit/client-edit.component';
 import { CustomerResolver } from '../resolvers/customerResolver';
+import { CustomersIndexComponent } from './customers-index/customers-index.component';
+import { CategoryListResolver } from '../resolvers/categoryListResolver';
 
 const routes = [
-  {path: '', component: CustomerListComponent,
+  {path: '', component: CustomersIndexComponent,
+    resolvers: {
+      customerCities: CustomerNameCityResolver,
+      industryTypes: IndustriesResolver,
+      customers: CustomersBriefResolver
+    }},
+  
+  {path: 'customerlist/:custType', component: CustomerListComponent,
     resolvers: {
       customerCities: CustomerNameCityResolver,
       industryTypes: IndustriesResolver,
@@ -18,8 +27,9 @@ const routes = [
 
   {path: 'edit/:id', component: ClientEditComponent,
     resolvers: {
-      customer: CustomerResolver,
-      industryTypes: IndustriesResolver
+      industries: IndustriesResolver,
+      categories: CategoryListResolver,
+      customer: CustomerResolver
     },
     data: {breadcrumb: {alias: 'Edit Customer/Associates'}}
 }

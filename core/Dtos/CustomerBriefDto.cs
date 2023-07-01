@@ -6,5 +6,7 @@ namespace core.Dtos
         public string CustomerName { get; set; }
         public string KnownAs { get; set; }
         public string City { get; set; }
+        public string Country { get; set; }
+        public string CustomerType { get; set; }
     }
 }

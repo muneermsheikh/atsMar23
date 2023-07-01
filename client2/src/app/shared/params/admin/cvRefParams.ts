@@ -5,6 +5,8 @@ export class CVRefParams{
 	professionId? = 0;
 	agentId? = 0;
 	customerName='';
+	orderId=0;
+	orderItemId=0;
 	
 	sort = "name";
 	pageNumber = 1;

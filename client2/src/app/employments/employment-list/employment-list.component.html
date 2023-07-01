@@ -1,0 +1,65 @@
+<br><br>
+<div style="margin-left: 10px;">
+        
+            <div class="stdd b w50 blue">Sort</div>
+            <select name="" id="" class="dropdown custom-select" (change)="onSortSelected($event)">
+                <option *ngFor="let sort of sortOptions"
+                    [value] = "sort.value"
+                >{{sort.name}}</option>
+            </select>
+
+            <div class="stdd b w50 blue">Status</div>
+            <select name="" id="" class="dropdown custom-select" (change)="onStatusSelected($event)">
+                <option *ngFor="let st of employmentStatus"
+                    [value] = "st.value"
+                >{{st.name}}</option>
+            </select>
+            
+            <app-paging-header class="stdd ml5"
+                [totalCount]="totalCount"
+                [pageNumber]="eParams.pageNumber"
+                [pageSize]="eParams.pageSize"
+            >
+            </app-paging-header>
+
+            <app-paging class="stdd"
+                [pageSize]="eParams.pageSize" 
+                [totalCount]="totalCount" 
+                [pageNumber]="eParams.pageNumber" 
+                (pageChanged)="onPageChanged($event)"  >
+            </app-paging>
+
+            <div class="stdd ml5">
+                <div class="stdd form-inline mt-2" *ngIf="employments">
+                    <input (keyup.enter)="onSearch()" type="text" class="stdd form-control w300" #search placeholder="Search">
+                    <button (click)="onSearch()" class="btn btn-outline-primary my-1">Search</button>
+                    <button (click)="onReset()" class="btn btn-outline-success mx-2 my-1">Reset</button>
+                </div>
+                <button class="stdd btn btn-outline-success  pull-right ml-2 my-1 fa fa-close" routerLink="/employments" ></button>
+            </div>
+        </div>
+    <hr>
+    <div style="margin-left: 10px;">
+        <div class="form-inline b" >
+            <div class="stdd w75 b" >Order No</div>
+            <div class="stdd w150 b">Customer Name</div>
+            <div class="stdd w75 b" >App No</div>
+            <div class="stdd w150 b">Candidate Name</div>
+            <div class="stdd w150 b">Category</div>
+            <div class="stdd w100 b">Selected<br>On</div>
+            <div class="stdd w125 b">Currency<br>and Salary</div>
+            <div class="allowance">Housing<br>Free   Allowance</div>
+            <div class="allowance">Food<br>Free  Allwance</div>
+            <div class="allowance">Transport <br>Free  Allowance</div>
+            <div class="stdd w75 b">Approved</div>
+       </div>
+       <div class="row" *ngFor="let emp of employments" >
+            <app-employment-line 
+                 [employment]="emp" 
+                 (deleteEvent)="deleteEmployment($event)"
+                 (editEvent)="openEditModal($event)"
+            ></app-employment-line>
+            <!-- "openEditModal($event)" -->
+       </div>
+    </div>
+        

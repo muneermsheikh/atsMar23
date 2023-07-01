@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import { ToastRef, ToastrService } from 'ngx-toastr';
 import { IEmploymentDto } from 'src/app/shared/dtos/admin/employmentDto';
 import { ISelPendingDto } from 'src/app/shared/dtos/admin/selPendingDto';
 import { ISelectionStatus } from 'src/app/shared/models/admin/selectionStatus';
@@ -110,8 +110,12 @@ export class SelectionComponent implements OnInit {
     })
   }
 
-  convertSelDecisionToDto (sel: ISelPendingDto[]): CreateSelDecision[] {
+  convertSelDecisionToDto (sel: ISelPendingDto[]): any {  //CreateSelDecision[] |undefined | null {
     console.log('sel',sel);
+    if(sel.length===0) {
+      this.toastr.warning('no selections made to save');
+      return undefined;
+    } 
     var dtos: CreateSelDecision[]=[];
 
     sel.forEach(s => {
@@ -122,11 +126,11 @@ export class SelectionComponent implements OnInit {
       dto.remarks = s.remarks ?? '';
       //var emp = this.employmentsDto.find(x => x.cVRefId === s.cVRefId);
       //if (emp !== null) dto.employment = emp;
-      console.log('dto', dto);
       dtos.push(dto);
     })
-
+    console.log('dtos in function', dtos);
     return dtos;
+  
   }
 
   registerSelections() {
@@ -139,22 +143,22 @@ export class SelectionComponent implements OnInit {
     }
 
     //convert selDecision to dto
-    var dtos = this.convertSelDecisionToDto(this.cvsSelected);
+    var dtos =  this.convertSelDecisionToDto(this.cvsSelected);
+    console.log('sel converted to dto:', dtos);
     var paramsToAdd = new selDecisionsToAddParams();
     paramsToAdd.selDecisionsToAddDto=dtos;
+    console.log('after paramstadd.seldecisiontoadddto:', paramsToAdd);
     paramsToAdd.advisesToClients=this.MsgsToClient;
     paramsToAdd.rejectionEmaiLToCandidates=this.RejMsgsToCandidates;
     paramsToAdd.rejectionSMSToCandidates=this.RejSMSToCandidates;
     paramsToAdd.selectionEmailToCandidates=this.SelMsgsToCandidates;
     paramsToAdd.selectionSMSToCandidates=this.SelSMSToCandidates;
     
+    console.log('paramsToAdd', paramsToAdd);
 
     return this.service.registerSelectionDecisions(paramsToAdd).subscribe(response => {
       this.toastr.success('selection decisions registered');
       console.log('rturned from api:', response);
-      if(response.employmentDtos.length > 0) {
-        this.employmentsDto = response.employmentDtos;
-      }
       var affectedIds=response.cvRefIdsAffected;
       console.log('affecteIds', affectedIds, 'length:', affectedIds.length);
       if (affectedIds.length === 0) return;
@@ -167,7 +171,7 @@ export class SelectionComponent implements OnInit {
     ), (error: any) => {
       this.toastr.error(error);
     }
-
+    
   }
 
   editSelection(sel: ISelectionDecision) {

@@ -2,6 +2,7 @@ using api.Errors;
 using api.Extensions;
 using core.Dtos;
 using core.Entities.Identity;
+using core.Entities.MasterEntities;
 using core.Entities.Process;
 using core.Interfaces;
 using core.Params;
@@ -27,7 +28,7 @@ namespace api.Controllers
                _deployService = deployService;
           }
 
-          [Authorize(Roles = "Admin, DocumentControllerAdmin, DocumentControllerProcess, EmigrationExecutive, MedicalExecutive, MedicalExecutiveGAMMCA, ProcessExecutive, VisaExecutiveDubai, VisaExecutiveKSA, VisaExecutiveQatar, VisaExecutiveBahrain")]
+          [Authorize]    //(Roles = "Admin, DocumentControllerAdmin, DocumentControllerProcess, EmigrationExecutive, MedicalExecutive, MedicalExecutiveGAMMCA, ProcessExecutive, VisaExecutiveDubai, VisaExecutiveKSA, VisaExecutiveQatar, VisaExecutiveBahrain")]
           [HttpGet("pending")]
           public async Task<ActionResult<Pagination<DeploymentPendingDto>>> GetPendingDeployments([FromQuery]DeployParams depParam)
           {
@@ -38,7 +39,7 @@ namespace api.Controllers
           }
 
 
-          [Authorize(Roles = "DocumentControllerProcess, EmigrationExecutive, MedicalExecutive, MedicalExecutiveGAMMCA, ProcessExecutive, VisaExecutiveDubai, VisaExecutiveKSA, VisaExecutiveQatar, VisaExecutiveBahrain")]
+          [Authorize]  //(Roles = "DocumentControllerProcess, EmigrationExecutive, MedicalExecutive, MedicalExecutiveGAMMCA, ProcessExecutive, VisaExecutiveDubai, VisaExecutiveKSA, VisaExecutiveQatar, VisaExecutiveBahrain")]
           [HttpPost("posts")]
           public async Task<ActionResult<DeploymentDtoWithErrorDto>> AddDeploymentTransactions(ICollection<Deploy> deployPosts)
           {
@@ -46,7 +47,7 @@ namespace api.Controllers
                if(deployPosts.Count==0) return BadRequest(new ApiResponse(402, "No input provided"));
                foreach(var dto in deployPosts)
                {
-                    if(dto.CVRefId == 0 || dto.StageId==0 ) return BadRequest(new ApiResponse(402, "Deploy Id or Status not provided"));
+                    if(dto.CVRefId == 0 || dto.Sequence==0 ) return BadRequest(new ApiResponse(402, "Deploy Id or Status not provided"));
                     if(dto.TransactionDate.Year < 2000) dto.TransactionDate = DateTime.Now;
                }
 
@@ -60,32 +61,30 @@ namespace api.Controllers
                return Ok(true);
           }
 
-          [HttpGet("cvrefdeploys/{CVRefId}")]
-          public async Task<ActionResult<ICollection<DeploymentObjDto>>> GetCVRefIdDeployments(int CVRefId)
+          [HttpGet("deploys/{CVRefId}")]
+          public async Task<ActionResult<ICollection<DeploymentDto>>> GetCVRefIdDeployments(int CVRefId)
           {
-               var dtos = await _deployService.GetDeploymentsObject(CVRefId);
+               var dtos = await _deployService.GetDeployments(CVRefId);
                if (dtos == null) return NotFound(new ApiResponse(402, "No data found"));
 
                return Ok(dtos);
           }
 
-          [Authorize(Roles = "DocumentControllerProcess, EmigrationExecutive, MedicalExecutive, MedicalExecutiveGAMMCA, ProcessExecutive, VisaExecutiveDubai, VisaExecutiveKSA, VisaExecutiveQatar, VisaExecutiveBahrain")]
+          [Authorize]  //(Roles = "DocumentControllerProcess, EmigrationExecutive, MedicalExecutive, MedicalExecutiveGAMMCA, ProcessExecutive, VisaExecutiveDubai, VisaExecutiveKSA, VisaExecutiveQatar, VisaExecutiveBahrain")]
           [HttpPut("editSingleTransaction")]
-          public async Task<ActionResult<bool>> EditDeploymentTransactions(Deploy deploy)
+          public async Task<ActionResult<bool>> EditDeploymentTransaction([FromQuery]DeploymentDto deploy)
           {
-               var deploys = new List<Deploy>();
-               deploys.Add(deploy);
-               return await _deployService.EditDeploymentTransactions(deploys);
+               return await _deployService.EditDeploymentTransaction(deploy);
           }
 
-          [Authorize(Roles = "DocumentControllerProcess, EmigrationExecutive, MedicalExecutive, MedicalExecutiveGAMMCA, ProcessExecutive, VisaExecutiveDubai, VisaExecutiveKSA, VisaExecutiveQatar, VisaExecutiveBahrain")]
+          [Authorize]  //(Roles = "DocumentControllerProcess, EmigrationExecutive, MedicalExecutive, MedicalExecutiveGAMMCA, ProcessExecutive, VisaExecutiveDubai, VisaExecutiveKSA, VisaExecutiveQatar, VisaExecutiveBahrain")]
           [HttpPut]
-          public async Task<ActionResult<bool>> EditDeploymentTransactions(ICollection<Deploy> deploys)
+          public async Task<ActionResult<bool>> EditDeploymentTransactions( CVReferredDto cvref)
           {
-               return await _deployService.EditDeploymentTransactions(deploys);
+               return await _deployService.EditDeploymentTransactions(cvref);
           }
 
-          [Authorize(Roles = "DocumentControllerProcess, EmigrationExecutive, MedicalExecutive, MedicalExecutiveGAMMCA, ProcessExecutive, VisaExecutiveDubai, VisaExecutiveKSA, VisaExecutiveQatar, VisaExecutiveBahrain")]          
+          [Authorize]  //(Roles = "DocumentControllerProcess, EmigrationExecutive, MedicalExecutive, MedicalExecutiveGAMMCA, ProcessExecutive, VisaExecutiveDubai, VisaExecutiveKSA, VisaExecutiveQatar, VisaExecutiveBahrain")]          
           [HttpDelete("deletetransaction/{deployid}")]
           public async Task<ActionResult<bool>> DeleteDeploymentTransactions(int deployid)
           {
@@ -111,14 +110,14 @@ namespace api.Controllers
 
           [Authorize]
           [HttpGet("depStatus")]
-          public async Task<ActionResult<ICollection<DeployStatusDto>>> GetDeploymentStatus()
+          public async Task<ActionResult<ICollection<DeployStage>>> GetDeploymentStatus()
           {
                var st = await _deployService.GetDeployStatuses();
                if(st==null) return NotFound(new ApiResponse(404, "No records found"));
                return Ok(st);
           }
      
-          [HttpGet("{cvrefid}")]
+          [HttpGet("cvreferreddto/{cvrefid}")]
           public async Task<ActionResult<CVReferredDto>> GetCVRefDto(int cvrefid)
           {
                var dto = await _deployService.GetDeploymentDto(cvrefid);

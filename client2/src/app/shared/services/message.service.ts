@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject, of } from 'rxjs';
+import { Observable, ReplaySubject, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IUser } from '../models/admin/user';
 import { EmailMessageSpecParams } from '../params/admin/emailMessageSpecParams';
@@ -19,7 +19,7 @@ export class MessageService {
   currentUser$ = this.currentUserSource.asObservable();
   
   mParams = new EmailMessageSpecParams();
-  pagination: IPagination<IMessage[]> | undefined;  // = new PaginationMsg();
+  pagination?: IPagination<IMessage[]>  // = new PaginationMsg();
   cache = new Map();
 
   container: string='';
@@ -36,46 +36,51 @@ export class MessageService {
     return getPaginatedResult<Message[]>(this.baseUrl + 'messages', params, this.http);
   }
 */
-    setContainer(container: string) {
-      this.container=container;
+    setContainer() {
+      this.container=this.mParams.container;  // container;
     }
 
-    getMessages(useCache: boolean) { 
+    getMessages(useCache: boolean): Observable<IPagination<IMessage[]>> { 
       
       if (useCache === false)  this.cache = new Map();
       
       if (this.cache.size > 0 && useCache === true) {
         if (this.cache.has(Object.values(this.mParams).join('-'))) {
-          if (this.mParams.id! > 0)
-          {
-            this.pagination!.data = this.cache.get(Object.values(this.mParams.id!).join('-'));
-          } else {
-            this.pagination!.data = this.cache.get(Object.values(this.mParams).join('-'));
-          }
-          return of(this.pagination);
+            this.pagination = this.cache.get(Object.values(this.mParams).join('-'));
+            if(this.pagination)return of(this.pagination);
         }
       }
 
       let params = new HttpParams();
 
-      if (this.mParams.search) {
-        params = params.append('search', this.mParams.search);
-      }
-
+      if (this.mParams.search) params = params.append('search', this.mParams.search);
+      
       params = params.append('sort', this.mParams.sort);
       params = params.append('pageIndex', this.mParams.pageIndex.toString());
       params = params.append('pageSize', this.mParams.pageSize.toString());
       params = params.append('container', this.mParams.container);
 
-      this.http.get<IPagination<IMessage[]>>(this.baseUrl + 'messages/loggedinuser', {observe: 'response', params})
+      console.log('messages from api', params);
+
+      return this.http.get<IPagination<IMessage[]>>(this.baseUrl + 'messages/loggedinuser', {params}).pipe(
+        map(response => {
+          this.cache.set(Object.values(this.mParams).join('-'), response);
+          this.pagination = response;
+          return response;
+        })
+      )
+      /*
+      this.http.get<IPagination<IMessage[]>>(this.baseUrl + 'messages/loggedinuser', {params})
         .pipe(
           map(response => {
-            this.cache.set(Object.values(this.mParams).join('-'), response.body!.data);
-            this.pagination = response.body!;
-            return response.body;
+            this.cache.set(Object.values(this.mParams).join('-'), response);
+            this.pagination = response;
+            return response;
           })
         )
-      return;
+        console.log('returning null');
+        return of();
+      */
     }
 
     getMessageThread(username: string, pageno: number, pagesize: number) {
@@ -97,6 +102,7 @@ export class MessageService {
 
     setParams(params: EmailMessageSpecParams) {
       this.mParams = params;
+      this.container = params.container;
     }
     
     getParams() {

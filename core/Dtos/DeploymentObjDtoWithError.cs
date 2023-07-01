@@ -7,7 +7,7 @@ namespace core.Dtos
 {
     public class DeploymentObjDtoWithError
     {
-        public ICollection<DeploymentObjDto> DeploymentObjDtos {get; set;}
+        public ICollection<DeploymentDto> DeploymentObjDtos {get; set;}
         public ICollection<string> ErrorStrings{get; set;}
     }
 }

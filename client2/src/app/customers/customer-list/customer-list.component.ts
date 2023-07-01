@@ -1,15 +1,15 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ICustomer } from 'src/app/shared/models/admin/customer';
 import { ICustomerCity } from 'src/app/shared/models/admin/customerCity';
-import { customerParams } from 'src/app/shared/models/admin/customerParams';
 import { IIndustryType } from 'src/app/shared/models/masters/profession';
 import { CustomersService } from '../customers.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SharedService } from 'src/app/shared/shared.service';
 import { ToastrService } from 'ngx-toastr';
 import { ICustomerBriefDto } from 'src/app/shared/dtos/admin/customerBriefDto';
 import { IPagination } from 'src/app/shared/models/pagination';
 import { MastersService } from 'src/app/masters/masters.service';
+import { paramsCustomer } from 'src/app/shared/params/admin/paramsCustomer';
 
 @Component({
   selector: 'app-customer-list',
@@ -19,10 +19,10 @@ import { MastersService } from 'src/app/masters/masters.service';
 export class CustomerListComponent implements OnInit {
 
   @ViewChild('search', {static: false}) searchTerm?: ElementRef;
-  customers: ICustomer[]=[];
+  customers: ICustomerBriefDto[]=[];
   customerCities: ICustomerCity[]=[];
   industryTypes: IIndustryType[]=[];
-  cParams = new customerParams();
+  cParams = new paramsCustomer();
   pagination?: IPagination<ICustomerBriefDto[]>;
   totalCount: number=0;
   custType: string='';
@@ -45,11 +45,12 @@ export class CustomerListComponent implements OnInit {
 
   ngOnInit(): void {
     this.custType = this.activatedRouter.snapshot.paramMap.get('custType')!;
-    this.cParams.custType=this.custType;
+    this.cParams.customerType=this.custType;
     
     this.getCustomers();
-    this.getCities();
-    this.getIndustryTypes();
+    //this.getCities();
+    //this.getIndustryTypes();
+
   }
 
   getCustomers() {
@@ -58,6 +59,7 @@ export class CustomerListComponent implements OnInit {
       this.cParams.pageNumber = response.pageIndex;
       this.cParams.pageSize = response.pageSize;
       this.totalCount = response.count;
+      this.customers = response.data;
     }, error => {
       console.log(error);
     })
@@ -111,7 +113,7 @@ export class CustomerListComponent implements OnInit {
 
   onReset() {
     this.searchTerm!.nativeElement.value = null;
-    this.cParams = new customerParams();
+    this.cParams = new paramsCustomer();
     this.getCustomers();
   }
 

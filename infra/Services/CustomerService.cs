@@ -352,8 +352,8 @@ namespace infra.Services
                     .Include(x => x.AgencySpecialties)
                     .ProjectTo<CustomerDto>(_mapper.ConfigurationProvider)
                     .FirstOrDefaultAsync();
-               var offs = await _context.CustomerOfficials.Where(x => x.CustomerId == id).ToListAsync();
-               if (cust.CustomerOfficials.Count() ==0 && offs.Count() > 0) cust.CustomerOfficials=offs;
+               //var offs = await _context.CustomerOfficials.Where(x => x.CustomerId == id).ToListAsync();
+               //if (cust.CustomerOfficials.Count() ==0 && offs.Count() > 0) cust.CustomerOfficials=offs;
                return cust;
           }
 
@@ -456,15 +456,22 @@ namespace infra.Services
                return off;
           }
 
-          public async Task<ICollection<CustomerDto>> GetCustomersBriefAsync(CustomerSpecParams custParam)
+          public async Task<Pagination<CustomerBriefDto>> GetCustomersBriefAsync(CustomerSpecParams custParam)
           {
-               var briefs = _context.Customers.AsQueryable();
+               var qry = (from c in _context.Customers.Where(x => x.CustomerType==custParam.CustomerType)
+                    orderby c.CustomerName
+                    select new CustomerBriefDto{Id = c.Id,
+                         CustomerName = c.CustomerName, KnownAs = c.KnownAs, 
+                         City = c.City, Country = c.Country, CustomerType = c.CustomerType}
+               ).AsQueryable();
+               var test = await qry.ToListAsync();
+               if(!string.IsNullOrEmpty(custParam.CustomerCityName)) qry = qry.Where(x => x.City==custParam.CustomerCityName);
+               
+               var count = await qry.CountAsync();
 
-               if(!string.IsNullOrEmpty(custParam.CustomerType)) briefs = briefs.Where(x => x.CustomerType==custParam.CustomerType);
-               if(!string.IsNullOrEmpty(custParam.CustomerCityName)) briefs = briefs.Where(x => x.City==custParam.CustomerCityName);
-               //if(custParam.IndustryId != 0) briefs = briefs.Where(x => (x.CustomerIndustries.Where(x => x.IndustryId==custParam.IndustryId)));
+               var data = await qry.Skip((custParam.PageIndex-1)*custParam.PageSize).Take(custParam.PageSize).ToListAsync();
 
-               return (ICollection<CustomerDto>)await briefs.ProjectTo<CustomerBriefDto>(_mapper.ConfigurationProvider).ToListAsync();
+               return new Pagination<CustomerBriefDto>(custParam.PageIndex, custParam.PageSize, count, data);
           }
           
           public async Task<string> GetCustomerNameFromId(int officialId)

@@ -192,7 +192,7 @@ namespace infra.Services
                ).FirstOrDefaultAsync();
           }
 
-          public async Task<EnumCandidateAssessmentResult> AssessmentGrade(int candidateId, int orderitemId)
+          public async Task<string> AssessmentGrade(int candidateId, int orderitemId)
           {
                return await _context.CandidateAssessments
                     .Where(x => x.CandidateId == candidateId && x.OrderItemId == orderitemId)

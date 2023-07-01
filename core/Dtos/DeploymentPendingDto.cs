@@ -10,6 +10,7 @@ namespace core.Dtos
         }
 
         public int CVRefId { get; set; }
+        public DateTime ReferredOn {get; set;}
         public int ApplicationNo {get; set;}
         //public int CandidateId { get; set; }
         public string CandidateName { get; set; }
@@ -21,10 +22,11 @@ namespace core.Dtos
         //public int OrderItemId { get; set; }
         //public int OrderItemSrNo { get; set; }
         public string CategoryName { get; set; }
-        public EnumDeployStatus DeployStageId { get; set; }
+        public DateTime SelDecisionDate {get; set;}
+        public EnumDeployStatus DeploySequence { get; set; }
         public DateTime DeployStageDate { get; set; }
-        public EnumDeployStatus NextStageId { get; set; }
-        public DateTime NextEstimatedStageDate { get; set; }
+        public EnumDeployStatus NextSequence { get; set; }
+        public DateTime NextStageDate { get; set; }
 
         /* public string CandidateDesc {get => "Application No " + ApplicationNo  + "-" + CandidateName + 
             "(Category Ref " + OrderNo + "-" + OrderItemSrNo + " for " + CustomerName + ")";}

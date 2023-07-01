@@ -24,7 +24,14 @@ const routes = [
       professions: CategoryListResolver,
       qualifications: QualificationListResolver
     }},
-    
+  
+    {path: 'cached', component: CandidatesListingComponent,
+    resolvers: {
+      //candidateBriefs: CandidateBriefResolver,
+      professions: CategoryListResolver,
+      qualifications: QualificationListResolver
+    }},
+
   {path: 'add', component:RegisterComponent , data: {breadcrumb: {alias: 'register'}},
     resolve: {
       //employees: EmployeeIdsAndKnownAsResolver,

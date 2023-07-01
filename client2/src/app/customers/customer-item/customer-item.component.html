@@ -5,9 +5,11 @@
      <div class="mx-1" style="display: inline-block; width: 200px;" >ind</div> 
      
      <div class="mx-1" style="display: inline-block; width: 200px;">
-          <button class="w35 bordernone fa fa-pencil" routerLink="/client/edit/{{cust.customerType}}/{{cust.id}}" ></button>
+          <button class="w35 bordernone fa fa-pencil" routerLink="/customers/edit/{{cust.id}}" ></button>
           <button class="w35 bordernone fa fa-eye mx-1" type="button"  ></button>
-          <button class="w35 bordernone fa fa-balance-scale" type="button" routerLink="/client/review/{cust.id}" ></button>
+          <button class="w35 bordernone fa fa-balance-scale" type="button" routerLink="/customers/review/{{cust.id}}" ></button>
+          <button class="w35 bordernone fa fa-users" title="report on CVs forwarded against this order" 
+               type="button" routerLink="/customers/review/{{cust.id}}" ></button>
      </div>
 </div>
 

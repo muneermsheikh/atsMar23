@@ -19,8 +19,7 @@ namespace infra.Services
         private readonly ICommonServices _commonService;
         private readonly IMapper _mapper;
         public ChecklistService(ATSContext context, IUnitOfWork unitOfWork, IUserService userService,
-            IEmployeeService empService, ICVReviewService cvReviewService, 
-          
+            IEmployeeService empService, ICVReviewService cvReviewService,           
             ICommonServices commonService, IMapper mapper)
         {
             _mapper = mapper;
@@ -108,14 +107,18 @@ namespace infra.Services
                 }
                 else            //insert children as new record
                 {
-                    var newItem = new ChecklistHRItem(modelItem.SrNo, modelItem.Parameter, modelItem.Response, modelItem.Exceptions);
+                    var newItem = new ChecklistHRItem(model.Id, modelItem.SrNo, modelItem.Parameter, modelItem.Response, modelItem.Exceptions);
                     existing.ChecklistHRItems.Add(newItem);
                     _context.Entry(newItem).State = EntityState.Added;
                 }
             }
             _context.Entry(existing).State = EntityState.Modified;
-
-            if(await _context.SaveChangesAsync() ==0) errorList.Add("failed to update the Object");
+            
+            try{
+               await _context.SaveChangesAsync() ;
+            } catch (Exception ex) {
+                errorList.Add(ex.InnerException.Message);
+            }
             
             return errorList;
         }
@@ -174,10 +177,11 @@ namespace infra.Services
         private async Task<ChecklistHR> GetChecklistHRIfEditable(ChecklistHRDto model, LoggedInUserDto loggedInDto)
         {
             //if cv already forwarded to Sup, then changes not allowed
-            var existing = _context.ChecklistHRs.Where(p => p.Id == model.Id)
+            var existing = await _context.ChecklistHRs.Where(
+                    p => p.CandidateId==model.CandidateId && p.OrderItemId==model.OrderItemId)
                 .Include(p => p.ChecklistHRItems)
                 .AsNoTracking()
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
 
             if (existing == null)
             {
@@ -193,6 +197,7 @@ namespace infra.Services
 
             //var dto = new ChecklistHRDto();
 
+            /*
             var submitted = await _context.CVReviews
                 .Where(x => x.CandidateId == model.CandidateId && x.OrderItemId == model.OrderItemId 
                     && x.SubmittedByHRExecOn.Year > 2000)
@@ -204,7 +209,7 @@ namespace infra.Services
                 throw new System.Exception("This Checklist is referred by the HR Executive on " + submitted.Date + " and cannot be edited now");
 
             }
-            
+            */
             
             return existing;
         }

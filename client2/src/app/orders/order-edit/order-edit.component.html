@@ -126,6 +126,9 @@
                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span> </button> 
 
           <div *ngIf="!isAddMode" style="display: inline-block;" class="pull-right" >
+               <button class="btn btn-primary stdd fa fa-hand-shake " (click)="acknowledgeToClient()" 
+                         title="acknowledge this Order to Client"
+               > </button>
                          
                <button class="btn btn-primary stdd fa fa-share " (click)="forwardDLToHRDept()" 
                          title="forward this Requirement to HR Dept.  If no categories are selected, all categories will be forwarded"
@@ -137,9 +140,6 @@
                <button class="btn btn-primary stdd fa fa-share " (click)="forwardDLtoAgents()" 
                     title="forward this Requirement to Agents.  If no categories are selected, all categories will be forwarded"
                > </button>
-               <button class="btn btn-primary stdd fa fa-balance-scale " (click)="reviewItems()"
-                    title="Display Contract Review of this item"  
-               ></button>
                <button class="btn btn-primary stdd fa fa-cogs " (click)="showProcess()"
                     title="Display Processing records of the category"  
                ></button>
@@ -247,16 +247,19 @@
                               {{getReviewItemStatusId(i) | reviewItemStatusName }}
                          </div>
                          <div *ngIf="!isAddMode" class="stdd">       
-                              <button class="w20 btn btn-sm mb-2 fa fa-bars" title="Open Contract Review"
+                              <button class="w30 fa fa-balance-scale" title="Open Contract Review"
                                    (click)="openReviewModal(i)" ></button>
-                              <button class="w20 btn btn-sm mb-2 fa fa-question" title="Show prospective candidates"
+                              <button class="w30 mx-1 fa fa-check" title="Assessment Questions for this category" 
+                                   (click)="assessItem(i)" ></button>
+                              <button class="w30 fa fa-question" title="Show prospective candidates"
                                    (click)="showProspectives(i)" ></button>
-                              <button class="w20 btn btn-sm mb-2 fa fa-bars" title="Open Job Description"
+
+                              <button class="w30 mx-1 fa fa-bars" title="Open Job Description"
                                    (click)="openJDModal(i)" ></button>
-                              <button class="w20 btn btn-sm mb-2 fa fa-bars" title="Open Remuneration"
+                              <button class="w30 mb-1 fa fa-bars" title="Open Remuneration"
                                    (click)="openRemunerationModal(i)" ></button>
                          </div>
-                         <button class="stdd ml-2" (click)="removeItem(i)" class="w20 btn btn-sm btn-danger fa fa-trash" 
+                         <button (click)="removeItem(i)" class="w30 mx-1 btn btn-danger fa fa-trash" 
                               title="remove this item"
                          ></button>
                     </div>

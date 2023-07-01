@@ -1,0 +1,31 @@
+.stdd {
+	display: inline-block;
+	margin-top: 1px;
+	margin-left: 1px;
+	margin-right: 1px;
+	vertical-align: top;
+	white-space: nowrap;
+	font-size: small;
+	word-break: break-all;
+ }
+
+ .selectwidth {
+	width: 150px !important;
+	font-size: x-small !important;
+ }
+
+ .w50 {width: 50px;}
+ .w60 {width: 60px;}
+ .w75{width: 75px;}
+ .w100 {width: 100px;}
+ .w150 {width: 150px;}
+ .w175{width: 175px;}
+.w200 {width: 200px;}
+.w250 {width: 250px;}
+
+.fSmaller {font-size: smaller;}
+
+::ng-deep .ng-select-container {
+	height: 5px !important;
+	font-size: 0.8em!important;
+    }

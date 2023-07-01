@@ -6,7 +6,7 @@ namespace core.Entities.Process
     public enum EnumDeployStatus
     {
         [EnumMember(Value="None")] None = 0,
-        [EnumMember(Value="Selected")] Selected = 1,                        //200,
+        [EnumMember(Value="Selected")] Selected = 100,                        //200,
         [EnumMember(Value="Offer Letter Accepted")] OfferLetterAccepted = 300,
         [EnumMember(Value="Referred for Medical Test")] ReferredForMedical=400,
         [EnumMember(Value="Medically Declared Fit")] MedicallyFit=13,               //500,

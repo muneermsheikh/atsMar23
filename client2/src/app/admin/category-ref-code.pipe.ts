@@ -10,8 +10,6 @@ export class CategoryRefCodePipe implements PipeTransform {
 
   transform(value: number) {
     
-    console.log('entered pipe- orderitemid:', value);
-    
     if(value===0 || value===null || value===undefined ) {
       return 'undefined';
     }

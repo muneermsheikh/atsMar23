@@ -1,4 +1,5 @@
-<div class="stdd col-3 vAlignTop">
+<br><br>
+<div style="margin-top: 15px;" class="stdd col-3 vAlignTop">
      <button class="stdd w30 fa fa-question" (click)="openShortlistCandidateHelpModal()"></button>
      <button class="stdd w30 pull-right fa fa-home" (click)="returnToCalling()" ></button>
      <div class="b mb-2">Logged In User: <span class="blue">{{user?.displayName}}</span></div>
@@ -9,84 +10,95 @@
           <br><span class="b">Referred By:</span> <span class="blue">{{cvBrief?.referredByName}}</span>
           <br><span class="b">Categories:</span> <div class="blue" *ngFor="let item of cvBrief?.userProfessions">{{item.profession}}</div>
      </div>
+     <br>
      <div class="b fontSmall">Existing Assessments of the candidate:</div>
      <div *ngIf="existingAssessmentsDto.length===0" class="blue">
           No Existing Assessments
      </div>
      <div *ngIf="existingAssessmentsDto">
           <ul class="py-0 my-0" *ngFor="let item of existingAssessmentsDto">
-               <li class="stdd my-0 py-0 blue fontSmaller">{{item .orderItemRef}} for {{item.customerName.substring(0,10)}} on {{item.assessedOn | date : 'ddMMM'}}</li>
+               <li class="stdd my-0 py-0 blue fontSmaller">{{item.categoryRef}} for {{item.customerName.substring(0,10)}} on {{item.assessedOn | date : 'ddMMM'}}</li>
           </ul>
      </div>
           
-     <div class="mt-2 b">Requirement for which the candidate is to be assessed</div>
+     <div *ngIf="openOrderItems===undefined" class="red"> No Orders currently open</div>
+     <div *ngIf="openOrderItems !==undefined" class="mt-2 b">Requirement for which the candidate is to be assessed</div>
+     
      <ng-select *ngIf="openOrderItems" 
+          style="border-bottom: blue;"
           [items]="openOrderItems"
           bindLabel="categoryRefAndName"
           bindValue="orderItemId"
           labelForId="orderItemId"
-          placeholder="Select Category"
           clearAllText="Clear"
           [(ngModel)]="orderItemSelectedId" 
           (click)="chooseSelectedOrderItem()"
           >
      </ng-select>
+     <br>
      <!--ng-disabled="!assessmentQDesigned"-->
      <div class="text-danger fontSmaller b" *ngIf="!orderItemSelected">
           Order category Not Selected
      </div>
+     <div style="border:inset">
+          <div *ngIf="orderItemSelected" class="b mt-2">Order Item selected</div>
+          <div style="padding-left: 5px; border-color: initial ;" *ngIf="orderItemSelected && (qDesigned || !requireInternalReview)" >
+               <span class="stdd">Category: </span> <span class="blue">{{orderItemSelected.categoryRef + "-" + orderItemSelected.categoryName}}</span>
+               <br><span class="stdd">Order dated: </span> <span class="stdd blue mx-2">{{orderItemSelected.orderDate | date}}</span>
+               <br><span class="stdd">Customer: </span> <span class="stdd blue mx-2">{{orderItemSelected.customerName}}</span>
+               <br><span class="stdd">Require Internal Review: {{"requireInternalReview && orderItemSelected !== undefined" ? 'Yes' : 'No'}}</span> 
+          </div>
 
-     <div *ngIf="orderItemSelected" class="b mt-2">Order Item selected</div>
-     <div style="padding-left: 5px; border-color: initial ;" *ngIf="orderItemSelected && (qDesigned || !requireInternalReview)" >
-          <span class="stdd">Category: </span> <span class="blue">{{orderItemSelected.categoryRef + "-" + orderItemSelected.categoryName}}</span>
-          <br><span class="stdd">Order dated: </span> <span class="stdd blue mx-2">{{orderItemSelected.orderDate | date}}</span>
-          <br><span class="stdd">Customer: </span> <span class="stdd blue mx-2">{{orderItemSelected.customerName}}</span>
-          <div *ngIf="requireInternalReview && orderItemSelected !== undefined">require internal review</div>
+          <div *ngIf="orderItemSelected && !checklist" class="text-danger">
+               Candidate not checklisted for above category
+          </div> 
+          <div class="my-1" *ngIf="orderItemSelected && checklist" >
+               Checklist initiated by :
+                    <label class="blue">{{checklist.userLoggedName}} </label> on 
+                    <label class="blue"> {{checklist.checkedOn |date}} </label>  
+                    <label>Checklist Concluded: </label> 
+                    <span [ngClass]="checklist.checklistedOk ? 'green' : 'red' ">{{checklist.checklistedOk ? ' Yes' : ' No'}}</span>
+                    <br>
+                    <label>  Requires internal rvw: <span> {{!requireInternalReview && orderItemSelected !== undefined  ? 'No' : 'Yes'}} </span></label>
+          </div> 
      </div>
-
-     <div *ngIf="orderItemSelected && !checklist" class="text-danger">
-          Candidate not checklisted for above category
-     </div> 
-     <div class="my-1" *ngIf="orderItemSelected && checklist" >
-          Checklist initiated by :
-               <label class="blue">{{checklist.userLoggedName}} </label> on 
-               <label class="blue"> {{checklist.checkedOn |date}} </label>  
-               <label>Checklist Concluded: </label> 
-               <span [ngClass]="checklist.checklistedOk ? 'green' : 'red' ">{{checklist.checklistedOk ? ' Yes' : ' No'}}</span>
-               <label>  Requires internal rvw: <span> {{!requireInternalReview && orderItemSelected !== undefined  ? 'No' : 'Yes'}} </span></label>
-     </div> 
-     
      
      <br>
      <div *ngIf="requireInternalReview && !qDesigned" class="b text-danger">
           Assessment Questions for the Order Category selected not designed.  You can press the + button to the right to create custom assessment questions, or add standard questions to the order category"
      </div>
 
-     <div class="stdd my-1">
-          <button type="button" class="btn btn-success fa fa-checkmark" 
-               title="talk to the candidate for consent to requirements" 
-               (click)="openChecklistModal()"
-               [disabled]="!orderItemSelected && !checklist?.checklistedOk"
-               title="show checklist for the candidate"
-               >
-               Show Checklist
-          </button>
-          
-          <button type="button" class="mx-1 btn btn-success fa fa-checkmark" 
-               title="shortlist for forwarding to the requirement selected above" (click)="shortlistForForwarding()"
-               [disabled]="cvAssessment || !checklist?.checklistedOk"
-               >
-               Shortlist
-          </button>
-          <!-- [disabled]= "cvAssessment !== null  && !requireInternalReview "  -->
-     </div>
+     <button type="button" class="btn btn-success fa fa-list" 
+          title="talk to the candidate for consent to requirements" 
+          (click)="getChecklistData()"
+          [disabled]="orderItemSelectedId === null || checklist?.checklistedOk" 
+          title="get checklist data for the candidate"
+          >
+          Get Checklist
+     </button>
 
-     <div class="stdd my-5" *ngIf="orderItemSelected && requireInternalReview && checklist !== null && (cvAssessment===null || cvAssessment === undefined)">
+     <button type="button" class="btn btn-success fa fa-checkmark" 
+          title="talk to the candidate for consent to requirements" 
+          (click)="openChecklistModal()"
+          title="show checklist for the candidate"
+          [disabled]="checklist===null || checklist===undefined ||checklist.checklistHRItems.length===0"
+          >
+          Show Checklist
+     </button>
+     
+     <br>
+     <button type="button" class="mx-1 btn btn-success fa fa-checkmark" 
+          title="shortlist for forwarding to the requirement selected above" (click)="shortlistForForwarding()"
+          [disabled]="!(cvAssessment && checklist?.checklistedOk)"
+          >
+          Shortlist
+     </button>
+
+     <div class="stdd my-5" *ngIf="orderItemSelected && requireInternalReview 
+          && checklist !== null && (cvAssessment===undefined || cvAssessment === null)">
           <button type="button" class="btn btn btn-success" 
-               [disabled]="!requireInternalReview 
-                    && cvBrief===null 
-                    && !checklist?.checklistedOk"
-                    && cvAssessment!.candidateAssessmentItems !==undefined 
+               [disabled]="!(requireInternalReview 
+                    && !checklist?.checklistedOk)" 
                title="Create new assessment object.  Enabled when all of following are true: Checklist created, 
                     OrderItem selected, internal review required, checklist done, and no other Assessment in view " 
                (click)="createNewAssessment()" >New Assessment
@@ -107,8 +119,3 @@
      <!-- excluded:                [checklist]="checklist"-->
 </div>
 
-<!--
-<div>
-{{this.form.value | json}}
-</div>
--->

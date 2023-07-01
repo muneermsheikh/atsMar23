@@ -17,5 +17,6 @@ namespace core.Entities.MasterEntities
           [Range(1,1000)]
         public int SrNo {get; set;}
         public string Parameter { get; set; }
+        public bool IsMandatory {get; set;}=true;
     }
 }

@@ -15,6 +15,9 @@ import { RouterModule } from '@angular/router';
 import { CvrefComponent } from './cvref/cvref.component';
 import { CvrefLineComponent } from './cvref-line/cvref-line.component';
 import { AdminRoutingModule } from './admin-routing.module';
+import { CvreferredComponent } from './cvreferred/cvreferred.component';
+import { CvreferredlineComponent } from './cvreferredline/cvreferredline.component';
+import { RefDecisionPipe } from './ref-decision.pipe';
 
 
 
@@ -30,6 +33,9 @@ import { AdminRoutingModule } from './admin-routing.module';
     EmploymentModalComponent,
     CvrefComponent,
     CvrefLineComponent,
+    CvreferredComponent,
+    CvreferredlineComponent,
+    RefDecisionPipe,
     
   ],
   imports: [

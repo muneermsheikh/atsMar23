@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { IEmployment } from 'src/app/shared/models/admin/selectionDecision';
+import { IEmployment } from 'src/app/shared/models/admin/employment';
+import { IUser } from 'src/app/shared/models/admin/user';
+
 
 @Component({
   selector: 'app-employment-modal',
@@ -13,7 +15,7 @@ export class EmploymentModalComponent implements OnInit {
   @Input() editEvent = new EventEmitter();
   
   emp?: IEmployment;
-  title: string='';
+  user?: IUser;
   
 
   constructor(public bsModalRef: BsModalRef, private toastr: ToastrService) { }
@@ -26,4 +28,12 @@ export class EmploymentModalComponent implements OnInit {
     this.bsModalRef.hide();
   }
 
+  approvedClicked() {
+    this.toastr.info('aproved clicked');
+    if(this.emp !== undefined && new Date(this.emp.approvedOn).getFullYear() < 2000){
+      this.emp.approvedOn = new Date();
+      this.toastr.info('date set');
+    } 
+  }
+  
 }

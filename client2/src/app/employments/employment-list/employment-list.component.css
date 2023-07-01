@@ -1,0 +1,36 @@
+.stdd {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 1px;
+    margin-right: 1px;
+}
+
+.b {font-weight: bold;}
+
+.allowance {
+    display:inline-block;
+    margin-left: 1px;
+    margin-right: 1px;
+    font-weight: bold;
+    width: 125px;
+    text-align: center;
+}
+.dropdown {
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 125px;
+}
+
+.ml5 {margin-left: 5px;}
+.mr5 {margin-right: 5px;}
+
+.blue {color: blue;}
+
+.w50 {width: 50px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w125 {width: 125px;}
+.w140 {width: 140px;}
+.w150 {width: 150px;}
+.w200 {width: 200px;}

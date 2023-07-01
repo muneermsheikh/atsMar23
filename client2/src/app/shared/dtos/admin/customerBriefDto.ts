@@ -3,5 +3,6 @@ export interface ICustomerBriefDto {
      customerName: string;
      knownAs: string;
      city: string;
-
+     country: string;
+     customerType: string;
 }

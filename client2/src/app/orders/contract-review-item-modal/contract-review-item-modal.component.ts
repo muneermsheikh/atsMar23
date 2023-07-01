@@ -9,9 +9,11 @@ import { IReviewItemStatus } from 'src/app/shared/models/admin/reviewItemStatus'
   templateUrl: './contract-review-item-modal.component.html',
   styleUrls: ['./contract-review-item-modal.component.css']
 })
+
 export class ContractReviewItemModalComponent implements OnInit {
 
   @Input() updateModalReview = new EventEmitter();
+  
   review?: IContractReviewItem;
   reviewStatus: IReviewItemStatus[]=[];
   

@@ -1,0 +1,21 @@
+.stdd {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.mx1 {
+    margin-left: 1px;
+    margin-right: 1px;
+}
+
+.marginL35 {margin-left: 35px;}
+.vAlignTop {vertical-align: top;}
+.hCenter {text-align: center;}
+
+.w10 {width: 10px;}
+.w30 {width: 30px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w125 {width: 125px;}
+.w150 {width: 150px;}
+.w200 {width: 200px;}

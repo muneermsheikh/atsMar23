@@ -52,6 +52,9 @@
                {{order.status}}
           </div>
 
+          <button class="stdd w15 fa fa-envelope" (click)="AcknowledgeClicked()" 
+               title="compose email message of acknowldgement to client" ></button>
+          
           <div style="display: inline-block; width: 250px;"> 
                <button class="stdd w15 fa fa-pencil" title="edit this DL" type="button"
                     (click)="editClicked()"
@@ -60,6 +63,11 @@
                <button class="stdd w15 fa fa-arrow-right" title="edit this DL" type="button"
                     title="ALREADY forwarded to associates"
                     (click)="dlForwardedToAssociatesClicked()"
+               ></button>
+               
+               <button class="stdd w15 fa fa-plane" title="cvs forwarded" type="button"
+                    title="ALREADY forwarded to associates"
+                    (click)="cvReferredClicked()"
                ></button>
 
                <!-- <button class="stdd w15 fa fa-step-forward" title="display Forward details for this DL" type="button" (click)="dlForwardToAssociatesClicked()"></button> -->

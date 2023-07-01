@@ -40,7 +40,7 @@ namespace api.Controllers
                return NotFound(new ApiResponse(404, "no records found"));
           }
 
-          [Authorize(Roles = "Admin, HRManager, HRSupervisor, DocumentControllerAdmin")]
+          [Authorize]  //Roles = "Admin, HRManager, HRSupervisor, DocumentControllerAdmin")]
           [HttpPost]
           public async Task<ActionResult<SelectionMsgsAndEmploymentsDto>> RegisterSelectionDecisions(SelDecisionsToAddParams dtos)
           {
@@ -53,14 +53,14 @@ namespace api.Controllers
                return BadRequest(new ApiResponse(400, "failed to update the selections"));
           }
 
-          [Authorize(Roles = "Admin, HRManager, HRSupervisor, DocumentControllerAdmin")]
+          [Authorize]  //Roles = "Admin, HRManager, HRSupervisor, DocumentControllerAdmin")]
           [HttpPut]
           public async Task<ActionResult<bool>> EditSelectionDecision(SelectionDecision selectionDecision)
           {
                return await _service.EditSelection(selectionDecision);
           }
 
-          [Authorize(Roles = "Admin, HRManager, HRSupervisor, DocumentControllerAdmin")]
+          [Authorize]  //Roles = "Admin, HRManager, HRSupervisor, DocumentControllerAdmin")]
           [HttpDelete("{id}")]
           public async Task<ActionResult<bool>> DeleteSelectionDecision(int id)
           {

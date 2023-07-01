@@ -5,6 +5,9 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { MastersService } from '../masters.service';
 import { CategoryEditModalComponent } from '../category-edit-modal/category-edit-modal.component';
+import { IUser } from 'src/app/shared/models/admin/user';
+import { Navigation, Router } from '@angular/router';
+import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
   selector: 'app-categories',
@@ -19,11 +22,36 @@ export class CategoriesComponent implements OnInit {
   totalCount: number=0;
   bsModalRef: BsModalRef|undefined;
 
+  user?: IUser;
+  returnUrl='';
+
   constructor(
     private mastersService: MastersService,
       private modalService: BsModalService,
       private toastr: ToastrService
-  ) { }
+      , private router: Router
+      , private bcService: BreadcrumbService
+  ) {
+      //this.routeId = this.activatedRoute.snapshot.params['id'];
+      //this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+
+      //this.accountsService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);
+
+      //navigationExtras
+      let nav: Navigation|null = this.router.getCurrentNavigation() ;
+
+      if (nav?.extras && nav.extras.state) {
+          //this.bolNavigationExtras=true;
+          if(nav.extras.state.returnUrl) this.returnUrl=nav.extras.state.returnUrl as string;
+              if( nav.extras.state.user) {
+                this.user = nav.extras.state.user as IUser;
+                //this.hasEditRole = this.user.roles.includes('AdminManager');
+                //this.hasHRRole =this.user.roles.includes('HRSupervisor');
+              }
+              //if(nav.extras.state.object) this.orderitem=nav.extras.state.object;
+          }
+          this.bcService.set('@Categories',' ');
+   }
 
   ngOnInit(): void {
     this.mastersService.setParams(this.cParams);
@@ -64,7 +92,11 @@ export class CategoriesComponent implements OnInit {
     }
   }
 
-  openCategoryEditModal(index: number, categoryString: string) {
+  openCategoryEditModal(category: IProfession) {
+    var id: number, categoryString: string;
+    id=category.id;
+    categoryString=category.name;
+
     const initialState = {
       str: categoryString
     };
@@ -76,7 +108,7 @@ export class CategoriesComponent implements OnInit {
         this.toastr.warning('category value not changed');
         return;
       } else {
-        this.mastersService.updateCategory(index, values).subscribe(response => {
+        this.mastersService.updateCategory(id, values).subscribe(response => {
           this.toastr.success('category value updated');
         }, error => {
           this.toastr.error(error);
@@ -85,7 +117,7 @@ export class CategoriesComponent implements OnInit {
     })
   }
 
-  deleteQ(id: number){
+  deleteCategory(id: number){
     
   }
 

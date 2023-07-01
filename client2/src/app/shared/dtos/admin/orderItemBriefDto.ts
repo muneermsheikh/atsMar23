@@ -1,6 +1,7 @@
 
 export interface IOrderItemBriefDto
 {
+     srNo: number;
      checked: boolean;
      orderNo: number;
      orderDate: Date;
@@ -17,6 +18,7 @@ export interface IOrderItemBriefDto
 
 export class OrderItemBriefDto implements IOrderItemBriefDto
 {
+     srNo = 0;
      checked: boolean = false;
      orderNo = 0;
      orderDate= new Date();

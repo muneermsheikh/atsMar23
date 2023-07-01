@@ -10,11 +10,12 @@ namespace infra.Data.Config
      {
           public void Configure(EntityTypeBuilder<CandidateAssessment> builder)
           {
-               builder.Property(s => s.AssessResult).HasConversion(
+               /* builder.Property(s => s.AssessResult).HasConversion(
                o => o.ToString(),
                o => (EnumCandidateAssessmentResult) Enum.Parse(typeof(EnumCandidateAssessmentResult), o)
                );
-
+               */
+               
                builder.HasIndex(x => new {x.CandidateId, x.OrderItemId}).IsUnique();
           
                builder.HasMany(s => s.CandidateAssessmentItems).WithOne().OnDelete(DeleteBehavior.Cascade);

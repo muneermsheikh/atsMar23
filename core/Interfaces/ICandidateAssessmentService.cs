@@ -17,6 +17,6 @@ namespace core.Interfaces
         Task<CandidateAssessment> GetCandidateAssessment(int candidateId, int orderItemId);   
         Task<CandidateAssessmentAndChecklistDto> GetCandidateAssessmentAndChecklist(int candidateId, int orderItemId, int loggedInEmployeeId);
         Task<ICollection<AssessmentsOfACandidateIdDto>> GetCandidateAssessmentHeaders(int candidateid);
-        
+        Task<ChecklistHRDto> CreateChecklist(int candidateid, int orderitemid, int loggedInEmpId);
     }
 }

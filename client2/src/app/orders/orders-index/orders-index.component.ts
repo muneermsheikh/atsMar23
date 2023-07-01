@@ -17,6 +17,7 @@ import { IProfession } from 'src/app/shared/models/masters/profession';
 import { IOrderCity } from 'src/app/shared/models/admin/orderCity';
 import { IOrderBrief } from 'src/app/shared/models/admin/orderBrief';
 import { IOrderBriefDto } from 'src/app/shared/dtos/admin/orderBriefDto';
+import { CVRefParams } from 'src/app/shared/params/admin/cvRefParams';
 
 @Component({
   selector: 'app-orders-index',
@@ -74,13 +75,13 @@ export class OrdersIndexComponent implements OnInit {
 
   ngOnInit(): void {
     this.service.setOParams(this.oParams);
-    this.getOrders(false);
+    this.getOrders(true);
     this.getCities();
     this.getProfessions();
     
   }
 
-  getOrders(useCache=false) {
+  getOrders(useCache: boolean=false) {
     this.service.getOrdersBrief(useCache).subscribe({
       next: response => {
         this.orders = response.data;
@@ -235,7 +236,7 @@ export class OrdersIndexComponent implements OnInit {
       })
     ).subscribe(
         () => {
-          console.log('deete succeeded');
+          console.log('delete succeeded');
           this.toastr.success('order deleted');
         },
         (err: any) => {
@@ -292,15 +293,24 @@ export class OrdersIndexComponent implements OnInit {
      this.navigateByRoute(id, 'admin/forwarded', true);
   }
 
+  acknowledgeToClient(event: any) {
+    this.service.acknowledgeOrderToClient(event);
+  }
+
+  cvsReferred(event: any)
+  {
+    this.navigateByRoute(event, 'admin/cvreferred', false)
+  }
+
   navigateByRoute(id: number, routeString: string, editable: boolean) {
     let route =  routeString + '/' + id;
-    console.log('navigatebyrute route: ', route);
+
     this.router.navigate(
         [route], 
         { state: 
           { 
             user: this.user, 
-            toedit: true, 
+            toedit: editable, 
             returnUrl: '/orders' 
           } }
       );

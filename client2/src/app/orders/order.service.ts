@@ -16,6 +16,7 @@ import { IOrderItemBriefDto } from '../shared/dtos/admin/orderItemBriefDto';
 import { IJDDto } from '../shared/dtos/admin/jdDto';
 import { IRemunerationDto } from '../shared/dtos/admin/remunerationDto';
 import { idAndDate } from '../shared/params/admin/idAndDate';
+import { IMessage } from '../shared/models/admin/message';
 
 @Injectable({
   providedIn: 'root'
@@ -39,11 +40,10 @@ export class OrderService {
 
   constructor(private http: HttpClient) { }
 
-    getOrdersBrief(useCache: boolean): Observable<IPagination<IOrderBriefDto[]>> { 
+    getOrdersBrief(useCache: boolean=true): Observable<IPagination<IOrderBriefDto[]>> { 
 
-      if (useCache === false) {
-        this.cacheBrief = new Map();
-      }
+      if (useCache === false) this.cacheBrief = new Map();
+      
       if (this.cacheBrief.size > 0 && useCache === true) {
         if (this.cacheBrief.has(Object.values(this.bParams).join('-'))) {
           this.paginationBrief!.data = this.cacheBrief.get(Object.values(this.bParams).join('-'));
@@ -107,6 +107,10 @@ export class OrderService {
 
     getOrderItemsBriefDto() {
       return this.http.get<IOrderItemBriefDto[]>(this.apiUrl + 'orders/openorderitemlist');
+    }
+
+    acknowledgeOrderToClient(orderid: number) {
+      return this.http.get<IMessage>(this.apiUrl + 'orders/ackToClient/' + orderid);
     }
 
     getOpenOrderItemCategoriesDto() {

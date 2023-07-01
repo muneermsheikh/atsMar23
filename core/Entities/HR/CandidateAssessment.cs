@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using core.Entities.Orders;
 
@@ -12,7 +10,7 @@ namespace core.Entities.HR
           }
 
           public CandidateAssessment(int candidateId, int orderItemId, int assessedById, string assessedByName, 
-              DateTime assessedOn, bool requirereview, int hrchecklistid, EnumCandidateAssessmentResult assessmentResult)
+              DateTime assessedOn, bool requirereview, int hrchecklistid, string assessmentResult)
           {
               CandidateId = candidateId;
               OrderItemId = orderItemId;
@@ -47,7 +45,7 @@ namespace core.Entities.HR
         //public int UserProfessionId { get; set; }
         public DateTime AssessedOn { get; set; }
         [Required]
-        public EnumCandidateAssessmentResult AssessResult { get; set; }
+        public string AssessResult { get; set; } = "Not Assessed";
         public string Remarks { get; set; }
         public int CvRefId { get; set; }
         public int TaskIdDocControllerAdmin {get; set;}

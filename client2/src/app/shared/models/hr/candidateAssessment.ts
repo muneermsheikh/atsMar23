@@ -8,7 +8,7 @@ export interface ICandidateAssessment
      assessedById: number;
      assessedByName: string;
      assessedOn: Date;
-     assessResult: number;
+     assessResult: string;
      requireInternalReview: boolean;
      hrChecklistId: number;
      taskIdDocControllerAdmin: number;
@@ -35,7 +35,7 @@ export class CandidateAssessment implements ICandidateAssessment
      assessedById= 0;
      assessedByName= '';
      assessedOn: Date;
-     assessResult= 0;
+     assessResult= "";
      requireInternalReview: boolean;
      hrChecklistId= 0;
      remarks= '';

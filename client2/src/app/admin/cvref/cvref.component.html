@@ -1,54 +1,62 @@
-<div class="stdd mt-5 col-2">
-     <div class="stdd w50 b">sort</div>
-     <select name="" id="" class="custom-select mb-2" (change)="onSortSelected($event)">
-          <option *ngFor="let sort of sortOptions"
-               [value] = "sort.value"
-          >{{sort.name}}</option>
-     </select>
-     <div class="stdd w150 b">Search by Application No</div>
-     <input class="stdd w150" type="text" [(ngModel)]="cvRefParams.applicationNo">     
-     <br>
-     <div class="stdd w150 b">Search by Candidate Name</div>
-     <input class="stdd w150" type="text" [(ngModel)]="cvRefParams.candidateName">     
-     <br>
-
-     <div class="stdd w150 b">Search by Agent</div>
-     <input class="stdd w150" type="text" [(ngModel)]="cvRefParams.customerName">     
-     <br>
+     <br><br><br>
+     <div class="b">Forward shortlisted CVs to clients</div>
+     <div style="margin-left: 35px; margin-top: 5px;">
+          <div class="stdd b">sort: </div>
+          <select name="" id="" class="stdd w100 custom-select" (change)="onSortSelected($event)">
+               <option *ngFor="let sort of sortOptions"
+                    [value] = "sort.value"
+               >{{sort.name}}</option>
+          </select>
      
-</div>
-
-
-<div class="stdd mt-5 col-10">
-     <div class="d-flex justify-contents-between align-items-center">
-          <app-paging-header 
-               [totalCount]="totalCount" 
-               [pageNumber]="cvRefParams.pageNumber" 
-               [pageSize]="cvRefParams.pageSize"
-          ></app-paging-header>
-          <app-paging 
-               [pageSize]="cvRefParams.pageSize" 
-               [totalCount]="totalCount" 
-               [pageNumber]="cvRefParams.pageNumber" 
-               (pageChanged)="onPageChanged($event)"  
-          > </app-paging>
+          <div class="stdd b mx-2">Search by App No</div>
+          <input class="stdd w100" type="text" [(ngModel)]="cvRefParams.applicationNo">     
+          
+          <div class="stdd b mx-2">Search by Candidate Name</div>
+          <input class="stdd w150" type="text" [(ngModel)]="cvRefParams.candidateName">     
+          
+          <div class="stdd b mx-2">Search by Agent</div>
+          <input class="stdd w150" type="text" [(ngModel)]="cvRefParams.customerName">     
+ 
+              <app-paging-header class="stdd mx-3" style="margin-left:300px;"
+                  [totalCount]="totalCount" 
+                  [pageNumber]="cvRefParams.pageNumber" 
+                  [pageSize]="cvRefParams.pageSize"
+             ></app-paging-header>
+     
+             <app-paging class="stdd mx-3"
+                  [pageSize]="cvRefParams.pageSize" 
+                  [totalCount]="totalCount" 
+                  [pageNumber]="cvRefParams.pageNumber" 
+                  (pageChanged)="onPageChanged($event)"  
+             > </app-paging>
+     
+             <button class="btn btn-success fa fa-check pull-right" style="vertical-align: top;" 
+               title="Forward to clients" (click)="forwardSelected()"></button>
+             <button class="btn btn-secondary mx-2 fa fa-undo pull-right" style="vertical-align: top;" 
+               title="go back" (click)="goBack()"></button>
+     
+        <br>
+          <div style="margin-left: 25px;">
+               <div class="stdd b">
+                    <div class="stdd w100" >Employer</div>
+                    <div class="stdd w200">Category</div>
+                    <div class="stdd w100" style="margin-left: 50px;" >Appl No</div>
+                    <div class="stdd w150">Candidate Name</div>
+                    <div class="stdd w150">Agent Name</div>
+                     <div class="stdd w150">Assessed On</div>
+                    <div class="stdd w100">Assessed By</div>
+                    <div class="stdd w150">Assessmt Result</div>
+                    <div class="stdd w75">Charges</div>
+               </div>
+               <div class="row" *ngFor="let cv of cvsAssessed" >
+                    <app-cvref-line 
+                         [cv]="cv" 
+                         (cvCheckedEvent)="cvChecked($event)" 
+                         (displayChecklistModalEvent)="openChecklistModal($event)" 
+                    ></app-cvref-line>
+               </div>
+               <div class="d-flex justify-content-between align-items-center mt-2" *ngIf="totalCount > 0">
+               </div>
+     
+          </div>
      </div>
-     <div class="stdd b">
-          <div class="stdd w15"></div>
-          <div class="stdd w45">Appl No</div>
-          <div class="stdd w180 mx-2">Candidate Name</div>
-          <div class="stdd w100 mx-1">City</div>
-          <div class="stdd w200 mx-1">Agent</div>
-          <div class="stdd w200 mx-1">Professions</div>
-     </div>
-     <div class="row" *ngFor="let cv of cvsAssessed" >
-          <app-cvref-line 
-               [cv]="cv" 
-               (cvCheckedEvent)="cvChecked($event)" 
-               (displayChecklistModalEvent)="openChecklistModal($event)" 
-          ></app-cvref-line>
-     </div>
-     <div class="d-flex justify-content-between align-items-center mt-2" *ngIf="totalCount > 0">
-     </div>
-
-</div>

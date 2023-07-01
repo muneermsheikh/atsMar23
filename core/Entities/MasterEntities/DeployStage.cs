@@ -5,6 +5,6 @@ namespace core.Entities.MasterEntities
         public string Status { get; set; }
         public int Sequence { get; set; }
         public int EstimatedDaysToCompleteThisStage {get; set;}
-        public int NextDeployStageSequence { get; set; }
+        public int NextSequence { get; set; }
     }
 }

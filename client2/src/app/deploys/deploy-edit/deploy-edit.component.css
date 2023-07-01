@@ -1,0 +1,21 @@
+
+ .stdd {
+	display: inline-block;
+	margin-top: 1px;
+	margin-left: 1px;
+	margin-right: 1px;
+	vertical-align: top;
+	white-space: nowrap;
+ }
+ 
+ 
+ .b {font-weight: bold;}
+ .red {color: red;}
+ 
+ .w75 {width: 75px;}
+
+ .w100 {width: 100px;}
+ .w150 {width: 150px;}
+ .w250 {width: 250px;}
+ .w150 {width: 150px;}
+ 

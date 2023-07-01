@@ -5,5 +5,5 @@ export interface IDeployStage
      status: string;
      //processName: string;
      estimatedDaysToCompleteThisStage: number;
-     nextId: number;
+     nextSequence: number;
 }

@@ -26,57 +26,36 @@ namespace infra.Services
 
           public async Task<Pagination<EmailMessage>> GetEmailMessageOfLoggedinUser(EmailMessageSpecParams msgParams)
           {
-               var qryCt = _context.EmailMessages.AsQueryable();
-               var qrymsg = _context.EmailMessages.AsQueryable();
-               var msgs = new List<EmailMessage>();
-
+               
+               var qry = _context.EmailMessages.AsQueryable();
+               
                switch(msgParams.Container.ToLower())
                {
                     case "inbox":
-                         qrymsg = _context.EmailMessages.Where(x => 
-                              x.RecipientEmailAddress == msgParams.Username
-                              && x.RecipientDeleted==false)
-                              .OrderByDescending(x => x.DateReadOn)
-                              .Take(msgParams.PageSize)
-                              .Skip((msgParams.PageIndex-1) * msgParams.PageSize);
-                         qryCt =  _context.EmailMessages.Where(x => 
-                              x.RecipientEmailAddress == msgParams.Username
-                              && x.RecipientDeleted==false);
-                         /*qrymsg = qryCt.OrderByDescending(x => x.DateReadOn)
-                              .Take(msgParams.PageSize)
-                              .Skip((msgParams.PageIndex-1) * msgParams.PageSize);
-                         */
+                         qry = qry.Where(x => 
+                              x.RecipientEmailAddress == msgParams.Username &&
+                              x.RecipientDeleted==false)
+                              .OrderByDescending(x => x.DateReadOn);
                          break;
                     case "sent":
-                         qryCt = _context.EmailMessages.Where(x => 
-                              x.SenderEmailAddress == msgParams.Username
-                              && x.SenderDeleted==false && x.MessageSentOn != null );
-                         qrymsg =  _context.EmailMessages.Where(x => 
-                              x.SenderEmailAddress == msgParams.Username
-                              && x.SenderDeleted==false && x.MessageSentOn != null )
-                              .OrderByDescending(x => x.MessageSentOn)
-                              .Skip((msgParams.PageIndex-1) * msgParams.PageSize)
-                              .Take(msgParams.PageSize);
+                         qry = qry.Where(x => 
+                              x.SenderEmailAddress==msgParams.Username &&
+                              x.SenderDeleted==false && x.MessageSentOn != null)
+                              .OrderByDescending(x => x.DateReadOn);
                          break;
                     case "draft":
-                         qryCt = _context.EmailMessages.Where(x => x.SenderEmailAddress == msgParams.Username 
-                              && x.SenderDeleted==false && x.MessageSentOn==null);
-                         qrymsg = qryCt
-                              .OrderByDescending(x => x.MessageComposedOn)
-                              .Skip((msgParams.PageIndex-1) * msgParams.PageSize)
-                              .Take(msgParams.PageSize);
+                         qry = qry.Where(x => 
+                              x.SenderEmailAddress == msgParams.Username &&
+                              x.SenderDeleted==false &&
+                              x.MessageSentOn == null);
                          break;
                     default:
                          break;
                }
+               var count = await qry.CountAsync();
 
-          
-               var totalItems = await qryCt.CountAsync();
-               if (totalItems > 0) {
-                    msgs = await qrymsg.ToListAsync();     
-               } 
-
-               return new Pagination<EmailMessage>(msgParams.PageIndex, msgParams.PageSize, totalItems, msgs );
+               var data = await qry.Skip((msgParams.PageIndex-1)*msgParams.PageSize).Take(msgParams.PageSize).ToListAsync();
+               return new Pagination<EmailMessage>(msgParams.PageIndex, msgParams.PageSize, count, data);
           }
 
 

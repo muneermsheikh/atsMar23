@@ -15,7 +15,6 @@ import { AssessComponent } from './assess/assess.component';
 import { OrderResolver } from '../resolvers/orderResolver';
 import { AssessmentQsResolver } from '../resolvers/assessmentQsResolver';
 import { AssessQComponent } from './assess-q/assess-q.component';
-import { OrderItemBriefResolver } from '../resolvers/orderItemBriefResolver';
 import { OpenRequirementsResolver } from '../resolvers/open-requirements.resolver';
 import { CandidateAssessedResolver } from '../resolvers/candidate-assessed.resolver';
 import { CommonModule } from '@angular/common';
@@ -52,15 +51,15 @@ const routes = [
   
   {path: 'itemassess/:id', component: AssessQComponent,
     resolve: {
-      assessment: AssessmentQsResolver,
-      itembrief: OrderItemBriefResolver
+      assessment: AssessmentQsResolver
+      //, itembrief: OrderItemBriefResolver
     }}, 
   
   {path: 'cvassess/:id', component: CvAssessComponent,
     //canDeactivate: [PreventUnsavedChangesGuard],
     resolve: {
       openOrderItemsBrief: OpenRequirementsResolver,
-      assessmentsDto: CandidateAssessedResolver}
+      assessmentsDto: CandidateAssessedResolver}    //assssments of candidte.Id(route.id)
   },
   /*
   {path: 'assessments', component: AssessmentsComponent,

@@ -39,7 +39,7 @@ namespace core.Specifications
         }
   
         public CVRefSpecs(int pageIndex, int pageSize)
-            : base(x => x.DeployStageId < (int)EnumDeployStatus.Concluded)
+            : base(x => x.Sequence < (int)EnumDeployStatus.Concluded)
         {
             ApplyPaging(pageSize * (pageIndex - 1), pageSize);
             AddOrderBy(x => x.CustomerName);

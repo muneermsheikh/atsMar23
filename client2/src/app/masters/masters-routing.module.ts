@@ -7,8 +7,8 @@ import { IndustryTypesComponent } from './industry-types/industry-types.componen
 
 const routes = [
   {path: '', component: CategoriesComponent}, 
-  {path: 'Qualifications', component:QualificationsComponent , data: {breadcrumb: {alias: 'qualifications'}}},
-  {path: 'IndustryTypes', component:IndustryTypesComponent , data: {breadcrumb: {alias: 'Industry Types'}}},
+  //{path: 'Qualifications', component:QualificationsComponent , data: {breadcrumb: {alias: 'qualifications'}}},
+  //{path: 'IndustryTypes', component:IndustryTypesComponent , data: {breadcrumb: {alias: 'Industry Types'}}},
   /*
   {path: 'clients', component:ClientsComponent , data: {breadcrumb: {alias: 'Customers'}}},
   {path: 'associates', component:ClientsComponent , data: {breadcrumb: {alias: 'Associates'}}},

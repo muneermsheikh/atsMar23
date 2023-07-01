@@ -1,0 +1,25 @@
+<div *ngIf="employment !== undefined" class="row" style="margin-left: 10px;">
+    <div class="stdd w75" >{{employment.orderNo}}</div>
+    <div class="stdd w150">{{employment.customerName}}</div>
+    <div class="stdd w75" >{{employment.applicationNo}}</div>
+    <div class="stdd w150" >{{employment.candidateName}}</div>
+    <div class="stdd w150" >{{employment.categoryName}}</div>
+    <div class="stdd w75" >{{employment.selectedOn | date: 'dd-MMM-yy' }}</div>
+    <div class="stdd w25" style="margin-left:25px;" >{{employment.salaryCurrency}} </div>
+    <div class="numeric" >{{employment.salary}}</div>
+    <div class="free" >{{employment.housingProvidedFree === true ? 'Y' : 'N'}}</div>
+    <div class="numeric" >{{employment.housingAllowance === undefined || employment.housingAllowance===0  ? '---' : employment.housingAllowance}}</div>
+    <div class="free" >{{employment.foodProvidedFree === true ? 'Y' : 'N'}}</div>
+    <div class="numeric" >{{employment.foodAllowance=== undefined || employment.foodAllowance===0  ? '---' : employment.foodAllowance}}</div>
+    <div class="free" >{{employment.transportProvidedFree === true ? 'Y' : 'N'}}</div>
+    <div class="numeric" >{{employment.transportAllowance=== undefined  || employment.transportAllowance===0  ? '---' : employment.transportAllowance}}</div>
+    <div class="stdd w100" style="text-align: center;" >{{employment.approved === true ? 'Y' : 'N'}}</div>
+
+    <div class="mx-1" style="display: inline-block; width: 200px;">
+         <button class="w35 bordernone fa fa-pencil" style="margin-left: 50x;"
+            title="edit employment data"    (click)="editEmployment()" ></button>
+         <button class="w35 bordernone fa fa-trash red" 
+            title="delete employment record"    (click)="deleteEmployment()" ></button>
+    </div>
+</div>
+

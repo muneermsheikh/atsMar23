@@ -6,8 +6,6 @@ export class selDecisionToAddDto
 	decisionDate: Date=new Date();
 	selectionStatusId: number=0;
 	remarks: string='';
-
-	
 }
 
 export class selDecisionsToAddParams

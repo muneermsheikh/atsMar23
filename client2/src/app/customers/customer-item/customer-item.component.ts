@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ICustomerBriefDto } from 'src/app/shared/dtos/admin/customerBriefDto';
 import { ICustomer } from 'src/app/shared/models/admin/customer';
 
 @Component({
@@ -8,7 +9,7 @@ import { ICustomer } from 'src/app/shared/models/admin/customer';
 })
 export class CustomerItemComponent implements OnInit {
 
-  @Input() cust: ICustomer | undefined;
+  @Input() cust: ICustomerBriefDto | undefined;
   
   constructor() { }
 

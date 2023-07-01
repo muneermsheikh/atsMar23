@@ -34,9 +34,10 @@ namespace api.Helpers
                CreateMap<CVRef, CVRefPostedDto>();
                CreateMap<CVRef, SelectionsPendingDto>();
 
-               CreateMap<Deploy, DeploymentObjDto>()
-                    .ForMember(d => d.NextStageName, o => o.MapFrom(s => s.NextStageId.GetEnumDisplayName()))
-                    .ForMember(d => d.StageName, o => o.MapFrom(s => s.StageId.GetEnumDisplayName()));
+               CreateMap<Deploy, DeploymentDto>()
+                    //.ForMember(d => d.NextStageName, o => o.MapFrom(s => s.NextSequence.GetEnumDisplayName()))
+                    //.ForMember(d => d.StageName, o => o.MapFrom(s => s.Sequence.GetEnumDisplayName()))
+                    ;
                CreateMap<EmailMessage, MessageDto>();
                CreateMap<Employee, EmployeeBriefDto>();
                CreateMap<Employment, EmploymentDto>();

@@ -78,11 +78,11 @@ namespace infra.Services
                          Selected = x.Count(x => x.RefStatus == (int) EnumCVRefStatus.Selected),
                          Rejected = x.Count(x => x.RefStatus == (int)EnumCVRefStatus.RejectedHighSalaryExpectation ||
                             x.RefStatus == (int) EnumCVRefStatus.RejectedMedicallyUnfit ||
-                            x.RefStatus == (int)EnumCVRefStatus.RejectedNoRelevantExp ||
+                            x.RefStatus == (int)EnumCVRefStatus.RejectedExpNotRelevant ||
                             x.RefStatus == (int)EnumCVRefStatus.RejectedNotQualified ||
-                            x.RefStatus == (int)EnumCVRefStatus.RejectedNotSuitable ||
+                            x.RefStatus == (int)EnumCVRefStatus.RejectedProfileDoesNotMatch ||
                             x.RefStatus == (int)EnumCVRefStatus.RejectedOverAge),
-                         CanceledAfterSelection = x.Count(x => x.RefStatus == (int)EnumCVRefStatus.NotAvailable),
+                         CanceledAfterSelection = x.Count(x => x.RefStatus == (int)EnumCVRefStatus.CandidateNotReachable),
                          ClBalance = 0,
                          CustomerName = "",
                          OrderNo = 0,

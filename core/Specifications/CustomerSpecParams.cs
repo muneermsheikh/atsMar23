@@ -6,7 +6,7 @@ namespace core.Specifications
         public string CustomerCityName { get; set; }
         public int? CustomerIndustryId {get; set;}
         public bool IncludeOfficials {get; set;}=false;
-        public bool IncludeIndustries {get; set;}=true;
+        public bool IncludeIndustries {get; set;}=false;
         
         public int? CustomerOfficialId { get; set; }
         public int? IndustryId { get; set; }

@@ -94,7 +94,7 @@ namespace api.Controllers
           }
           
           [Authorize]
-          [HttpGet("loggedInUser")]
+          [HttpGet("loggedinuser")]
           public async Task<ActionResult<Pagination<EmailMessage>>> GetMessagesForLoggedInUser([FromQuery] EmailMessageSpecParams messageParams)
           {
 

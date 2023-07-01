@@ -1,0 +1,32 @@
+.stdd {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 1px;
+    margin-right: 1px;
+}
+
+.numeric {
+    margin-left: 10px;
+    display: inline-block;
+    line-height: 1em;
+    vertical-align: top;
+    text-align: right;
+    width: 50px;
+}
+.free {
+    margin-left:50px;
+    display: inline-block;
+    text-align: center;
+    width: 25px;
+}
+
+.w25 {width: 25px;}
+.w50 {width: 50px;}
+.w65 {width: 65px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w150 {width: 150px;}
+
+.b { font-weight: bold;}
+
+.red {color: red;}

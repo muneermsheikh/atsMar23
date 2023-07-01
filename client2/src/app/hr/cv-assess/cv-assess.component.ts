@@ -18,7 +18,7 @@ import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { AccountService } from 'src/app/account/account.service';
 import { ConfirmService } from 'src/app/shared/services/confirm.service';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { take } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { CandidateAssessmentItem, ICandidateAssessmentItem } from 'src/app/shared/models/hr/candidateAssessmentItem';
 import { IOrderItemAssessmentQ } from 'src/app/shared/models/admin/orderItemAssessmentQ';
 import { HelpModalComponent } from 'src/app/shared/components/help-modal/help-modal.component';
@@ -105,10 +105,9 @@ export class CvAssessComponent implements OnInit {
     this.activatedRoute.data.subscribe(data => { 
       this.openOrderItems = data.openOrderItemsBrief;
       this.existingAssessmentsDto = data.assessmentsDto;
-      console.log('existingAssessmentsDto',this.existingAssessmentsDto);
+      //console.log('existingAssessmentsDto',this.existingAssessmentsDto);
     })
-    
-   console.log('cvassessment.ts, existingAssessmentsDto', this.existingAssessmentsDto, 'openorderitems:', this.openOrderItems);
+   
   }
 
   initializeTotals() {
@@ -122,6 +121,7 @@ export class CvAssessComponent implements OnInit {
     if (this.orderItemSelectedId <= 0 || this.orderItemSelectedId === undefined) return;
 
     if (this.lastOrderItemIdSelected === this.orderItemSelectedId) return;
+
     this.lastOrderItemIdSelected = this.orderItemSelectedId;
 
     this.initializeTotals();
@@ -139,12 +139,15 @@ export class CvAssessComponent implements OnInit {
         }
     }
     
-    this.service.getCVAssessmentAndChecklist(this.cvBrief!.id, this.orderItemSelected!.orderItemId).subscribe(response => {
+    this.service.getCVAssessmentAndChecklist(this.cvBrief!.id, this.orderItemSelected!.orderItemId)
+        .subscribe(response => {
       this.assessmentAndChecklist = response;
       
       //this.checklist = this.assessmentAndChecklist.checklistHRDto;
       this.checklist = response.checklistHRDto;
       this.cvAssessment = this.assessmentAndChecklist.assessed;
+        
+      //console.log('checklist:', this.checklist, 'cvAssessment', this.cvAssessment);
 
       if (this.cvAssessment !== null && this.cvAssessment !== undefined) {
         this.orderItemChangedEventSubject.next(this.cvAssessment);
@@ -242,12 +245,12 @@ export class CvAssessComponent implements OnInit {
           if (this.cvAssessment !==null) {
             //this.patchForm(this.cvAssessment);    //this is done in child form
               var dto = new CandidateAssessedDto(); // = new AssessmentOfACandidateDto();
-              dto.checklistedByName = "to fix";
-              dto.checklistedOn = new Date();
-              dto!.customerName = "to fix";
-              dto!.categoryName = "to fix";
-              dto!.orderItemRef = "to fix";
-              dto!.assessedOn = this.cvAssessment.assessedOn;
+              dto.checklistedByName = this.checklist!.userLoggedName;
+              dto.checklistedOn = this.checklist!.checkedOn;
+              dto!.customerName = this.orderItemSelected!.customerName;
+              dto!.categoryName = this.orderItemSelected!.categoryName;
+              dto!.categoryRef = this.orderItemSelected!.categoryRefAndName;
+              dto!.assessedOn = new Date();
               dto!.assessedByName = this.user!.displayName;
 
               this.existingAssessmentsDto.push(dto);
@@ -292,18 +295,39 @@ export class CvAssessComponent implements OnInit {
     return null;
   }
 
+  getChecklistData(){
+    if(this.checklist===null || this.checklist?.checklistHRItems.length===0) {
+      this.service.GetOrCreateNewCheckist(this.cvBrief!.id, this.orderItemSelectedId).subscribe({
+        next: response => {
+          this.checklist=response;
+          console.log('getchecklistdata checkclist', this.checklist);
+        },
+        error: error => this.toastr.error('failed to retrieve checklist')
+    });
+  } else {
+    console.log('byepassed getOrcreatecheclist');
+  }
+  
+  console.log('checklist after getchecklistdata:', this.checklist);
+
+  }
+  
   //checklist modal
   openChecklistModal() {
+    
       if (this.orderItemSelected === null || this.orderItemSelected === undefined) {
         this.toastr.warning('Order Item not selected');
         return;
       } else if (this.cvBrief!.id === 0) {
         this.toastr.warning("Candidate Id not provided");
         return;
+      } else if(this.checklist === null ) {
+        return;
       }
-      
+
       //this.checklist = this.getChecklistHRDto(this.cvBrief.id, this.orderItemSelectedId);
       this.checklistitems = this.checklist!.checklistHRItems;
+      //console.log('checklist before modal:', this.checklist);
 
       if (this.checklist === undefined || this.checklist === null) {
         this.toastr.warning("failed to get checklist values");
@@ -325,9 +349,10 @@ export class CvAssessComponent implements OnInit {
         
         var checklistErrors = this.CheckChecklist(this.checklist!);
         this.checklist!.checklistedOk=checklistErrors===null || checklistErrors.length===0;
-          
+        this.checklist!.assessmentIsNull=this.cvAssessment===null;
+        this.checklist!.requireInternalReview=this.requireInternalReview;
           this.checklistService.updateChecklist(this.checklist!).subscribe(() => {
-              this.toastr.success('updated Checklist');
+              this.toastr.success('updated Checklist'); //also creates cvASsessment in api if null here
           }, error => {
             this.toastr.error('failed to update the checklist', error);
           });
@@ -335,23 +360,23 @@ export class CvAssessComponent implements OnInit {
       )
     }
 
-    CheckChecklist(model: IChecklistHRDto) {
-      var errors: string[]=[];
-      if(model.charges > 0 && model.chargesAgreed != model.charges && !model.exceptionApproved ) errors.push('Charges not agreed');
-      model.checklistHRItems.forEach(p => {
-        if(p.mandatoryTrue && !p.accepts) errors.push(p.parameter + ' is mandatory, and not resolved');
-      })
+  CheckChecklist(model: IChecklistHRDto) {
+    var errors: string[]=[];
+    if(model.charges > 0 && model.chargesAgreed != model.charges && !model.exceptionApproved ) errors.push('Charges not agreed');
+    model.checklistHRItems.forEach(p => {
+      if(p.mandatoryTrue && !p.accepts) errors.push(p.parameter + ' is mandatory, and not resolved');
+    })
 
-      return errors;
-    }
+    return errors;
+  }
 
-    EmitOrderItemChanged() {
-      //this.orderItemChangedEventSubject.next(this.orderItemSelected);
-    }
+  EmitOrderItemChanged() {
+    //this.orderItemChangedEventSubject.next(this.orderItemSelected);
+  }
 
-    DisplayHelp() {
-      this.bDisplayHelp = !this.bDisplayHelp;
-      this.displayText = this.bDisplayHelp ? 'Hide help text' : 'display Help Text';
-    }
+  DisplayHelp() {
+    this.bDisplayHelp = !this.bDisplayHelp;
+    this.displayText = this.bDisplayHelp ? 'Hide help text' : 'display Help Text';
+  }
 
 }

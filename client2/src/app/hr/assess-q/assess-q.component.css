@@ -3,6 +3,8 @@
      vertical-align: middle;
 }
 
+.b {font-weight: bold;}
+
 hr {
      margin-top: 0px; 
      margin-bottom: 0px; 
@@ -10,6 +12,7 @@ hr {
      padding-bottom: 0px;
 } 
 .hAlignCenter {text-align: center;}
+.tAlignR {text-align: right;}
 .red {color: red;}
 .blue {color: blue;}
 .green {color: green;}

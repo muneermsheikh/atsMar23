@@ -9,6 +9,7 @@ namespace core.Dtos
     public class OrderItemBriefDto
     {
         public int Id {get; set;}
+        public int SrNo {get; set;}
         public int OrderItemId { get; set; }
         public bool RequireInternalReview { get; set; }
         public int OrderId { get; set; }

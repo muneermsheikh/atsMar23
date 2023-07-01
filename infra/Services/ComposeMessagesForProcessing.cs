@@ -37,8 +37,8 @@ namespace infra.Services
             msg = title + " " + candidateName + "<br>Application No.:" + candidate.ApplicationNo + ", PP No.:" + candidate.PpNo;
             msg += "email: " + candidate.Email + "<br><br>Dear Sir:<br><br>please be advised of the following updates to your departure formalities<br><br>";
             msg += "<tab>Date: " + deploy.TransactionDate.Date;
-            msg += "<br><tab>Transaction: " + _commonServices.DeploymentStageNameFromStageId((int)deploy.StageId);
-            msg += deploy.NextStageId > 0 ? "<br><tab>Next Stage:" + _commonServices.DeploymentStageNameFromStageId((int)deploy.NextStageId) + ", scheduled by " + deploy.NextEstimatedStageDate.Date : "";
+            msg += "<br><tab>Transaction: " + _commonServices.DeploymentStageNameFromStageId((int)deploy.Sequence);
+            msg += deploy.NextSequence > 0 ? "<br><tab>Next Stage:" + _commonServices.DeploymentStageNameFromStageId((int)deploy.NextSequence) + ", scheduled by " + deploy.NextStageDate.Date : "";
             msg += "<br><br>Regards/Processing Divn";
 
             var emailMessage = new EmailMessage
@@ -76,8 +76,8 @@ namespace infra.Services
             msg = title + " " + candidateName + ", PP No.:" + candidate.PpNo;
             msg += "pl be advised of flg updates to yr departure formalities<br><br>";
             msg += "<tab>Date: " + deploy.TransactionDate.Date;
-            msg += "<br><tab>Transaction: " + _commonServices.DeploymentStageNameFromStageId((int)deploy.StageId);
-            msg += deploy.NextStageId > 0 ? "<br><tab>Next Stage:" + _commonServices.DeploymentStageNameFromStageId((int)deploy.NextStageId) + ", scheduled by " + deploy.NextEstimatedStageDate.Date : "";
+            msg += "<br><tab>Transaction: " + _commonServices.DeploymentStageNameFromStageId((int)deploy.Sequence);
+            msg += deploy.NextSequence > 0 ? "<br><tab>Next Stage:" + _commonServices.DeploymentStageNameFromStageId((int)deploy.NextSequence) + ", scheduled by " + deploy.NextStageDate.Date : "";
             msg += "<br><br>Regards/Processing Divn";
 
             var smsMessage = new SMSMessage

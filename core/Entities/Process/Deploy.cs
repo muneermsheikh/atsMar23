@@ -10,26 +10,30 @@ namespace core.Entities.Process
           {
           }
 
-          public Deploy(int cVRefId, DateTime transactionDate, EnumDeployStatus stageId)
+          public Deploy(int cVRefId, DateTime transactionDate, EnumDeployStatus sequence)
           {
                CVRefId = cVRefId;
                TransactionDate = transactionDate;
-               StageId = stageId;
+               Sequence = sequence;
           }
 
-		public Deploy(int cVRefId, DateTime transactionDate, EnumDeployStatus stageId, EnumDeployStatus nextStageId, DateTime nextEstimatedStageDate) : this(cVRefId, transactionDate, stageId)
+		public Deploy(int cvRefId, DateTime transactionDate, EnumDeployStatus sequence, 
+            EnumDeployStatus nextSequence, DateTime nextEstimatedStageDate) 
 		{
-			NextStageId = nextStageId;
-			NextEstimatedStageDate = nextEstimatedStageDate;
+			CVRefId = cvRefId;
+            TransactionDate = transactionDate;
+            Sequence = sequence;
+            NextSequence = nextSequence;
+			NextStageDate = nextEstimatedStageDate;
 		
 		}
 
 		public int CVRefId { get; set; }
         public DateTime TransactionDate { get; set; }
-        public EnumDeployStatus StageId { get; set; }
-        public EnumDeployStatus NextStageId { get; set; }
+        public EnumDeployStatus Sequence { get; set; }
+        public EnumDeployStatus NextSequence { get; set; }
         [ForeignKey("CVRefId")]
-        public DateTime NextEstimatedStageDate { get; set; }
+        public DateTime NextStageDate { get; set; }
         public CVRef CVRef {get; set;}
     }
 }

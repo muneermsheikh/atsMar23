@@ -8,6 +8,7 @@ using core.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using core.Params;
 
 namespace api.Controllers
 {
@@ -53,6 +54,7 @@ namespace api.Controllers
           public async Task<ActionResult<CVRef>> GetCVRef(int cvrefid)
           {
                var cvref = await _cvrefService.GetReferralById(cvrefid);
+
                if (cvref == null)
                {
                     return NotFound(new ApiResponse(404, "Not Found"));
@@ -72,6 +74,21 @@ namespace api.Controllers
                return Ok(cvref);
           }
 
+          [HttpGet("cvsreferredPaginated")]
+          public async Task<ActionResult<Pagination<CVReferredDto>>> GetCVsReferredPaginated([FromQuery] CVRefSpecParams refParams )
+          {
+               var refs = await _cvrefService.GetCVReferredDto(refParams);
+               //if(refs==null) return Ok(new ApiResponse(404, "No data to report"));
+               return Ok(refs);
+          }
+          
+          [HttpGet("cvrefwithdeploys/{cvrefid}")]
+          public async Task<ActionResult<CVReferredDto>> GetCVRefWithDeploys(int cvrefid)
+          {
+               var dto = await _cvrefService.GetCVRefWithDeploys(cvrefid);
+
+               return Ok(dto);
+          }
           //[Authorize]    //(Roles="DocumentControllerAdmin, HRManager")]
           [HttpPost]
           public async Task<ActionResult<MessagesDto>> MakeReferrals(ICollection<int> CVReviewIds)

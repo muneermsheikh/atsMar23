@@ -15,6 +15,9 @@ export class SharedService {
   agents: ICustomerNameAndCity[]=[];
   customers: ICustomerNameAndCity[]=[];
 
+  cacheEmp = new Map();
+  cacheQ = new Map();   //qualifications
+
   constructor(private http: HttpClient) { }
   
   getAgents() {

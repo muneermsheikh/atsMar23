@@ -4,10 +4,20 @@
      display: inline-block !important;
 }
 
+.stddR {
+  margin: 2px;
+  padding: 2px;
+  display: inline-block !important;
+  text-align: right;
+}
+
+.tAlignR {text-align: right;}
+
 .w100 {width: 100px;}
 .w150 {width: 150px;}
 .w250 {width: 250px;}
 .w50 {width: 50px;}
+.w25 {width:25px;}
 
 table { table-layout: fixed; }
 

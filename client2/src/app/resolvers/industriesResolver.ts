@@ -12,6 +12,7 @@ import { MastersService } from "../masters/masters.service";
      constructor(private mastersService: MastersService) {}
  
      resolve(): Observable<IIndustryType[]> {
+        console.log('entered industriesresolver');
         return this.mastersService.getIndustries();
      }
  

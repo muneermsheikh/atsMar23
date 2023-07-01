@@ -4,6 +4,10 @@ namespace core.Dtos
 {
      public class CandidateAssessmentAndChecklistDto
     {
+        public CandidateAssessmentAndChecklistDto()
+        {
+        }
+
         public CandidateAssessmentAndChecklistDto(CandidateAssessment assessed, ChecklistHRDto checklistHRDto)
         {
             //AssessedDto = assessedDto;

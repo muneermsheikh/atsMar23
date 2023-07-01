@@ -1,30 +1,30 @@
 <div *ngIf="orderItemSelected !== undefined">
      <div class="stdd vAlignTop">
           <div class="col-6 stdd">
-               <span class="stdd">Candidate Name: </span> <span class="blue">{{cvBrief?.fullName}}</span> 
+               <span class="stdd w200">Candidate Name: </span> <span class="blue">{{cvBrief?.fullName}}</span> 
           </div>
           <div class="col-6 stdd">
-               <span class="stdd" >Application No.: </span> <span class="blue ">{{cvBrief?.applicationNo}}</span>
+               <span class="stdd w200" >Application No.: </span> <span class="blue ">{{cvBrief?.applicationNo}}</span>
           </div>
      
           <div *ngIf="qDesigned || !requireInternalReview" >
                <div class="col-6 stdd">
-                    <span class="stdd">Customer: </span> <span class="stdd blue mx-2">{{orderItemSelected.customerName}}</span>
+                    <span class="stdd w200">Customer: </span> <span class="stdd blue mx-2">{{orderItemSelected.customerName}}</span>
                </div>
                <div class="col-6 stdd">
-                    <span class="stdd">Category: </span> <span class="blue">{{orderItemSelected.categoryRefAndName}}</span>
+                    <span class="stdd w200">Category: </span> <span class="blue">{{orderItemSelected.categoryRefAndName}}</span>
                </div>
                <div class="col-6 stdd">
-                    <span class="stdd">Order dated: </span> <span class="stdd blue mx-2">{{orderItemSelected.orderDate | date}}</span>
+                    <span class="stdd w200">Order dated: </span> <span class="stdd blue mx-2">{{orderItemSelected.orderDate | date}}</span>
                </div>
                <div class="col-6 stdd">
-                    <span class="stdd">Checklisted: </span> <span class="stdd blue mx-2">{{!checklist ? 'Yes': 'No'}}</span>
+                    <span class="stdd w200">Checklisted: </span> <span class="stdd blue mx-2">{{!checklist ? 'Yes': 'No'}}</span>
                </div>
                <div class="col-6 stdd">
-                    <span class="stdd">Requires Internal Review: </span> <span class="stdd blue mx-2">{{requireInternalReview ? 'Yes':'No'}}</span>
+                    <span class="stdd w200">Requires Internal Review: </span> <span class="stdd blue mx-2">{{requireInternalReview ? 'Yes':'No'}}</span>
                </div>
                <div class="col-6 stdd">
-                    <span class="stdd">Assessment Q designed: </span> <span class="stdd blue mx-2">{{qDesigned ? 'Yes':'No'}}</span>
+                    <span class="stdd w200">Assessment Q designed: </span> <span class="stdd blue mx-2">{{qDesigned ? 'Yes':'No'}}</span>
                     <!-- <span class="stdd">{{cvAssessment?.candidateAssessmentItems===null}}</span> -->
                </div>
                <div *ngIf="cvAssessment">
@@ -39,6 +39,14 @@
                     </div>
                     <div class="col-6 stdd">
                          <span class="stdd">On: </span> <span class="stdd blue mx-2">{{cvAssessment.assessedOn | date}}</span>
+                    </div>
+                    <div class="col-6 stdd">
+                         <span class="stdd">Assessment Result: </span> <span class="stdd blue mx-2">{{cvAssessment.assessResult}}</span>
+                    </div>
+                    <div class="col-6 stdd">
+                         <button type="button" [disabled]="!form.dirty" title="save assessment of the candidate" class="stdd btn btn-success fa fa-save" (click)="update()" ></button>
+                         <button type="button" class="stdd mx-2 btn fa fa-trash text-danger" title="delete complete Assessment Object" (click)="deleteAssessment()" ></button>
+                         <!-- <button class="stdd btn btn-default fa fa-window-close" title="Close this form and return to CV Index"  (click)="closeAssessment()" ></button> -->
                     </div>
                </div>
           </div>
@@ -59,9 +67,7 @@
                     <div class="stdd w50 vAlignCenter mx-1 hAlignCenter">Points</div>
                     <div class="stdd w200 vAlignCenter mx-1 ">Remarks</div>
                     <button class="stdd btn fa fa-plus blue mx-1" title="Add an assessment item for the candidate" (click)="addCandidateAssessmentItem()" ></button>
-                    <button type="button" [disabled]="!form.dirty" title="save assessment of the candidate" class="stdd btn btn-success fa fa-save" (click)="update()" ></button>
-                    <button type="button" class="stdd mx-2 btn fa fa-trash text-danger" title="delete complete Assessment Object" (click)="deleteAssessment()" ></button>
-                    <button class="stdd btn btn-default fa fa-window-close" title="Close this form and return to CV Index"  (click)="routeChange()" ></button>
+                    
                     <hr class="mt-0 mb-0">
                     
                          <div formArrayName="candidateAssessmentItems" class="my-1">
@@ -74,13 +80,6 @@
                                         <input type="number" class="stdd vAlignTop mx-1 w50" formControlName="maxPoints" (change)="maxMarksTotal()" >
                                         <input type="number" class="stdd vAlignTop mx-1 w50" formControlName="points" (change)="pointsGainedTotal(i)" >
                                         <input type="text" class="stdd vAlignTop mx-1 w250" formControlName="remarks" >
-                                        <!--
-                                             <app-text-input formControlName="questionNo" [label]="'Question No.'" [class]="'stdd vAlignTop w50 mx-2'" ></app-text-input>
-                                             <app-text-input formControlName="assessed" [type]="checkbox" [label]="'Assessed'" [class]="'stdd vAlignTop w50 mx-2'" ></app-text-input>
-                                             <app-text-input formControlName="question" [label]="'Question'" [class]="'stdd vAlignTop w300 mx-2'" ></app-text-input>
-                                             <app-text-input formControlName="maxPoints" [label]="'Max Points'" [class]="'stdd vAlignTop w50 mx-2'" ></app-text-input>
-                                             <app-text-input formControlName="points" [label]="'Points'" [class]="'stdd vAlignTop w50 mx-2'" ></app-text-input>
-                                        -->
                                         <button class="stdd red fa fa-trash mx-2" (click)="removeCandidateAssessmentItem(i)" ></button>
                                    </div>
                               </div>
@@ -101,9 +100,9 @@
     
 </div>
 
-
+<!--
      <div>
           {{form.value | json}}
      </div>
 </div>
-     
+-->

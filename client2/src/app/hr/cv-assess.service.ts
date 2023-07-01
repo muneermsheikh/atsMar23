@@ -13,6 +13,8 @@ import { ICandidateAssessment } from '../shared/models/hr/candidateAssessment';
 import { ICandidateAssessmentWithErrorStringDto } from '../shared/dtos/hr/candidateAssessmentWithErrorStringDto';
 import { ICandidateAssessmentAndChecklist } from '../shared/models/hr/candidateAssessmentAndChecklist';
 import { ICandidateAssessedDto } from '../shared/dtos/hr/candidateAssessedDto';
+import { IChecklistHR } from '../shared/models/hr/checklistHR';
+import { IChecklistHRDto } from '../shared/dtos/hr/checklistHRDto';
 
 @Injectable({
   providedIn: 'root'
@@ -69,6 +71,11 @@ export class CvAssessService {
     return this.http.get<ICandidateAssessment>(this.apiUrl + 'candidateassessment/' + orderitemid + '/' + cvid);
   }
 
+  GetOrCreateNewCheckist(cvid: number, orderitemid: number) {
+      return this.http.get<IChecklistHRDto>(this.apiUrl + 'candidateassessment/checklist/' + orderitemid + '/' + cvid);
+  }
+  
+
   getCVAssessmentAndChecklist(cvid: number, orderitemid: number) {
     return this.http.get<ICandidateAssessmentAndChecklist>(this.apiUrl + 'candidateassessment/assessmentandchecklist/' + orderitemid + '/' + cvid);
   }
@@ -97,22 +104,22 @@ export class CvAssessService {
     //console.log('in cvassess serice, cvparams.candidateid', this.cvParams.candidateId,'brief:', brief);
     return brief;
 
-    }
+  }
 
-    setCVBriefData(cvbriefs: ICandidateBriefDto[]) {
-      this.cvBriefs = cvbriefs;
-      this.cache.set(Object.values(this.cvParams).join('-'), cvbriefs);
-      this.pagination!.count=this.cvBriefs.length;
+  setCVBriefData(cvbriefs: ICandidateBriefDto[]) {
+    this.cvBriefs = cvbriefs;
+    this.cache.set(Object.values(this.cvParams).join('-'), cvbriefs);
+    this.pagination!.count=this.cvBriefs.length;
+  }
+
+  getCVBriefData() {
+    if (this.cache.has(Object.values(this.cvParams).join('-'))) {
+      this.pagination!.data = this.cache.get(Object.values(this.cvParams).join('-'));
+      return of(this.pagination);
     }
-  
-    getCVBriefData() {
-      if (this.cache.has(Object.values(this.cvParams).join('-'))) {
-        this.pagination!.data = this.cache.get(Object.values(this.cvParams).join('-'));
-        return of(this.pagination);
-      }
-      return of(undefined);
-    }
-  
+    return of(undefined);
+  }
+
 
   getCVBriefs(useCache: boolean) { 
 

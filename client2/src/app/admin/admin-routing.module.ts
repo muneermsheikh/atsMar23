@@ -15,10 +15,17 @@ import { RouterModule } from '@angular/router';
 import { CvrefComponent } from './cvref/cvref.component';
 import { CategoryListResolver } from '../resolvers/categoryListResolver';
 import { AgentsResolver } from '../resolvers/agents.resolver';
+import { IndustryTypesComponent } from '../masters/industry-types/industry-types.component';
+import { CustomersIndexComponent } from '../customers/customers-index/customers-index.component';
+import { CVsReferredResolver } from '../resolvers/cvsReferredResolver';
+import { CvreferredComponent } from './cvreferred/cvreferred.component';
+import { EmploymentListComponent } from '../employments/employment-list/employment-list.component';
+import { EmploymentsResolver } from '../resolvers/employmentsResolver';
 
 
 const routes = [
   {path: '', component: AdminIndexComponent,  data: {breadcrumb: 'Admin Division'}},
+  
   {path: 'cvforward', component: CvrefComponent,
     resolve: 
       {
@@ -29,13 +36,26 @@ const routes = [
     data: {breadcrumb: {breadcrumb: 'CV Forward to clients'}}
   },
   
-  {path: 'selections', component: SelectionComponent, canActivate: [SelectionsGuard], data: {breadcrumb: 'Selections'}},
+  {path: 'cvreferred/:orderid', component: CvreferredComponent,
+  resolve: 
+      {
+        referredcvs: CVsReferredResolver
+      },
+    data: {breadcrumb: {breadcrumb: 'CVs Referred to clients'}}
+  },
+
+  {path: 'selections', component: SelectionComponent, canActivate: [SelectionsGuard], 
+    data: {breadcrumb: 'Selections'},
+    resolve: {selectionsPending: PendingSelectionsResolver,
+      selectionStatus: SelectionStatusResolver}
+  },
   
-  /* {path: 'employments', component: EmploymentsComponent, canActivate: [SelectionsGuard],
-      resolve: {ordersbrief: OrdersBriefResolver },
-      data: {breadcrumb: 'Employments'}},
-  */
- 
+   {path: 'employments', component: EmploymentListComponent
+      //, canActivate: [SelectionsGuard]
+      , resolve: {employments: EmploymentsResolver },
+      data: {breadcrumb: 'Employments'}
+    },
+  
   {path: 'messages', component: MessagesComponent, canActivate: [SelectionsGuard], data: {breadcrumb: 'Email Messages'}},
   
   {path: 'forwarded/:orderid', component: DlForwardComponent, canActivate: [SelectionsGuard], data: {breadcrumb: 'DL Forwards to Agents'},
@@ -48,8 +68,11 @@ const routes = [
   {path: 'qualifications', component: QualificationsComponent, 
       //canActivate: [SelectionsGuard], 
       data: {breadcrumb: 'Qualificaions'},
-      resolve: {quals: QualificationsResolver}  
+      resolve: {quals: QualificationsResolver
+      }  
   },
+  
+  {path: 'IndustryTypes', component:IndustryTypesComponent , data: {breadcrumb: {alias: 'Industry Types'}}},
   
   {path: 'pendingselections', component: SelectionComponent, 
       canActivate: [SelectionsGuard], 
@@ -58,7 +81,8 @@ const routes = [
         selectionsPending: PendingSelectionsResolver,
         selectionStatus: SelectionStatusResolver
       }  
-  }
+  },
+  {path: 'customers', component:CustomersIndexComponent , data: {breadcrumb: {alias: 'Customers'}}}
   
 ]
 

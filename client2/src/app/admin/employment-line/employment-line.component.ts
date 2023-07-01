@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { IEmployment } from 'src/app/shared/models/admin/selectionDecision';
+import { IEmployment } from 'src/app/shared/models/admin/employment';
+
 
 @Component({
   selector: 'app-employment-line',
@@ -23,14 +24,8 @@ export class EmploymentLineComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    /*
-    this.data.subscribe(newEmployment => {
-      this.emp = newEmployment;
-      this.cd.markForCheck;
-    });
-    */
-
-   //this.empCopy=this.emp;
+    
+   this.empCopy=this.emp;
   }
 
   isModified() {

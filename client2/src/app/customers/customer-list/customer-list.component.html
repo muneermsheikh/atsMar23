@@ -1,4 +1,5 @@
-<div class="row ml-3" style="font-size: small;">
+<br><br>
+<div class="row ml-3" style="font-size: medium; margin-top: 20px;">
      <div class="col-2">
           <ng-container *ngIf="customerCities && industryTypes ">
                <div class="stdd w50 blue b">Sort</div>
@@ -24,7 +25,7 @@
           </ng-container>
      </div>
 
-     <div class="col-10">
+     <div class="col-9" style="margin-left: 3px;">
           <div class="d-flex justify-contents-between align-items-center">
                
                <app-paging-header
@@ -41,6 +42,8 @@
                     <button style="font-size: small;" (click)="onReset()" class="btn btn-outline-success ml-2 my-1 blue">Reset</button>
                     <button style="font-size: small;" routerLink="/client/edit/{{custType}}/0" 
                          class="btn btn-outline-success fa fa-plus ml-2 my-1 blue"></button>
+                    <button style="font-size: small;" routerLink="/admin" class="btn btn-outline-success pull-right fa fa-home ml-2 my-1"></button>
+                    
                </div>
           </div>
           <div class="row form-inline" style="font-weight: bold;">

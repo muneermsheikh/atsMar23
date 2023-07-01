@@ -1,21 +1,25 @@
-<div class="container" *ngIf="orderitem" >
+<br><br>
+<div style="margin-top: 15px; margin-left: 5px;" class="container" *ngIf="orderitem" >
      <form [formGroup]="form" >
-          <div class="stdd b"><strong>Assessment Questions for Category</strong> {{orderitem.categoryRef}} - {{orderitem.categoryName}} </div>
+          <div class="stdd"><strong>Assessment Questions for Category: </strong> {{assess!.categoryName}} </div>
           <div class="stdd mx-2"><strong>Customer:</strong> {{orderitem.customerName}}</div>
-          <div class="stdd mx-2"><strong>Order Dated:</strong> {{orderitem.orderDate | date: 'dd-MMM-yy'}}</div>
-          <div class="stdd pull-right" >
-               <button class="stdd btn btn-success fa fa-save" style="margin-left: 15px;" (click)="update()" ></button>
-               <button class="stdd btn btn-secondary fa fa-home" style="margin-left: 15px;" routerLink=""  ></button>
-          </div>
+          <div class="stdd mx-2"><strong>Order No: </strong> {{assess!.orderNo}}</div>
+          <div class="stdd mx-2"><strong>dated: </strong> {{orderitem.orderDate | date: 'dd-MMM-yy'}}</div>
           <br>
           <hr>
-          <div class="stdd w50 mx-2 hAlignCenter mt-3 b">Q No.</div>
+          <div class="stdd w50 mx-2 hAlignCenter mt-3 b">Q. No.</div>
           <div class="stdd w75 mx-2 hAlignCenter b">Is<br>Mandatory</div>
           <div class="stdd w200 mx-2 b">Subject</div>
           <div class="stdd w400 mx-2 b">Question</div>
           <div class="stdd w75 hAlignCenter mx-2 b">Points</div>
-          <button class="fa mx-2 fa-plus blue" title="add a new assessment question" [disabled]="assess" type="button" (click)="addOrderItemAssessmentQ()" ></button>
-          <button class="mx-2 fa fa-list green" title="copy standard assessment questions" type="button" (click)="addStddQ()" ></button>
+          <button class="fa mx-2 fa-plus blue" title="add a new assessment question" 
+               type="button" (click)="addOrderItemAssessmentQ()" ></button>
+          <button class="mx-2 fa fa-copy green" title="copy standard assessment questions" type="button" (click)="addStddQ()" ></button>
+          <div class="pull-right" >
+               <button class="fa fa-save" style="margin-left: 15px;" (click)="update()" ></button>
+               <button class="fa fa-home" style="margin-left: 15px;" (click)="close()"  ></button>
+          </div>
+          
           <hr>
           <div formArrayName="orderItemAssessmentQs" class="my-1" >
                <div *ngFor="let item of orderItemAssessmentQs.controls; let i=index"> 
@@ -24,11 +28,11 @@
                          <input type="checkbox" class="stdd hAlignCenter w75 mx-2" formControlName="isMandatory" >
                          <input type="text" class="stdd w200 mx-2" formControlName="subject" >
                          <input type="text" class="stdd w400 mx-2" formControlName="question">
-                         <input type="number" class="stdd w75 mx-2" (change)="calculateTotals()" formControlName="maxMarks">
+                         <input type="number" class="stdd w75 tAlignR mx-2" (change)="calculateTotals()" formControlName="maxMarks">
                          <button class="stdd red fa fa-trash mx-2" (click)="removeOrderItemAssessmentQ(i)" ></button>
                     </div>
                </div>
-               <div style="width: 850px; text-align: right; ">Total Marks: {{totalMarks}}</div>
+               <div style="width: 850px; text-align: right; font-weight: bold; ">Total Points: {{totalMarks}}</div>
                <!-- <div class="ml-100">{{calculateTotals()}}</div> -->
           </div>
           

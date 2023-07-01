@@ -1,0 +1,19 @@
+.stdd {
+    display: inline-block !important;
+    vertical-align: top;
+    margin-left: 3px;
+    margin-right:3px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    padding-right: 3px;
+
+}
+
+.b {font-weight: bold;}
+
+.w75 {width: 75px;}
+.w110 {width: 110px;}
+.w125 {width: 125px;}
+.w150 {width: 150px;}
+.w200 {width: 200px;}
+.w250 {width: 250px;}

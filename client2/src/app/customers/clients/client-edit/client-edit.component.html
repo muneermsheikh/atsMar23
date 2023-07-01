@@ -1,1 +1,149 @@
-<p>client-edit works!</p>
+<div *ngIf="!member">No customer data available</div>
+<br>
+<div class="pull-right">
+
+</div>
+<div *ngIf="member" >
+    <br>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="pull-right">
+            <button [disabled]="!form.dirty" type="submit" 
+                class="btn btn-success btn-block fa fa-save w50" (click)="onSubmit()" >
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            </button>
+            <button class="mx-2 btn btn-success btn-block fa fa-balance-scale w50" (click)="showReview()" ></button>
+            <button class="mx-2 btn btn-success btn-block fa fa-close w50" (click)="close()" ></button>
+        </div>
+    <br>
+        <div class="stdd col-4"  style="margin-top: 15px; margin-left: 5px; vertical-align: top; border-style: groove;">
+            <div class="stdd my-1 w125 b">Type</div>
+            <div class="stdd w400">{{member.customerType}} </div> 
+            <br>
+            <div class="stdd my-1 b w125">Name:</div>
+            <!-- <div class="stdd my-1 w400">{{member.customerName}}</div> -->
+            <input type="text" class="stdd my-1 w350" formControlName="customerName">
+            <br>
+            <div class="stdd my-1 w125 b">Location:</div>
+            <div class="stdd w400">{{member.city}} </div>
+            <br>
+            <div class="stdd my-1 b w125">Created:</div>
+            <div>{{member.createdOn | date: 'dd-MMM-YY'}} </div>
+            <br>
+            <div class="stdd my-1 w125 b">Last Active:</div>
+            <div class="stdd w400 my-1">{{member.lastActive}}</div>
+            <div class="stdd w125 b my-1">Member since:</div>
+            <div class="stdd w400">{{member.createdOn | date: 'dd MMM yy'}}</div>
+            <br>
+            <div class="stdd w125 my-1">Current Status</div>
+            <div class="stdd w400" [ngClass]="member.customerStatus===300 ? 'red': 'black'">{{member.customerStatus | customerStatus }}</div>
+
+        </div>
+        <div class="stdd col-6" style="margin-top: 15px; margin-left: 5px; vertical-align: top; border-style: groove;" >
+            
+            <tabset class="member-tabset" #memberTabs>
+                <tab heading='About {{member.knownAs}}' (selectTab)="onTabActivated($event)">
+                    <div class="my-2" >
+                        <div style="font-weight: bold; font-size: small;">
+                                <div class="stdd w50">Gen<br>der</div>
+                                <div class="stdd w50">Title</div>
+                                <div class="stdd w150">Official Name</div>
+                                <div class="stdd w100">Designation</div>
+                                <div class="stdd w50">Divn</div>
+                                <div class="stdd w100">Mobile No</div>
+                                <div class="stdd w200">email</div>
+                                <div class="stdd w50">Valid</div>
+                                <div style="width: 50px; display: inline-block;">
+                                    <button type="button" (click)="addCustomerOfficial()" class="stdd alignR fa fa-plus blue"></button>
+                                </div>
+                            </div>
+                    </div>
+
+
+                    <div *ngIf="member.customerOfficials.length ===0">
+                            No officials on record
+                        </div>
+                    
+                    <div formArrayName="customerOfficials" class="my-1 px-0" style="font-size: small;" >
+                        <div *ngFor="let q of customerOfficials.controls; let i=index">
+                            <div [formGroupName]="i" >
+                                <input type="text" formControlName="gender" class="stdd w50" >
+                                <input type="text" formControlName="title" class="stdd w50" >
+                                <input type="text" formControlName="officialName" class="stdd w150" >
+                                <input type="text" formControlName="designation" class="stdd w100" >
+                                <input type="text" formControlName="divn" class="stdd w50" >
+                                <input type="text" formControlName="mobile" class="stdd w100" >
+                                <input type="text" formControlName="email" class="stdd w200" >
+                                <input type="checkbox" formControlName="isValid" class="stdd w50" >
+                                <button (click)="removeCustomerOfficial(i)" class="stdd red fa fa-trash" title="Remove the customer official"> </button>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+
+                    <tab heading='customerIndustries' [disabled]="member.customerType !=='customer'"  (selectTab)="onTabActivated($event)">
+                            <div class="stdd w200">Industry Name</div>
+                            <div style="width: 50px; display: inline-block;">
+                                <button type="button" (click)="addCustomerIndustry()" class="stdd alignR fa fa-plus blue"></button>
+                            </div>
+                            <div formArrayName="customerIndustries" class="my-1 px-0" style="width: 500px; font-size: small;" >
+                            <div style="align-content: center; width: 500px;">
+                                <div *ngFor="let ind of member.customerIndustries; let j=index">
+                                    <div [formGroupName]="j"> {{j}}
+                                        <ng-select *ngIf="industries" class="mx-5 stdd w350" 
+                                            [items]="industries"
+                                            bindLabel="name"
+                                            bindValue="id"
+                                            labelForId="industryId"
+                                            clearAllText="Clear"
+                                            formControlName="industryId">
+                                        </ng-select>
+                                        <button (click)="removeCustomerIndustry(j)" 
+                                                style="margin-left: 5px;" class="red w25 fa fa-trash" title="Remove customer Industry"></button>
+                                    </div>
+                                </div>
+                            </div>  
+                            </div>
+                            <div *ngIf="!member.customerIndustries">
+                                No industries defined for the customer
+                            </div>
+                        </tab>
+
+                
+                    <tab heading='agencySpecialties' [disabled]="member.customerType !=='associate'" (selectTab)="onTabActivated($event)">
+                            <div class="stdd w200">Category can provide</div>
+                            <div style="width: 50px; display: inline-block;">
+                                <button type="button" (click)="addAgencySpecialty()" class="stdd alignR fa fa-plus blue"></button>
+                        </div>
+                        <div formArrayName="agencySpecialties" class="my-1 px-0" style="width: 500px; font-size: small;" >
+                                <div *ngFor="let ind of member.agencySpecialties; let i=index;">
+                                    <div [formGroupName]="i">
+                                        <ng-select *ngIf="categories" class="stdd w350" 
+                                            [items]="categories"
+                                            bindLabel="name"
+                                            bindValue="id"
+                                            labelForId="professionId"
+                                            clearAllText="Clear"
+                                            formControlName="professionId">
+                                        </ng-select>
+                                        <button (click)="removeCustomerIndustry(i)" class="stdd blue fa fa-trash" title="Remove the customer official"> </button>
+                                    </div>
+                                </div>
+                        </div>
+                            <div *ngIf="!member.agencySpecialties">
+                                No specialties defined for the Associate
+                            </div> 
+                        </tab>
+                </tabset>
+            </div>
+        </form>     
+</div>
+<ul class="text-danger list-unstyled" *ngIf="errors">
+    <li *ngFor="let error of errors">
+         {{error}}
+    </li>
+</ul>
+ <div style="font-size: small;">
+     {{this.form.value | json}}
+ </div>
+
+

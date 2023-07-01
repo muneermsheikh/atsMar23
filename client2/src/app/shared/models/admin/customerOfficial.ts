@@ -1,7 +1,7 @@
 export interface ICustomerOfficial {
      id: number;
      logInCredential: boolean;
-     appUserId: number;
+     appUserId: string;
      customerId: number;
      gender: string;
      title: string;

@@ -26,10 +26,10 @@ namespace core.Dtos
           public DateTime ReferredOn { get; set; }
           public DateTime SelectedOn { get; set; }
           public int RefStatus { get; set; }
-          public int DeployStageId {get; set;}
+          public int DeploySequence {get; set;}
           public string DeployStageName {get; set;}
           public DateTime TransactionDate {get; set;}
-          public int NextStageId { get; set; }
+          public int NextSequence { get; set; }
           public DateTime NextStageDate { get; set; }
     }
 }

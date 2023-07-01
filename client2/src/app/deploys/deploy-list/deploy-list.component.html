@@ -1,0 +1,86 @@
+<br><br>
+
+<div class="d-flex justify-contents-between align-items-center" style="margin-left: 5px;">
+    
+    <app-paging-header 
+         [totalCount]="totalCount" 
+         [pageNumber]="pParams.pageNumber" 
+         [pageSize]="pParams.pageSize"
+    ></app-paging-header>
+
+    <app-paging style="display: inline-block;"
+         [pageSize]="pParams.pageSize" 
+         [totalCount]="totalCount" 
+         [pageNumber]="pParams.pageNumber" 
+         (pageChanged)="onPageChanged($event)"  >
+    </app-paging>
+
+    <div class="ml-5 d-flex justify-contents-between align-items-center">
+         <div class="form-inline mt-2" *ngIf="referrals">
+              <div class="stdd w35 mx-2 b" >Sort</div>
+              <select name="" id="" class="custom-select w150 fontSmaller" (change)="onSortSelected($event)">
+                   <option *ngFor="let sort of sortOptions"
+                        [value] = "sort.value"
+                   >{{sort.name}}</option>
+              </select>
+         
+              <div class="stdd w75 mx-2 b" >Search On</div>
+              <select name="" id="" class="custom-select w125 fontSmaller" (change)="onSearchSelected($event)">
+                   <option *ngFor="let search of searchOptions"
+                        [value] = "search.value"
+                   >{{search.name}}</option>
+              </select>
+
+              <input (keyup.enter)="onSearch()" type="text" title="enter name or app nos, separated by commma" class="form-control ml-5 w300" #search placeholder="Search">
+              <button type="button" (click)="onSearch()" class="btn btn-outline-primary mx-1 my-1" style="font-size: small;">Search</button>
+              <button type="button" (click)="onReset()" class="btn btn-outline-success mx-1 my-1" style="font-size: small;">Reset</button>
+              <button type="button" class="stdd mx-5 btn btn-success fa fa-save alignR" (click)="updateDeployments()"></button>
+         </div>
+    </div>
+
+    
+</div>
+
+
+    <!--<div class="stdd b w50">Choose</div> -->
+    <div class="stdd b w50">App No.</div>
+    <div class="stdd b w150">Candidate Name</div>
+    
+    <div class="stdd b 100">Customer Name</div>
+    <div class="stdd b 75">Order No</div>
+    <div class="stdd b w175">Category Name</div>
+   
+    <!-- <div class="stdd b 100">Referred On</div> -->
+    <div class="stdd b w75">Selected On</div>
+    <div class="stdd b w250">Current Dep Position and Date</div>
+    <div class="stdd b w150">next Estimated Status</div>
+    <div class="stdd b 75">Next Status Date</div>
+    <div class="stdd w150" >new Status</div>
+    <div class="stdd w65">new Status Date</div>
+    <div *ngIf="referrals === undefined">
+          No referrals on record - candidates selected and not yet concluded, and those with employments approved, are displayed here
+    </div>
+    <div *ngIf="referrals !== undefined">
+     <div *ngFor="let ref of referrals">
+          <app-deploy-item
+               [dep]="ref"
+               (editDepEvent)="editDeployment($event)"
+               (addNewEvent)="addNewDeployment($event)"
+          ></app-deploy-item>
+          <!--(displayDeploymentTranactionsEvent)="getDeploymentTransactions($event)"-->
+          
+          <!-- <div #divDeployments *ngIf="deployments !== undefined && deployments.length > 0 && currentCVRefId===ref.cvRefId">
+               <app-deployments
+                    [deploys]="deployments"
+                    (closeSelectorEvent)="close()"
+                    (addEvent)="addDeploymentRecord(ref)"
+                    (editEvent)="editDeploymentRecord($event, ref)"
+                    (deleteEvent)="deleteDeploymentRecord($event)"
+               ></app-deployments>
+          </div>
+      -->
+     </div>
+ 
+    </div>
+   
+

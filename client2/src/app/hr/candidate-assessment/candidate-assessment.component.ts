@@ -8,6 +8,7 @@ import { CvAssessService } from '../cv-assess.service';
 import { ToastrService } from 'ngx-toastr';
 import { ICandidateAssessmentItem } from 'src/app/shared/models/hr/candidateAssessmentItem';
 import { IChecklistHRDto } from 'src/app/shared/dtos/hr/checklistHRDto';
+import { ConfirmService } from 'src/app/shared/services/confirm.service';
 
 @Component({
   selector: 'app-candidate-assessment',
@@ -40,7 +41,11 @@ export class CandidateAssessmentComponent implements OnInit {
 
   form: FormGroup = new FormGroup({});
 
-  constructor(private fb: FormBuilder, private service: CvAssessService, private toastr: ToastrService) { }
+  assessmentResults=[{"grade": "Excellent"},{"grade": "Very Good"}, {"grade": "Good"}, {"grade": "Poor"} ];
+
+  constructor(private fb: FormBuilder, private service: CvAssessService
+      , private toastr: ToastrService
+      , private confirmService: ConfirmService) { }
 
   ngOnInit(): void {
     //receive emtited data from parent whenever the value CVAssessment changes
@@ -110,7 +115,7 @@ export class CandidateAssessmentComponent implements OnInit {
 
   createForm() {
     this.form = this.fb.group({
-      id:0, orderItemId: 0, candidateId: 0, assessedOn: '', assessResult: 0, remarks: '',
+      id:0, orderItemId: 0, candidateId: 0, assessedOn: '', assessResult: '', remarks: '',
       candidateAssessmentItems: this.fb.array([])
     })
   }
@@ -154,13 +159,27 @@ export class CandidateAssessmentComponent implements OnInit {
   }
 
   pointsGainedTotal(i: number){
+    console.log('item:', this.candidateAssessmentItems.value[i]);
+    var pt = this.candidateAssessmentItems.value[i].points;
+    var mx = this.candidateAssessmentItems.value[i].maxPoints;
+
+    if( pt > mx ) {
+      this.toastr.warning("Max points for this parameter is:" + mx + ".  You cannot exceed this number");
+      this.candidateAssessmentItems.at(i).get('points')?.setValue(0);
+      this.candidateAssessmentItems.at(i).get('assessed')?.setValue(false);
+      this.calculatePercentage();
+      return;
+    }
+    
     this.totalGained = this.candidateAssessmentItems.value.map((x: any) => x.points).reduce((a:number,b:number) => a+b,0);
     this.calculatePercentage();
+    this.candidateAssessmentItems.at(i).get('assessed')?.setValue(true);
     //(<FormArray>this.form.controls['candidateAssessmentItems']).at(i).get("assessed").setValue(true);   //set value of the DOM assessed to true
   }
 
   calculatePercentage() {
-    this.percentage = Math.round(100*this.totalGained / this.totalPoints);
+
+    this.percentage = (this.totalGained===undefined || this.totalPoints === undefined) ? 0: Math.round(100*this.totalGained / this.totalPoints);
   }
 
   //modals
@@ -168,11 +187,28 @@ export class CandidateAssessmentComponent implements OnInit {
 
   }
   
-  update() {
-    console.log(this.form.dirty);
+  calculateGrade() {
+    this.calculatePercentage();
+    var grade="";
+    if(this.percentage < 41) {
+      grade = "Poor";
+    } else if (this.percentage > 40 && this.percentage <= 60) {
+      grade = "Average";
+    } else if (this.percentage > 60 && this.percentage <= 70) {
+      grade = "Good";
+    } else if (this.percentage < 70 && this.percentage <= 80) {
+      grade = "Very Good";
+    } else {
+      grade = "Excellent";
+    }
+
+    return grade;
+  }
+
+
+  update() {  
     if(this.form.dirty) {
-      //this.patchForm(this.cvAssessment);
-      console.log('emitting values:', this.form.value);
+      this.cvAssessment!.assessResult = this.calculateGrade();
       this.updateAssessment.emit(this.form.value);
     }
   }
@@ -181,7 +217,7 @@ export class CandidateAssessmentComponent implements OnInit {
     this.eventsSubscription.unsubscribe();
   }
 
-  routeChange() {
-    
+  closeAssessment() {
+    this.updateAssessment
   }
 }

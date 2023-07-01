@@ -27,9 +27,9 @@ namespace core.Entities.HR
                CVRef = cvRef;
           }
 
-        public SelectionDecision(int categoryId, string categoryName, int orderId, 
-              int orderNo, string customerName, int applicationNo, string candidateName, DateTime decisionDate, 
-              int selectionStatusId, string remarks, CVRef cvRef, Employment employment)
+        public SelectionDecision(int categoryId, string categoryName, int orderId, int orderNo, string customerName, 
+            int applicationNo, string candidateName, DateTime decisionDate, int selectionStatusId, string remarks, 
+            CVRef cvRef, Employment employment)
            {
                //CVRefId = cVRefId;
                //OrderItemId = orderItemId;

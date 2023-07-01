@@ -22,11 +22,9 @@ export class MessagesComponent implements OnInit {
   messages: IMessage[]=[];
   message: IMessage| undefined;
   
-  container = 'draft';
+  container = '';
   controlsDisabled=false;
   
-  pageIndex = 1;
-  pageSize = 3;
   loading = false;
 
   sortOptions = [
@@ -42,51 +40,67 @@ export class MessagesComponent implements OnInit {
   constructor(private service: MessageService, private toastr: ToastrService, private confirmService: ConfirmService) { }
 
   ngOnInit(): void {
-    this.mParams.pageSize = this.pageSize;
-    this.mParams.container =  this.container;
-    this.controlsDisabled = this.mParams.container !== 'draft';
+    //this.mParams.pageSize = this.pageSize;
+    this.container = this.mParams.container;  // =  this.container;
     //console.log('controlsDisabled', this.controlsDisabled);
     this.getMessages(false);
-    console.log(this.messages);
+    //console.log(this.messages);
   }
 
 
   getMessages(useCache: boolean=false) {
     this.message=undefined;    //refresh the message panel
-    this.mParams.pageSize=6;
+    //this.mParams.pageSize=6;
     this.service.setParams(this.mParams);
-
+    this.controlsDisabled = this.mParams.container !== 'draft';
+    
     this.service.getMessages(useCache)?.subscribe({
       next: response => {
-        this.messages!=response?.data;
-        this.totalCount!=response?.count;
+        this.messages = response?.data;
+        this.totalCount = response?.count;
       },
       error: error => console.log(error)
     })
   }
 
 
+  setContainer(container: string) {
+    this.mParams = new EmailMessageSpecParams();
+    this.mParams.container=container;
+    this.service.setParams(this.mParams);
+    this.getMessages(false);
+  }
+
   getInboxMessages() {
+    this.setContainer("inbox");
+    /*    
     this.mParams=new EmailMessageSpecParams();
     this.mParams.container="inbox";
-    this.service.setContainer(this.container);
-    this.controlsDisabled=true;
+    this.service.setParams(this.mParams);
     this.getMessages(true);
     this.toastr.info('inbox');
+    */
   }
 
   getOutboxMessages() {
+    this.setContainer("sent");
+    /*
     this.mParams.container="sent";
     this.service.setContainer(this.container);
     this.controlsDisabled=true;
     this.getMessages(true);
+    */
   }
 
   getDraftMessages() {
+    
+    this.setContainer("draft");
+    /*
     this.mParams.container="draft";
     this.service.setContainer(this.container);
     this.controlsDisabled=false;
     this.getMessages(true);
+    */
   }
 
   onSearch() {
@@ -148,9 +162,8 @@ export class MessagesComponent implements OnInit {
   }
 
   onPageChanged(event: any) {
-    if (this.pageIndex !== event) {
-      this.pageIndex = event;
-      this.mParams.pageIndex=event;
+    if (this.mParams.pageIndex !== event) {
+      this.mParams.pageIndex = event;
       this.getMessages(true);
     }
   }

@@ -1,0 +1,78 @@
+<div class="modal-header" >
+	
+	<button type="button" class="btn btn-success fa fa-check" (click)="update()"></button>
+	<button type="button" class="btn btn-close mx-2 close pull-right" aria-label="Close" (click)="bsModalRef.hide()">X</button>
+
+</div>
+ 
+<div class="modal-body">
+	<form [formGroup]="form">
+		<div>
+			<label class="stdd b w100">Candidate: </label>
+			<input type="text" class="stdd w50" formControlName="applicationNo" >
+			<input type="text" class="stdd w50" formControlName="candidateName">
+			
+			<label class="stdd b w100">Category:</label>
+			<input type="text" class="stdd w300" formControlName="categoryRef" >
+			
+			<label class="stdd b w100">Date</label>
+			<label class="stdd b w225">Status</label>
+			
+			<label class="stdd b w225">Next Status</label>
+			<label class="stdd b w100">Next Stage dt</label>
+			<button type="button" (click)="addItem()" class="stdd alignR mx-1 fa fa-plus blue"></button>
+			
+		</div>
+		<div formArrayName="deploymentItems">
+			<div *ngFor="let item of deploymentItems.controls; let i=index">
+				<div [formGroupName]="i">
+	
+					<input class="stdd w100 mx-2" 
+						type="text"
+						placeholder="transaction Date"
+						bsDatepicker
+						[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+						formControlName="transactionDate"
+					> 
+				
+					<ng-select  
+						class="stdd w225"
+						[items]="deployStatuses"
+						bindLabel="status"
+						bindValue="sequence"
+						placeholder="Select status"
+						clearAllText="Clear"
+						formControlName="sequence" 
+					>
+					</ng-select>
+		
+					<ng-select class="stdd w225"
+						[items]="deployStatuses"
+						bindLabel="status"
+						bindValue="sequence"
+						labelForId="stageId"
+						clearAllText="Clear"
+						formControlName="nextSequence"
+						>
+					</ng-select>
+					
+					<input class="stdd w100" 
+						type="text"
+						placeholder="Next Stage Estimated Date"
+						bsDatepicker
+		
+						[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+						formControlName="nextStageDate"
+					> 
+				</div>
+			</div>
+		</div>
+		
+	</form>
+</div>
+	
+
+<div class="modal-footer">
+    
+</div>
+

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { CheckedAndBoolean, ICheckedAndBoolean } from 'src/app/shared/dtos/admin/checkedAndBooean';
 import { ICandidateAssessedDto } from 'src/app/shared/dtos/hr/candidateAssessedDto';
 
@@ -15,19 +16,34 @@ export class CvrefLineComponent implements OnInit {
 
   checkedNBoolean = new CheckedAndBoolean();
 
-  constructor() { }
+  constructor(private toastr: ToastrService) { }
 
   ngOnInit(): void {
   }
 
-  cvChecked(cvid: number, checked: boolean) {
+  cvChecked(checked: boolean) {
+    
+    /* if(this.cv?.assessedResult!=='agreed') {
+      this.toastr.warning('candidates whose status on charges shows as "agreed" can only be selected');
+      return;
+    }
+    */
+
+    var cvid = this.cv!.id;
+    if(checked===undefined) checked=true;
+    //checked=!checked;
     this.checkedNBoolean.checked=checked;
     this.checkedNBoolean.id=cvid;
+    //console.log('cvhecked in line', this.checkedNBoolean);
     this.cvCheckedEvent.emit(this.checkedNBoolean);
   }
 
-  displayChecklistModal(item: ICandidateAssessedDto) {
-    this.displayChecklistModalEvent.emit(item);
+
+  displayCV() {
+    
   }
 
+  showHRChecklist() {
+    this.displayChecklistModalEvent.emit(this.cv);
+  }
 }

@@ -12,6 +12,8 @@ using infra.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using core.Entities.EmailandSMS;
+using core.Entities.Process;
 
 namespace infra.Services
 {
@@ -786,13 +788,14 @@ namespace infra.Services
 
           public async Task<ICollection<OrderItemBriefDto>> GetOpenOrderItemsNotPaged()
           {
-               var  q = (from i in _context.OrderItems where i.ReviewItemStatusId == 1
+               var  q = (from i in _context.OrderItems where i.ReviewItemStatusId == 7         //reviewiemStatusId=7 APPROVED
                     join o in _context.Orders on i.OrderId equals o.Id
                     join c in _context.Customers on o.CustomerId equals c.Id
                     join cat in _context.Categories on i.CategoryId equals cat.Id
                     join ass in _context.OrderItemAssessments on i.Id equals ass.OrderItemId into itemAss 
                          from itemAssessments in itemAss.DefaultIfEmpty()
                     select new OrderItemBriefDto {
+                         SrNo = i.SrNo,
                          OrderItemId = i.Id, OrderId = o.Id, 
                          CustomerName = c.CustomerName, OrderDate = o.OrderDate,
                          CategoryId = i.CategoryId, 
@@ -800,8 +803,8 @@ namespace infra.Services
                          CategoryRef = o.OrderNo + "-" + i.SrNo,
                          CategoryRefAndName = o.OrderNo + "-" + i.SrNo + "-" + i.Category.Name,
                          CategoryName = cat.Name,
-                         RequireInternalReview = i.RequireInternalReview,
-                         AssessmentQDesigned = (itemAssessments.OrderItemId > 0)
+                         RequireInternalReview = i.RequireInternalReview
+                         , AssessmentQDesigned = (itemAssessments.OrderItemId > 0)
                     }).AsQueryable();
 
                var qry = await q.ToListAsync();
@@ -819,6 +822,7 @@ namespace infra.Services
                     join ass in _context.OrderItemAssessments on i.Id equals ass.OrderItemId into itemAss 
                          from itemAssessments in itemAss.DefaultIfEmpty()
                     select new OrderItemBriefDto {
+                         SrNo = i.SrNo,
                          OrderItemId = i.Id, OrderId = o.Id, 
                          CustomerName = c.CustomerName, OrderDate = o.OrderDate,
                          CategoryId = i.CategoryId, 
@@ -832,7 +836,6 @@ namespace infra.Services
                var qry = await q.ToListAsync();
                return qry;
           }
-
 
           public async Task<ICollection<OrderItemBriefDto>> GetOrderItemsBriefDtoByOrderId(int OrderId)
           {
@@ -866,6 +869,16 @@ namespace infra.Services
                return dto;
           }
 
+          public async Task<EmailMessage> ComposeMsg_AckToClient(int orderid) 
+          {
+               var order = await _context.Orders.FindAsync(orderid);
+               
+               var msg = await _composeMessages.AckEnquiryToCustomer(new OrderMessageParamDto { Order = order});
+
+               return msg;
+          }
+         
      }
 
+     
 }

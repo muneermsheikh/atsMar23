@@ -13,4 +13,7 @@ export class AdminIndexComponent implements OnInit {
     console.log('admin indx');
   }
 
+  close() {
+    
+  }
 }

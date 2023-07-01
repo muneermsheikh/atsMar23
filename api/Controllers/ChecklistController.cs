@@ -15,17 +15,19 @@ namespace api.Controllers
           private readonly IChecklistService _checklistService;
           private readonly UserManager<AppUser> _userManager;
           private readonly IEmployeeService _empService;
+          private readonly ICandidateAssessmentService _assessmentService;
 
           public ChecklistController(IChecklistService checklistService, UserManager<AppUser> userManager,
-               IEmployeeService empService)
+               IEmployeeService empService, ICandidateAssessmentService assessmentService)
           {
+               _assessmentService = assessmentService;
                _empService = empService;
                _userManager = userManager;
                _checklistService = checklistService;
 
           }
 
-           [Authorize(Roles ="Admin, HRManager, HRSupervisor, HRTrainee")]
+           [Authorize] //Roles ="Admin, HRManager, HRSupervisor, HRTrainee")]
           [HttpPost("{candidateid}/{orderitemid}")]
           public async Task<ActionResult<bool>> AddNewChecklist(int candidateid, int orderitemid)
           {
@@ -39,7 +41,7 @@ namespace api.Controllers
                return Ok();
           }
 
-          [Authorize(Roles ="Admin, HRManager, HRSupervisor, HRTrainee")]
+          [Authorize] //Roles ="Admin, HRManager, HRSupervisor, HRTrainee")]
           [HttpPut("checklisthr")]
           public async Task<ActionResult<List<string>>> EditChecklistHRAsync(ChecklistHRDto checklistHR)
           {
@@ -48,11 +50,15 @@ namespace api.Controllers
                
                var errorLists = await _checklistService.EditChecklistHR(checklistHR, loggedInUserDto);
 
-               if (errorLists.Count==0 || errorLists==null) return Ok(errorLists);
+               if (errorLists.Count==0 || errorLists==null) {
+                    if(checklistHR.AssessmentIsNull) await _assessmentService.AssessNewCandidate(checklistHR.RequireInternalReview, 
+                         checklistHR.CandidateId, checklistHR.OrderItemId, loggedInUserDto.LoggedInEmployeeId);
+                    return Ok(errorLists);
+               }
                return BadRequest(errorLists);
           }
 
-          [Authorize(Roles ="Admin, HRManager, HRSupervisor, HRTrainee")]
+          [Authorize] //Roles ="Admin, HRManager, HRSupervisor, HRTrainee")]
           [HttpGet("checklistid/{candidateid}/{orderitemid}")]
           public async Task<int> GetChecklistHRId(int candidateid, int orderitemid)
           {
@@ -72,7 +78,7 @@ namespace api.Controllers
                return Ok(checklist);
           }
           
-          [Authorize(Roles ="Admin, HRManager, HRSupervisor")]
+          [Authorize] //Roles ="Admin, HRManager, HRSupervisor")]
           [HttpDelete("hrchecklist")]
           public async Task<ActionResult<bool>> DeleteChecklistHRAsync(ChecklistHRDto checklistHR)
           {
@@ -81,7 +87,7 @@ namespace api.Controllers
           }
 
      //master data
-          [Authorize(Roles ="Admin, HRManager, HRSupervisor")]
+          [Authorize] //Roles ="Admin, HRManager, HRSupervisor")]
           [HttpDelete("hrparameter")]
           public async Task<bool> DeleteChecklistHRDataAsync(ChecklistHRData checklistHRData)
           {
@@ -89,21 +95,21 @@ namespace api.Controllers
           }
 
           //checklistHR - job card for HR Executives
-          [Authorize(Roles ="Admin, HRManager, HRSupervisor")]
+          [Authorize] //Roles ="Admin, HRManager, HRSupervisor")]
           [HttpPost("newhrparameter/{checklist}")]
           public async Task<ChecklistHRData> AddChecklistHRParameter(string checklist)
           {
                return await _checklistService.AddChecklistHRParameter(checklist);
           }
 
-          [Authorize(Roles ="Admin, HRManager, HRSupervisor, HRExecutive")]
+          [Authorize] //Roles ="Admin, HRManager, HRSupervisor, HRExecutive")]
           [HttpDelete]
           public async Task<bool> DeleteChecklistHRData(ChecklistHRData checklistHRData)
           {
                return await _checklistService.DeleteChecklistHRDataAsync(checklistHRData);
           }
           
-          [Authorize(Roles ="Admin, HRManager, HRSupervisor")]
+          [Authorize] //Roles ="Admin, HRManager, HRSupervisor")]
           [HttpPut("hrchecklistdata")]
           public async Task<bool> EditChecklistHRDataAsync(ChecklistHRData checklistHRData)
           {

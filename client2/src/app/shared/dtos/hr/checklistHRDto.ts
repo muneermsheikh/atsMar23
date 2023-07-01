@@ -20,6 +20,8 @@ export interface IChecklistHRDto{
      exceptionApprovedBy: string;
      exceptionApprovedOn: Date;
      checklistedOk: boolean;
+     assessmentIsNull: boolean;
+     requireInternalReview: boolean;
      checklistHRItems: IChecklistHRItem[];
 }
 
@@ -42,5 +44,7 @@ export class ChecklistHRDto implements IChecklistHRDto{
      exceptionApprovedBy: string='';
      exceptionApprovedOn: Date=new Date('1900-01-01');
      checklistedOk: boolean=false;
+     assessmentIsNull = false;
+     requireInternalReview=false;
      checklistHRItems: IChecklistHRItem[]=[];
 }

@@ -41,6 +41,7 @@
                          <button (click)="onReset()" class="btn btn-outline-success mx-2 my-1">Reset</button>
                          <button class="btn btn-outline-success ml-2 my-1 fa fa-plus" routerLink="/orders/add" ></button>
                     </div>
+                    <button class="btn btn-outline-success ml-2 my-1 fa fa-close" routerLink="/admin" ></button>
                </div>
           </div>
           <div class="form-inline" style="font-weight: bold;">
@@ -64,6 +65,8 @@
                     (dlForwardedToAssociatesEvent)="dlForwardedToAssociates($event)"
                     (deleteEvent)="deleteOrder($event)"
                     (dlFwdToHREvent)="dlForwardToHRDept($event)"
+                    (acknowledgeToClientEvent)="acknowledgeToClient($event)"
+                    (cvreferredEvent)="cvsReferred($event)"
                ></app-order-line>
           </div>
           

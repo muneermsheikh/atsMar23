@@ -71,7 +71,7 @@ export class CandidatesListingComponent implements OnInit {
       }
 
   ngOnInit(): void {
-    this.getCVs(false);
+    this.getCVs(true);
     
     this.activatedRoute.data.subscribe(data => {
         //this.cvs = data.candidateBriefs,
@@ -261,7 +261,7 @@ export class CandidatesListingComponent implements OnInit {
 
   cvAssessEvent(cvbrief: ICandidateBriefDto)
   {
-    this.navigateByUrl('/hr/cvassess/' + cvbrief.id, undefined, false);
+    this.navigateByUrl('/hr/cvassess/' + cvbrief.id, cvbrief, false);
   }
 
   navigateByUrl(route: string, cvObject: any|undefined, toedit: boolean) {

@@ -4,6 +4,6 @@ import { IEmploymentDto } from "./employmentDto";
 export interface ISelectionMsgsAndEmploymentsDto
 {
      emailMessages: IMessage[];
-     employmentDtos: IEmploymentDto[];
+     //employmentDtos: IEmploymentDto[];
      cvRefIdsAffected: number[];
 }

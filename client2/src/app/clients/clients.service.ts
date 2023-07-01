@@ -54,7 +54,7 @@ export class ClientsService {
       params = params.append('search', custParams.search);
     }
 
-    this.customerType = custParams.custType ?? "customer";
+    this.customerType = custParams.customerType ?? "customer";
     params = params.append('customerType', this.customerType);
 
     

@@ -14,7 +14,7 @@ namespace core.Entities.HR
           public Employment(int cVRefId, DateTime selectedOn, string salaryCurrency, int salary, 
                 int contractPeriodInMonths, bool housingProvidedFree, int housingAllowance, bool foodProvidedFree, 
                 int foodAllowance, bool transportProvidedFree, int transportAllowance, int otherAllowance, 
-                int leavePerYearInDays, int leaveAirfareEntitlementAfterMonths, int charges)
+                int leavePerYearInDays, int leaveAirfareEntitlementAfterMonths, int charges )
           {
                CVRefId = cVRefId;
                SelectedOn = selectedOn;
@@ -30,7 +30,66 @@ namespace core.Entities.HR
                OtherAllowance = otherAllowance;
                LeavePerYearInDays = leavePerYearInDays;
                LeaveAirfareEntitlementAfterMonths = leaveAirfareEntitlementAfterMonths;
-                Charges = charges;
+          }
+
+            public Employment(int cVRefId, int weeklyhours, DateTime selectedOn, string salaryCurrency, int salary, 
+                int contractPeriodInMonths, bool housingProvidedFree, int housingAllowance, bool foodProvidedFree, 
+                int foodAllowance, bool transportProvidedFree, int transportAllowance, int otherAllowance, 
+                int leavePerYearInDays, int leaveAirfareEntitlementAfterMonths, int charges,
+                int categoryid, int candidateid, int appno, string candidatename, string employername,
+                string categoryname)
+            {
+                  CVRefId = cVRefId;
+                  WeeklyHours = weeklyhours;
+                  SelectedOn = selectedOn;
+                  SalaryCurrency = salaryCurrency;
+                  Salary = salary;
+                  ContractPeriodInMonths = contractPeriodInMonths;
+                  HousingProvidedFree = housingProvidedFree;
+                  HousingAllowance = housingAllowance;
+                  FoodProvidedFree = foodProvidedFree;
+                  FoodAllowance = foodAllowance;
+                  TransportProvidedFree = transportProvidedFree;
+                  TransportAllowance = transportAllowance;
+                  OtherAllowance = otherAllowance;
+                  LeavePerYearInDays = leavePerYearInDays;
+                  LeaveAirfareEntitlementAfterMonths = leaveAirfareEntitlementAfterMonths;
+                  Charges = charges;
+                  CategoryId = categoryid;
+                  CandidateId = candidateid;
+                  ApplicationNo= appno;
+                  CandidateName = candidatename;
+                  CustomerName = employername;
+                  CategoryName = categoryname;
+          }
+
+          public Employment(int cVRefId, int weeklyhours, DateTime selectedOn, string salaryCurrency, int salary, 
+                int contractPeriodInMonths, bool housingProvidedFree, int housingAllowance, bool foodProvidedFree, 
+                int foodAllowance, bool transportProvidedFree, int transportAllowance, int otherAllowance, 
+                int leavePerYearInDays, int leaveAirfareEntitlementAfterMonths, int charges,
+                int categoryid, int candidateid, int appno, string candidatename,
+                string companyname, int orderid, int orderitemid, int orderno)
+          {
+               CVRefId = cVRefId;
+               WeeklyHours = weeklyhours;
+               SelectedOn = selectedOn;
+               SalaryCurrency = salaryCurrency;
+               Salary = salary;
+               ContractPeriodInMonths = contractPeriodInMonths;
+               HousingProvidedFree = housingProvidedFree;
+               HousingAllowance = housingAllowance;
+               FoodProvidedFree = foodProvidedFree;
+               FoodAllowance = foodAllowance;
+               TransportProvidedFree = transportProvidedFree;
+               TransportAllowance = transportAllowance;
+               OtherAllowance = otherAllowance;
+               LeavePerYearInDays = leavePerYearInDays;
+               LeaveAirfareEntitlementAfterMonths = leaveAirfareEntitlementAfterMonths;
+                  Charges = charges;
+                  CustomerName = companyname;
+                  OrderItemId = orderitemid;
+                  OrderId = orderid;
+                  OrderNo = orderno;
           }
 
           public int CVRefId { get; set; }
@@ -66,7 +125,10 @@ namespace core.Entities.HR
           public int CandidateId { get; set; }
           public int ApplicationNo { get; set; }
           public string CandidateName { get; set; }
-          public string CompanyName { get; set; }     //agent name
+          public string AgentName { get; set; }     //agent name
+          public bool Approved { get; set; }
+          public int ApprovedByEmpId { get; set; }
+          public DateTime ApprovedOn {get; set;}
 
           //[ForeignKey("SelectionDecisionId")]
           //public SelectionDecision SelectionDecision {get; set;}
