@@ -98,8 +98,14 @@ export class CandidateService {
     return this.http.get<ICandidateBriefDto>(this.apiUrl + 'candidate/byappno/' + id);
   }
 
+  registerWithFiles(model: any) {
+    return this.http.post<IApiReturnDto>(this.apiUrl + 'account/RegisterNewCandidate', model );
+    //return this.http.post<IApiReturnDto>(this.apiUrl + 'account/RegisterNewCandidate', model);
+  }
+
   register(model: any) {
       return this.http.post<IApiReturnDto>(this.apiUrl + 'account/registerCandidate', model );
+      //return this.http.post<IApiReturnDto>(this.apiUrl + 'account/RegisterNewCandidate', model);
     }
   
   UpdateCandidate(model: any) {

@@ -1,0 +1,86 @@
+<br><br>
+<div class="vAlignTop5px col-3 justify-contents-between align-items-center">
+	
+	<br>
+	<button class="w250 my-2" title="Confirm receipt of cash payments" (click)="confirmReceipts()" >Confirm receipt of cash</button>
+	<br>
+	<button class="w250 btn btn-primary x-2 my-2" 
+		style="display:inline-block;" title="add a new Finance Voucher" (click)="addNewFinanceTransaction()" >Create a new Voucher</button>
+	<br>
+	<button class="w250 btn btn-secondary x-2 my-2" 
+		style="display:inline-block;" title="add a new Payment Receipt" (click)="addNewPaymentReceiptModal()" >Register new payment receipt</button>
+	<br>
+	<button class="w250 my-2" title="Finance Transactions" (click)="showCOAList()" >Chart of Accounts</button>
+	<br>
+	<button class="w250 my-2" title="Finance Transactions" (click)="showVoucherList()" >Voucher list</button>
+	
+</div>
+
+<div class="col-9 stdd" style="vertical-align: top;">
+	<label class="stdd w120">Application No.:</label>
+	<input class="stdd w100" [(ngModel)]="applicationno" type="text">
+	<button class="stdd mx-2 fa fa-check" title="click, after entering application number" (click)="showCandidateAccount()"></button>
+	<button class="stdd fa fa-plus" title="adds a new Chart of account for a candidate, if it does not exist" (click)="addNewCOAForTheCandidate()"></button>
+	<button class="stdd mx-2 fa fa-close" (click)="close()"></button>
+	<button class="fa fa-eye fa-list" title="toggle display statement of account, if exists" (click)="toggleDisplaySOA()"> </button>
+	  
+	<div *ngIf="coas===null">
+		No Chart of account exists for the candidate with application number provided;
+	</div>
+	<br>
+	<div class="stdd w350" *ngIf="candidateAccountNam !==''" (click)="onCOASelected()"> {{candidateAccountNam}} </div>
+	<div class="stdd w200 tAlignRight">Cl Bal: {{candidateAccountClBalance}}</div> 
+	<div class="stdd w45 tAlignCenter" [ngClass]="suffix.Trim==='DR' ? 'red' : 'black' "> {{suffix}}</div>
+	
+	<button class="fa fa-list" title="Show Statement Of Account" [disabled]="candidateAccountNam===''" (click)="showSOA()" ></button>
+	<button class="fa fa-inr" style="margin-left: 5px;" title="Enter payment voucher" [disabled]="candidateAccountNam===''" (click)="addNewPaymentReceiptModal()" ></button>
+	
+	<div *ngIf="soa?.statementOfAccountItems !== null && soa?.statementOfAccountItems!.length > 0">
+		<label class="stdd w150">statement of account</label>
+	<!--
+		<app-paging-header 
+			[totalCount]="count" 
+			[pageNumber]="coaparams.pageNumber" 
+			[pageSize]="coaparams.pageSize">
+		</app-paging-header>
+		<app-paging 
+			[pageSize]="coaparams.pageSize" 
+			[totalCount]="count" 
+			[pageNumber]="coaparams.pageNumber" 
+			(pageChanged)="onPageChanged($event)"  >
+		</app-paging>
+	-->
+		<div class="container">
+			<label class="stdd w120">Voucher No </label>
+			<label class="stdd w100">Date</label>
+			<label class="stdd w300">Account</label>
+			<label class="stdd w250">Narration</label>
+			<label class="stdd w75 tAlignRight">Debit</label>
+			<label class="stdd mx-2 w75 tAlignRight">Credit</label>
+			<br>
+			<div class="stdd w150" style="margin-left: 350px;">Opening Balance</div>
+			<div class="stdd w75 tAlignRight" *ngIf="soa!.opBalance > 0" >{{soa!.opBalance}}</div>
+	
+			<div *ngIf="soa !== undefined">
+				<div *ngFor="let item of soa.statementOfAccountItems">
+					<app-soa-line
+						[soaItem]="item"
+						(displayVoucherEvent)="display($event)"
+					></app-soa-line>
+				</div>
+			</div>
+				
+			<br>
+
+			<div class="stdd w250 tAlignRight" style="margin-left: 280px;">Total for the period</div>
+			<div class="stdd w75 tAlignRight" >{{thisPeriodTotalDr || '-'}}</div>
+			<div class="stdd w75 tAlignRight" >{{thisPeriodTotalCr || '-'}}</div>
+			<div class="stdd w150 mx-4 tAlignRight" >Bal: {{thisPeriodBalance}}  {{thisPeriodSuffix}}</div>
+			<br>
+			<div class="stdd w250 b tAlignRight" style="margin-left: 280px;">Overall Total upto the period</div>
+			<div class="stdd w75 tAlignRight b" >{{overallTotalDr || '-'}}</div>
+			<div class="stdd w75 tAlignRight b" >{{overallTotalCr || '-'}}</div>
+			<div class="stdd w150 mx-4 tAlignRight b"  >Bal: {{overallBal }} {{overallBalSuffix}}</div>
+			
+		</div>
+ 	</div>

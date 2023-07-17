@@ -3,6 +3,7 @@ using System.Text.Json;
 using api.Errors;
 using api.Extensions;
 using core.Dtos;
+using core.Dtos.fiance;
 using core.Entities.AccountsNFinance;
 using core.Entities.Attachments;
 using core.Entities.Identity;
@@ -52,13 +53,18 @@ namespace api.Controllers
             return coas;
         }
 
-        [HttpGet("coaforCandidate/{applicationno}")]
-        public async Task<Coa> COAForCandidate(int applicationno)
+        [HttpGet("coaforcandidate/{applicationno}/{create}")]
+        public async Task<CoaDto> COAForCandidate(int applicationno, bool create)
         {
-            var coa = await _financeServices.GetCoaForCandidate(applicationno);
+            var coa = await _financeServices.GetOrCreateCoaForCandidate(applicationno, create);
             return coa;
         }
 
+        [HttpGet("clbal/{accountid}")]
+        public async Task<long> ClBalanceOfAnAccount(int accountid) {
+            var bal = await _financeServices.GetClosingBalIncludingSuspense(accountid);
+            return bal;
+        }
         [HttpPost("coa")]
         public async Task<Coa> AddNewCOA(COAToAddDto coa)
         {
@@ -80,6 +86,13 @@ namespace api.Controllers
             return b;
         }
 
+        [HttpGet("coabygroup/{accountgroup}")]
+        public async Task<ActionResult<ICollection<Coa>>> GetCOAFromAccountGroup(string accountgroup)
+        {
+            var coas = await _financeServices.GetCOAsForAccountGroup(accountgroup);
+            return Ok(coas);
+        }
+        
         //transactions
         [HttpGet("vouchers")]
         public async Task<Pagination<FinanceVoucher>> GetFinanceTransactions([FromQuery]TransactionParams tParams)
@@ -125,7 +138,34 @@ namespace api.Controllers
             return Ok(dto);
         }
 
-        [Authorize]
+
+        [HttpPost("newpaymentfromcandidate")]
+        public async Task<ActionResult<ApiReturnDto>> NewPaymentFromCandidate(VoucherToAddNewPayment dto) {
+            
+            var loggedInUser = await _userManager.FindByEmailFromClaimsPrincipal(User);
+            var returnDto = new ApiReturnDto();
+
+            var dateUploaded = DateTime.Now;
+            var entries = new List<VoucherEntry>();
+            entries.Add(new VoucherEntry{TransDate = dto.PaymentDate,
+                CoaId=dto.DebitCOAId, Dr = dto.Amount, Narration = "" });
+            entries.Add(new VoucherEntry{TransDate = dateUploaded,
+                CoaId=dto.CreditCOAId, Cr = dto.Amount, Narration = "" });
+            
+            var vouchertoaddDto = new VoucherToAddDto(0, "R", 0, dto.PaymentDate, dto.CreditCOAId,dto.Amount,dto.Narration,entries, loggedInUser.DisplayName);
+            
+            var voucherAdded= await _financeServices.AddNewVoucher(vouchertoaddDto, loggedInUser.loggedInEmployeeId);
+
+            if(voucherAdded==null) {
+                returnDto.ErrorMessage="Failed to create the voucher";
+                return returnDto;
+            }
+            returnDto.ErrorMessage="";
+            returnDto.ReturnInt=voucherAdded.VoucherNo;
+
+            return Ok(returnDto);
+        }
+        
         [HttpPost("RegisterNewVoucher"), DisableRequestSizeLimit]
           public async Task<ActionResult<ApiReturnDto>> RegisterNewVoucherWithUploads()
           {
@@ -137,7 +177,7 @@ namespace api.Controllers
 
                try
                {
-                    var modelData = JsonSerializer.Deserialize<FinanceVoucherToAddDto>(Request.Form["data"],   //THE Voucher OBJECT
+                    var modelData = JsonSerializer.Deserialize<VoucherToAddDto>(Request.Form["data"],   //THE Voucher OBJECT
                          new JsonSerializerOptions {
                          PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                          });
@@ -182,7 +222,7 @@ namespace api.Controllers
                     }
 
                     if (Attachmentlist.Count > 0) await _financeServices.AddVoucherAttachments(Attachmentlist);
-                    returnDto.ReturnInt=voucherId;
+                    returnDto.ReturnInt=voucherId;  //voucherid is voucherNo
                     return Ok(returnDto);
                }
                catch (Exception ex)
@@ -191,9 +231,22 @@ namespace api.Controllers
                }
           }
 
+        [HttpGet("debitapprovalspending")]
+        public async Task<ActionResult<ICollection<PendingDebitApprovalDto>>> GetDebitApprovalsPending()
+        {
+            var dto = await _financeServices.GetPendingDebitApprovals();
+            if(dto==null) return Ok(null);
+            return Ok(dto);
+        }
 
+        [HttpPut("confirmdebitapprovals")]
+        public async Task<bool> ConfirmCashBankDebitEntries(ICollection<UpdatePaymentConfirmationDto> debitDto)
+        {
+            var success = await _financeServices.UpdateCashAndBankDebitApprovals(debitDto);
 
-        [Authorize]
+            return success;
+        }
+
         [HttpPut("updatevoucherwithfiles"), DisableRequestSizeLimit]
         public async Task<ActionResult> UpdateVoucherWithUpload()
           {

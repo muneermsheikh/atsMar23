@@ -57,4 +57,8 @@ export class DeployIndexComponent implements OnInit {
           } }
       );
   }
+
+  showDeploymentStatus() {
+    
+  }
 }

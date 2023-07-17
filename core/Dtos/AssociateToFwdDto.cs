@@ -9,6 +9,7 @@ namespace core.Dtos
         public string Title {get; set;}
         public string CustomerOfficialName {get; set;}
         public string OfficialEmailId {get; set;}
+        public string OfficialAppUserId {get; set;}
         public string Phoneno {get; set;}
         public string Mobile {get; set;}
         public string OfficialDesignation {get; set;}

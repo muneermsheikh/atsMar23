@@ -4,18 +4,18 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { IDeploymentPendingDto } from 'src/app/shared/dtos/process/deploymentPendingDto';
 import { IUser } from 'src/app/shared/models/admin/user';
-import { Deployment, IDeployment } from 'src/app/shared/models/process/deploy';
+import { Deployment, IDeployment } from 'src/app/shared/models/process/deployment';
 import { depProcessParams } from 'src/app/shared/params/process/depProcessParams';
 import { deployParams } from 'src/app/shared/params/process/deployParams';
 import { DeployService } from '../deploy.service';
 import { DepModalComponent } from '../dep-modal/dep-modal.component';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { IDeployStage } from 'src/app/shared/models/masters/deployStage';
-import { map, switchMap } from 'rxjs/operators';
-import { DeployHeaderDto, IDeployHeaderDto } from 'src/app/shared/dtos/process/deployHeaderDto';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { DeployAddModalComponent } from '../deploy-add-modal/deploy-add-modal.component';
 import { DeployEditComponent } from '../deploy-edit/deploy-edit.component';
 import { CVReferredDto, ICVReferredDto } from 'src/app/shared/dtos/admin/cvReferredDto';
+import { of } from 'rxjs';
 
 
 @Component({
@@ -85,13 +85,13 @@ export class DeployListComponent implements OnInit {
               //this.hasEditRole = this.user.roles.includes('AdminManager');
               //this.hasHRRole =this.user.roles.includes('HRSupervisor');
             }
-            if(nav.extras.state.user) this.user=nav.extras.state.user as IUser;
+            //if(nav.extras.state.user) this.user=nav.extras.state.user as IUser;
         }
         this.bcService.set('@deployentList',' ');
     }
 
   ngOnInit(): void {
-    this.getProcesses(true);
+    this.getProcesses(false);
 
     this.getDeploymentStatuses();
   }
@@ -160,7 +160,7 @@ export class DeployListComponent implements OnInit {
     this.editedReferrals.forEach(dto => {
       var dep = new Deployment();
       dep.id=dto.id;
-      dep.cVRefId=dto.cvRefId;
+      dep.deployCVRefId=dto.deployCVRefId;
       dep.sequence=dto.deploySequence;
       dep.transactionDate=dto.deployStageDate;
       //dep.nextStageId=dep.nextStageId;
@@ -256,32 +256,20 @@ export class DeployListComponent implements OnInit {
 
   editDeployment(pendingDto: IDeploymentPendingDto)
   {
-      this.navigateByRoute(pendingDto.cvRefId, '/processing/edit', true, this.depStatuses);
+      this.navigateByRoute(pendingDto.deployCVRefId, '/processing/edit', true, this.depStatuses);
   }
 
   addNewDeployment(dto: IDeploymentPendingDto)
   {
 
-    this.service.getCVReferredDto(dto.cvRefId).subscribe({
+    this.service.getCVReferredDto(dto.deployCVRefId).subscribe({
       next: (ref: ICVReferredDto) => {
-          /* var ref: ICVReferredDto = new CVReferredDto();
-          ref.applicationNo=dto.applicationNo;
-          ref.candidateName=dto.candidateName;
-          ref.categoryRef=dto.orderNo + '-' + dto.categoryName;
-          ref.customerName = dto.customerName;
-          ref.cvRefId=dto.cvRefId;
-          //ref.id=dto.id;
-          ref.referredOn = dto.referredOn;
-          ref.selectedOn = dto.selectedOn;
-          
-          var deploy: IDeployment = new Deployment;
-       
-          deploy.cVRefId = dto.cvRefId;
-          deploy.transactionDate = new Date();
-          deploy.sequence=this.getSequenceForNextTransaction(dto);
-          deploy.nextSequence= this.getNextSeqForNextTransaction(deploy.sequence);
-          deploy.nextStageDate = this.getNextStageDateForNextTransaction(dto, deploy.nextSequence);
-          */
+        console.log('ref:', ref);
+        if(ref===null) {
+          this.toastr.info('Failed to retrieve deployent data from API');
+          return;
+        }
+
           const config = {
             class:'modal-dialog-centered modal-lg',
             initialState: {
@@ -290,26 +278,22 @@ export class DeployListComponent implements OnInit {
             }
           };
     
-          console.log('config', config);
           this.bsModalRef = this.modalService.show(DeployAddModalComponent, config);
           
           this.bsModalRef.content.EditEvent.subscribe({
-            next: (success: boolean) => {
-                  if(success) {
+            next: (editedDep: boolean) => {
+                  if(editedDep === true) {
                     this.toastr.success('deployment record updated');
                   } else {
-                    this.toastr.warning('failed to write record');
+                    this.toastr.warning('Edit aborted');
                   }},
             error: (err: any) => this.toastr.error('error in updating deployment record')
             
-        });
+        }); 
     
-      }
-    })
-    
-      /*
+    /*
       this.bsModalRef.content.EditEvent.pipe(
-        switchMap((values: IDeployment) => this.service.updateSingleTransaction(values).pipe(
+        switchMap((values: ICVReferredDto) => this.service.updateDeployment(values).pipe(
           
           catchError(err => {
             console.log('Error in updating Employment Record', err);
@@ -327,10 +311,13 @@ export class DeployListComponent implements OnInit {
         console.log()
       }),
       (err: any) => {
-        console.log('unhandled error NOT handled in catch Error(, orif throwError()')
+        console.log('unhandled error NOT handled in catch Error(, or if throwError()')
       }
       */
 
+    },
+    error: err => this.toastr.error('error:', err)
+    })
   }
 
   showTransactions(cvrefid: number) {
@@ -346,7 +333,7 @@ export class DeployListComponent implements OnInit {
       this.bsModalRef = this.modalService.show(DeployEditComponent, config);
 
       this.bsModalRef.content.EditDepEvent.subscribe({
-        next: (deploys: ICVReferredDto) => {
+        next: (deploys: IDeployment[]) => {
           this.service.updateDeployment(deploys).subscribe((uccess:boolean) => {
             this.toastr.success('deployments updated');
           })
@@ -361,14 +348,14 @@ export class DeployListComponent implements OnInit {
 
   editDep(pendingDto: IDeploymentPendingDto) {
 
-    this.service.getDeployments(pendingDto.cvRefId).subscribe(dto => {
+    this.service.getDeployments(pendingDto.deployCVRefId).subscribe(dto => {
       const config = {
         class:'modal-dialog-centered modal-lg',
         initialState: {
           dep: dto,
           depStatuses: this.depStatuses,
   
-          cvrefid : pendingDto.cvRefId,
+          cvrefid : pendingDto.deployCVRefId,
           candidatename: pendingDto.candidateName,
           companyName: pendingDto.customerName,
           applicationNo: pendingDto.applicationNo,
@@ -382,7 +369,7 @@ export class DeployListComponent implements OnInit {
       
       this.bsModalRef.content.emitObj.pipe(
         
-        switchMap((values: ICVReferredDto) => {
+        switchMap((values: IDeployment[]) => {
           console.log('updating api with values:', values);
           return this.service.updateDeployment(values).pipe(
             map(res => {

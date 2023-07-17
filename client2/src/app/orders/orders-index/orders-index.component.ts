@@ -15,9 +15,7 @@ import { IApplicationTask } from 'src/app/shared/models/admin/applicationTask';
 import { ICustomerNameAndCity } from 'src/app/shared/models/admin/customernameandcity';
 import { IProfession } from 'src/app/shared/models/masters/profession';
 import { IOrderCity } from 'src/app/shared/models/admin/orderCity';
-import { IOrderBrief } from 'src/app/shared/models/admin/orderBrief';
 import { IOrderBriefDto } from 'src/app/shared/dtos/admin/orderBriefDto';
-import { CVRefParams } from 'src/app/shared/params/admin/cvRefParams';
 
 @Component({
   selector: 'app-orders-index',
@@ -288,13 +286,22 @@ export class OrdersIndexComponent implements OnInit {
   }
 
   dlForwardedToAssociates(event: any) {
-    console.log('dlforwarded clicked');
+
     var id = event;
      this.navigateByRoute(id, 'admin/forwarded', true);
   }
 
   acknowledgeToClient(event: any) {
-    this.service.acknowledgeOrderToClient(event);
+    this.service.acknowledgeOrderToClient(event).subscribe({
+      next: response => {
+        if(response) {
+          this.toastr.success('message of acknowledgement composed and saved in Messages Draft');
+        } else {
+          this.toastr.warning('failed to compose message of acknowledgement');
+        }
+      },
+      error: err => this.toastr.error('Error in composing acknowldgement message to client', err)
+    });
   }
 
   cvsReferred(event: any)

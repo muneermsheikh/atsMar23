@@ -33,6 +33,7 @@ namespace api.Controllers
           private readonly IUserGetAndUpdateService _userGetAndUpdateService;
           private readonly IWebHostEnvironment _host;
           const string FILE_PATH = @"D:\UploadedFiles\";
+          
           public CandidateController(
                //IGenericRepository<Candidate> candRepo, 
                IMapper mapper, 

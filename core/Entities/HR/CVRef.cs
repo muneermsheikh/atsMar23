@@ -14,11 +14,12 @@ namespace core.Entities.HR
         {
         }
 
-          public CVRef(int orderItemId, int categoryId, int orderId, int orderNo, string customerName, 
+          public CVRef(int orderItemId, int candidateid,  int categoryId, int orderId, int orderNo, string customerName, 
                 string categoryName, int candidateId, string ecnr, int applicationNo, string candidateName, DateTime referredOn, 
-                int charges, int hrexecId, int cvreviewId)
+                DateTime refstatusdate, int charges, int hrexecId, int cvreviewId)
           {
                OrderItemId = orderItemId;
+               CandidateId = candidateid;
                CategoryId = categoryId;
                OrderId = orderId;
                OrderNo = orderNo;
@@ -29,6 +30,7 @@ namespace core.Entities.HR
                ApplicationNo = applicationNo;
                CandidateName = candidateName;
                ReferredOn = referredOn;
+               RefStatusDate  =refstatusdate;
                Charges = charges;
                HRExecId = hrexecId;
                CVReviewId = cvreviewId;
@@ -60,7 +62,7 @@ namespace core.Entities.HR
         //public ICollection<Candidate> Candidates {get; set;}
         [ForeignKey("OrderItemId")]
         public ICollection<OrderItem> OrderItems { get; set; }
-        public ICollection<Deploy> Deploys {get; set;}
+        public List<Deployment> Deployments {get; set;}
 
         //public virtual SelectionDecision SelectionDecision {get; set;}
         

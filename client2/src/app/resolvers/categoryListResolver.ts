@@ -14,7 +14,6 @@ import { IProfession } from "../shared/models/masters/profession";
      resolve(): Observable<IProfession[]> {
         
         var lst = this.mastersService.getCategoryList();
-        console.log('entered categoryListResoler', lst);
         return lst;
      }
  

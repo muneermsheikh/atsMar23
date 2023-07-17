@@ -12,6 +12,7 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class MessageService {
+  [x: string]: any;
 
   baseUrl = environment.apiUrl;
   

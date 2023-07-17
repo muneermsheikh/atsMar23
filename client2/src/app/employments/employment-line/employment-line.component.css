@@ -3,6 +3,7 @@
     vertical-align: top;
     margin-left: 1px;
     margin-right: 1px;
+    font-size: small;
 }
 
 .numeric {
@@ -12,12 +13,14 @@
     vertical-align: top;
     text-align: right;
     width: 50px;
+    font-size: small;
 }
 .free {
     margin-left:50px;
     display: inline-block;
     text-align: center;
     width: 25px;
+    font-size: small;
 }
 
 .w25 {width: 25px;}

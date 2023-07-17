@@ -13,6 +13,7 @@ namespace core.Dtos
         public string CustomerName { get; set; }
         public string City { get; set; }
         public int OfficialId { get; set; }
+        public string OfficialAppUserId {get; set;}
         public string OfficialTitle { get; set; }
         public string OfficialName { get; set; }
         public int OfficialUserId { get; set; }

@@ -1,0 +1,38 @@
+<div *ngIf="isAddMode">
+	Adding new Chart of Account
+</div>
+<div *ngIf="!isAddMode && !coa" style="margin-left: 50px; font-weight: bold; font-size: large;">
+	No object received to edit
+	<button class="stdd btn btn-secondary fa fa-close red" (click)="cancel()" title="click to update"></button>
+</div>
+
+<div *ngIf="coa" style="margin-left: 50px;">
+	<div *ngIf="!isAddMode">Edit Account</div>
+	<br>
+	
+	<div class="stdd w100">Division:</div>
+	<input type="text" class="stdd w100" [(ngModel)]="coa.divn">
+	<br>
+	<div class="stdd w100">Account Name:</div>
+	<input type="text" class="stdd w300" [(ngModel)]="coa.accountName">
+	<br>
+	<div class="stdd w100">Account Type:</div>
+	<input type="text" class="stdd w50" [(ngModel)]="coa.accountType" >
+	<br>
+	<div class="stdd w100">Account Class:</div>
+	<input type="text" class="stdd w100" [(ngModel)]="coa.accountClass" >
+	
+	<br>
+	<div class="stdd w100">Op Balance:</div>
+	<input type="text" class="stdd w100" [(ngModel)]="coa.opBalance" >
+	
+	<br>
+	<button class="stdd fa fa-check green" (click)="update()" title="click to update"></button>
+	<button class="stdd fa fa-close red" (click)="cancel()" title="click to update"></button>
+</div>
+
+<div>
+	{{coa.divn}}
+	{{coa.opBalance}}
+</div>
+

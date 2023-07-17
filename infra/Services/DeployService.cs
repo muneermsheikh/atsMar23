@@ -42,9 +42,10 @@ namespace infra.Services
                     orderby r.OrderItemId, r.Id 
                     
                     select new DeploymentPendingDto {
-                         CVRefId = r.Id, 
-                         CustomerName = r.CustomerName, 
+                         DeployCVRefId = r.Id, 
+                         CustomerName = r.CustomerName.Substring(0,15), 
                          OrderNo = r.OrderNo, 
+                         SelDecisionDate = r.RefStatusDate,
                          //OrderDate = r.OrderDate,
                          CategoryName = r.CategoryName, 
                          ApplicationNo=c.ApplicationNo,
@@ -77,7 +78,7 @@ namespace infra.Services
                return await _context.CVRefs.Where(x => x.Sequence < (int)EnumDeployStatus.Concluded).CountAsync();
           }
 		
-          public async Task<DeploymentDtoWithErrorDto> AddDeploymentTransactions(ICollection<Deploy> deployPosts, int loggedInEmployeeId)
+          public async Task<DeploymentDtoWithErrorDto> AddDeploymentTransactions(ICollection<Deployment> deployPosts, int loggedInEmployeeId)
           {
                // A - if transDate missing, make it current date
                // B - Create a model based on input parameters,
@@ -92,7 +93,7 @@ namespace infra.Services
                var ErrorStringList= new List<string>();
                var succeeded=false;
                string err="";
-               var deploys = new List<Deploy>();
+               var deploys = new List<Deployment>();
                foreach(var post in deployPosts)
                {
                     dt = post.TransactionDate;
@@ -100,7 +101,7 @@ namespace infra.Services
                     // B -
                          var nextDeployStage = await GetNextValidDeployStage(post);
                          
-                         var ecnr = await _context.CVRefs.Where(x => x.Id==post.CVRefId).Select(x => x.Ecnr).FirstOrDefaultAsync();
+                         var ecnr = await _context.CVRefs.Where(x => x.Id==post.DeployCVRefId).Select(x => x.Ecnr).FirstOrDefaultAsync();
 
                          if(ecnr=="ecnr" && post.Sequence==EnumDeployStatus.TravelTicketBooked && 
                               (EnumDeployStatus)nextDeployStage.Id==EnumDeployStatus.EmigDocsLodgedOnLine) {
@@ -111,7 +112,7 @@ namespace infra.Services
                               continue;
                          }
 
-                         var newDeploy= new Deploy(post.CVRefId, dt, post.Sequence, (EnumDeployStatus) nextDeployStage.Id,
+                         var newDeploy= new Deployment(post.DeployCVRefId, dt, post.Sequence, (EnumDeployStatus) nextDeployStage.Id,
                               dt.AddDays(
                                    nextDeployStage.EstimatedDaysToCompleteThisStage==0 
                                    ? 2 
@@ -119,11 +120,11 @@ namespace infra.Services
                          );
 
                     // D - update DB
-                         _unitOfWork.Repository<Deploy>().Add(newDeploy);
+                         _unitOfWork.Repository<Deployment>().Add(newDeploy);
                          deploys.Add(newDeploy);
 
-                    // E - update CVRef.Deploy fields
-                         var cvref = await _context.CVRefs.FindAsync(post.CVRefId);
+                    // E - update CVRef.Deployment fields
+                         var cvref = await _context.CVRefs.FindAsync(post.DeployCVRefId);
                          cvref.Sequence = (int)newDeploy.Sequence;
                          cvref.DeployStageDate = newDeploy.TransactionDate;
                          _unitOfWork.Repository<CVRef>().Update(cvref);
@@ -131,7 +132,7 @@ namespace infra.Services
                     // F - issue tasks
                          EnumTaskType thisTaskType=EnumTaskType.None;
                          int AssignedToId=0;
-                         var commondata = await _commonServices.CommonDataFromCVRefId(post.CVRefId);
+                         var commondata = await _commonServices.CommonDataFromCVRefId(post.DeployCVRefId);
                          switch(newDeploy.NextSequence)
                          {
                               case EnumDeployStatus.Selected:
@@ -181,7 +182,7 @@ namespace infra.Services
                foreach(var dep in deploys) {
                     if(dep.Id > 0) {
                          var dtoObj = new DeploymentDto();
-                         dtoObj.CVRefId=dep.CVRefId;
+                         dtoObj.DeployCVRefId=dep.DeployCVRefId;
                          dtoObj.Id=dep.Id;
                          dtoObj.NextStageDate=dep.NextStageDate;
                          dtoObj.NextSequence = (int)dep.NextSequence;
@@ -202,29 +203,29 @@ namespace infra.Services
                
                var dtoToReturn = new DeploymentDtoWithErrorDto();
 
-               dtoToReturn.DeploymentObjDtos= _mapper.Map<ICollection<Deploy>, ICollection<DeploymentDto>>(deploys);
+               dtoToReturn.DeploymentObjDtos= _mapper.Map<ICollection<Deployment>, ICollection<DeploymentDto>>(deploys);
                dtoToReturn.ErrorStrings=ErrorStringList;
                return dtoToReturn;
           }
          
           public async Task<bool> DeleteDeploymentTransactions(int deployid)
           {
-               var deployToDelete = await _context.Deploys.FindAsync(deployid);
+               var deployToDelete = await _context.Deployments.FindAsync(deployid);
                if(deployToDelete==null) return false;
                
                var lst = new List<int>();
-               lst.Add(deployToDelete.CVRefId);
+               lst.Add(deployToDelete.DeployCVRefId);
 
-               _unitOfWork.Repository<Deploy>().Delete(deployToDelete);
+               _context.Entry<Deployment>(deployToDelete).State = EntityState.Deleted;
 
-               await _unitOfWork.Complete();
-
-               return await UpdateCVRefWithDeployLastRecords(lst);
+               await UpdateCVRefWithDeployValues(lst);
+               
+               return await _context.SaveChangesAsync() > 0;
           }
 
           public async Task<bool> EditDeploymentTransaction(DeploymentDto dto) {
                
-               var deploy = new Deploy{Id=dto.Id, CVRefId = dto.CVRefId, Sequence= (EnumDeployStatus)dto.Sequence,
+               var deploy = new Deployment{Id=dto.Id, DeployCVRefId = dto.DeployCVRefId, Sequence= (EnumDeployStatus)dto.Sequence,
                     NextSequence=(EnumDeployStatus) dto.NextSequence,
                     TransactionDate=dto.TransactionDate, NextStageDate=dto.NextStageDate};
 
@@ -232,7 +233,7 @@ namespace infra.Services
                     _context.Entry(deploy).State=EntityState.Added;
                } else {
 
-                    var existingDeploy = await _context.Deploys.Where(x => x.Id == deploy.Id).AsNoTracking().FirstOrDefaultAsync();
+                    var existingDeploy = await _context.Deployments.Where(x => x.Id == deploy.Id).AsNoTracking().FirstOrDefaultAsync();
                     if(existingDeploy==null) return false;
                     
                     _context.Entry(existingDeploy).CurrentValues.SetValues(deploy);
@@ -242,7 +243,7 @@ namespace infra.Services
                }
                
                //update CVRef.Sequence, NextSequence, LastDt
-               var cvref = await _context.CVRefs.Where(x => x.Id==deploy.CVRefId).AsNoTracking().FirstOrDefaultAsync();
+               var cvref = await _context.CVRefs.Where(x => x.Id==deploy.DeployCVRefId).AsNoTracking().FirstOrDefaultAsync();
                if (cvref==null) return false;
                
                cvref.Sequence= (int)deploy.Sequence;
@@ -256,14 +257,14 @@ namespace infra.Services
           }
 
     
-          public async Task<bool> EditDeploymentTransactions(CVReferredDto model)
+          public async Task<bool> EditDeploymentTransactions(ICollection<Deployment> model)
           {
-               var existingDeployments = await _context.Deploys.Where(x => x.CVRefId == model.CvRefId)
+               var cvrefid = model.Select(x => x.DeployCVRefId).FirstOrDefault();
+               var existingDeployments = await _context.Deployments.Where(x => x.DeployCVRefId == cvrefid)
                     .AsNoTracking().ToListAsync();
                
-               foreach (var item in model.Deployments)
+               foreach (var item in model)
                {
-
                     var existingItem = existingDeployments.Where(c => c.Id == item.Id && c.Id != default(int)).SingleOrDefault();
                     if (existingItem != null)       // Update child
                     {
@@ -272,7 +273,7 @@ namespace infra.Services
                     }
                     else            //insert children as new record
                     {
-                         var newItem = new Deploy(item.CVRefId, item.TransactionDate, (EnumDeployStatus)item.Sequence, 
+                         var newItem = new Deployment(item.DeployCVRefId == 0 ? cvrefid : item.Id, item.TransactionDate, (EnumDeployStatus)item.Sequence, 
                               (EnumDeployStatus)item.NextSequence, item.NextStageDate);
                          
                          existingDeployments.Add(newItem);
@@ -280,8 +281,10 @@ namespace infra.Services
                     }
                }
                
-               _context.Entry(existingDeployments).State = EntityState.Modified;
+               //_context.Entry<ICollection<Deployment>>(existingDeployments).State = EntityState.Modified;
 
+               var uniqueids = model.Select(x => x.DeployCVRefId).Distinct().ToList();
+               await UpdateCVRefWithDeployValues (uniqueids);
                return await _context.SaveChangesAsync() > 0;
 
           }
@@ -289,35 +292,24 @@ namespace infra.Services
           public async Task<CVRef> GetDeploymentsByCandidateAndOrderItem(int candidateId, int orderItemId)
           {
                return await _context.CVRefs.Where(x => x.CandidateId == candidateId && x.OrderItemId == orderItemId)
-               .Include(x => x.Deploys.OrderByDescending(x => x.TransactionDate)).FirstOrDefaultAsync();
+               .Include(x => x.Deployments.OrderByDescending(x => x.TransactionDate)).FirstOrDefaultAsync();
           }
 
           public async Task<CVRef> GetDeploymentsById(int cvrefid)
           {
                return await _context.CVRefs.Where(x => x.Id == cvrefid)
-               .Include(x => x.Deploys.OrderByDescending(x => x.TransactionDate)).FirstOrDefaultAsync();
+               .Include(x => x.Deployments.OrderByDescending(x => x.TransactionDate)).FirstOrDefaultAsync();
           }
 
           public async Task<ICollection<DeploymentDto>> GetDeployments(int cvrefid)
           {
-               /* var temp= await (from d in _context.Deploys where d.CVRefId==cvrefid
-                    select new {
-                         Id = d.Id,
-                         CVRefId = d.CVRefId, 
-
-                         TransactionDate = d.TransactionDate,
-                         NextStageName="", //sn.Status,
-                         NextEStageDate=d.NextStageDate
-                    }
-                ).ToListAsync();
-                */
-                var qry = await (from d in _context.Deploys where d.CVRefId==cvrefid 
+                var qry = await (from d in _context.Deployments where d.DeployCVRefId==cvrefid 
                     join s in _context.DeployStages on (int)d.Sequence equals s.Sequence
                     //join sn in _context.DeployStages on (int)d.NextSequence equals sn.Id
                     orderby d.TransactionDate descending
                     select new DeploymentDto {
                          Id = d.Id,
-                         CVRefId = d.CVRefId, 
+                         DeployCVRefId = d.DeployCVRefId, 
                          Sequence = s.Sequence,
                          NextSequence= s.NextSequence,
                          TransactionDate = d.TransactionDate,
@@ -346,7 +338,9 @@ namespace infra.Services
                     .AsQueryable();
                     
                var cvref = await qry.FirstOrDefaultAsync();
-               var dep = await _context.Deploys.Where(x => x.CVRefId==cvrefid)
+               if(cvref==null) return null;
+               
+               var dep = await _context.Deployments.Where(x => x.DeployCVRefId==cvrefid)
                     .OrderByDescending(x => x.TransactionDate).ToListAsync();
 
                var statuses = await _context.DeployStages.OrderBy(x => x.Sequence).Select(x => new {Sequence = x.Id, StatusName = x.Status}).ToListAsync();
@@ -354,7 +348,7 @@ namespace infra.Services
                var dtos = new List<DeployDto>();
                foreach(var d in dep)
                {
-                    dtos.Add(new DeployDto (d.Id, d.CVRefId, d.TransactionDate, Convert.ToInt32(d.Sequence),
+                    dtos.Add(new DeployDto (d.Id, d.DeployCVRefId, d.TransactionDate, Convert.ToInt32(d.Sequence),
                          Convert.ToInt32(d.NextSequence), d.NextStageDate));
                }
                
@@ -368,7 +362,7 @@ namespace infra.Services
           
           //verify sequence of deployment stage id based upon last status
           //if ok, set next stage and date of next stage
-          public async Task<DeployStage> GetNextValidDeployStage(Deploy model)
+          public async Task<DeployStage> GetNextValidDeployStage(Deployment model)
           {
 
                var validStage = await _context.DeployStages.Where(x => x.Id==(int)model.Sequence).FirstOrDefaultAsync();
@@ -376,26 +370,36 @@ namespace infra.Services
                return validStage;
           }
 
-          
+ 
           private async Task<string> ProcessName(EnumDeployStatus ProcessId)
           {
                return await _context.DeployStages.Where(x => (EnumDeployStatus)x.Id == ProcessId).Select(x => x.Status).FirstOrDefaultAsync();
           }
 
-          private async Task<bool> UpdateCVRefWithDeployLastRecords(ICollection<int> cvrefids)
+          private async Task<bool> UpdateCVRefWithDeployValues(ICollection<int> cvrefids)
           {
-               foreach(var cvrefid in cvrefids) {
-                    var deployLastRecord = await _context.Deploys.Where(x => x.CVRefId == cvrefid)
-                    .OrderByDescending(x => x.TransactionDate).Take(1).FirstOrDefaultAsync();
+              var success=false; 
+               var deployLastRecords = await _context.Deployments.Where(x => cvrefids.Contains(x.DeployCVRefId))
+                    .OrderByDescending(x => x.TransactionDate).Take(1).AsNoTracking().ToListAsync();
 
-                    var cvrefToUpdate = await _context.CVRefs.FindAsync(cvrefid);
-                    cvrefToUpdate.Sequence = (int)deployLastRecord.Sequence;
-                    cvrefToUpdate.DeployStageDate = deployLastRecord.TransactionDate;
+               var cvrefs = await _context.CVRefs.Where(x => cvrefids.Contains(x.Id)).AsNoTracking().ToListAsync();
 
-                    _unitOfWork.Repository<CVRef>().Update(cvrefToUpdate);
+               foreach(var dep in deployLastRecords)
+               {
+                    foreach(var cv in cvrefs)
+                    {
+                         if(cv.Id == dep.DeployCVRefId)
+                         {
+                              cv.Sequence= (int)dep.Sequence;
+                              cv.DeployStageDate=dep.TransactionDate;
+                              _context.Entry<CVRef>(cv).State=EntityState.Modified;
+                              success=true;
+                              break;
+                         }
+                    }
+                    
                }
-               
-               return await _unitOfWork.Complete() > 0;
+               return success;
           }
 
           public async Task<ICollection<DeployStage>> GetDeployStatuses()

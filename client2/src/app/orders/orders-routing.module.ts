@@ -8,7 +8,7 @@ import { OrderEditComponent } from './order-edit/order-edit.component';
 import { OrderResolver } from '../resolvers/orderResolver';
 import { OrdersCreateGuard } from '../guards/ordersCreate.guard';
 import { EmployeeIdsAndKnownAsResolver } from '../resolvers/employeeIdsAndKnownAsResolver';
-import { CustomerNameCityResolver } from '../resolvers/customerNameCityResolver';
+import { CustomerNameCityCustomerResolver } from '../resolvers/customerNameCityCustomerResolver';
 import { CustomerOfficialsResolver } from '../resolvers/customerOfficialsResolver';
 import { AssessQComponent } from '../hr/assess-q/assess-q.component';
 import { HrGuard } from '../guards/hr.guard';
@@ -29,7 +29,7 @@ const routes = [
         professions: CategoryListResolver,
         associates: CustomerOfficialsResolver,
         employees: EmployeeIdsAndKnownAsResolver,
-        customers: CustomerNameCityResolver,
+        customers: CustomerNameCityCustomerResolver,
       },
       data: {breadcrumb: {alias: 'OrderEdit'}}
   },
@@ -38,7 +38,7 @@ const routes = [
   resolve: {
       professions: CategoryListResolver,
       employees: EmployeeIdsAndKnownAsResolver,
-      customers: CustomerNameCityResolver,
+      customers: CustomerNameCityCustomerResolver,
     },
     data: {breadcrumb: {alias: 'OrderAdd'}}},
 

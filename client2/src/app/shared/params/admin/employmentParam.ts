@@ -1,5 +1,6 @@
 export class employmentParams
 {
+	approved='null';
 	selDecisionId=0;
 	cvRefId=0;
 	orderItemId= 0;

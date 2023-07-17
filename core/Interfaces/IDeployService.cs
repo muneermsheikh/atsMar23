@@ -14,8 +14,8 @@ namespace core.Interfaces
         Task<CVReferredDto> GetDeploymentDto(int cvrefid);
         Task<ICollection<DeploymentDto>> GetDeployments(int cvrefid);
         Task<CVRef> GetDeploymentsByCandidateAndOrderItem(int candidateId, int orderItemId);
-        Task<DeploymentDtoWithErrorDto> AddDeploymentTransactions(ICollection<Deploy> deployPostsDto, int loggedInEmployeeId);
-        Task<bool> EditDeploymentTransactions (CVReferredDto deploy);
+        Task<DeploymentDtoWithErrorDto> AddDeploymentTransactions(ICollection<Deployment> deployPostsDto, int loggedInEmployeeId);
+        Task<bool> EditDeploymentTransactions (ICollection<Deployment> deps);
         Task<bool> EditDeploymentTransaction (DeploymentDto deploy);
         Task<bool> DeleteDeploymentTransactions (int deployid);
         Task<ICollection<DeployStage>> GetDeployStatuses();

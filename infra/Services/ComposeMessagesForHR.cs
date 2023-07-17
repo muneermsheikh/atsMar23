@@ -142,7 +142,8 @@ namespace infra.Services
                var email = new EmailMessage("advisory", loggedInDto.LoggedInEmployeeId, recipient.EmployeeId, loggedInDto.LoggedInAppUserEmail, 
                     loggedInDto.LoggedIAppUsername, recipient.KnownAs, recipient.Email, "", "", 
                     "Applications readied to forward to client - initiated by " + emp.EmployeeName, msg, 
-                    (int)EnumMessageType.CVForwardingToDocControllerToFwdCVToClient,3);
+                    (int)EnumMessageType.CVForwardingToDocControllerToFwdCVToClient,3, 
+                    emp.AppUserId, loggedInDto.LoggedInAppUserId, "CV Forward");
                
                return email;
           }
@@ -162,11 +163,10 @@ namespace infra.Services
                 hdr += "<br><br>We have following manpower requirement.  If you have interested candidates, please refer them to us<br><br>";
                 hdr += catTable + "<br><br>Regards<br><br>" + senderObj.EmployeeName + "<br>" + senderObj.Position;
 
-                var message = new EmailMessage("DLFwdToAgent", loggedInUserId,
-                        agent.OfficialId, agent.OfficialEmailId,
-                        senderObj.OfficialEmailAddress, agent.CustomerName,
-                        agent.OfficialEmailId, "","", "Requirement", hdr, 
-                        (int)EnumMessageType.DLForwardToAgents,0 );
+                var message = new EmailMessage("DLFwdToAgent", loggedInUserId, agent.OfficialId, agent.OfficialEmailId,
+                        senderObj.OfficialEmailAddress, agent.CustomerName, agent.OfficialEmailId, "","", "Requirement", hdr, 
+                        (int)EnumMessageType.DLForwardToAgents,0, agent.OfficialAppUserId,
+                        senderObj.AppUserId, "DL Forward To Agent");
                 msgs.Add(message);
             }
 
@@ -282,7 +282,7 @@ namespace infra.Services
                 
                 msgs.Add(new EmailMessage("forwardToAssociate", LoggedInEmployeeId, fwd.CustomerOfficialId, 
                     LoggedInEmpEmail, LoggedInEmpName, off.OfficialName, off.OfficialEmailId, CCEmail, BCCEmail, subject, msgBody, 
-                    (int)EnumMessageType.DLForwardToAgents,0));
+                    (int)EnumMessageType.DLForwardToAgents,0, off.OfficialAppUserId, senderObj.AppUserId, "Fwd to Associate"));
             }
             
             return msgs;
@@ -316,7 +316,7 @@ namespace infra.Services
             var msg =new EmailMessage("AdviseToHRDeptHead", senderObj.EmployeeId, recipient.EmployeeId, 
                 recipient.OfficialEmailAddress, senderObj.EmployeeName, recipient.EmployeeName, 
                 recipient.OfficialEmailAddress, CCEmail, BCCEmail, Subject, msgBody, 
-                (int)EnumMessageType.DLForwardToAgents, 0);
+                (int)EnumMessageType.DLForwardToAgents, 0, recipient.AppUserId, senderObj.AppUserId, "DL Forward to HR");
             
             return msg;
         }

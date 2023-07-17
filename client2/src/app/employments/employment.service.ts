@@ -33,6 +33,8 @@ export class EmploymentService {
       }
     }
 
+    console.log('emp params:', this.eParams);
+
     let params = new HttpParams();
     if (this.eParams.cvRefId !== 0) 
       params = params.append('cvRefId', this.eParams.cvRefId!.toString());
@@ -46,14 +48,23 @@ export class EmploymentService {
     if (this.eParams.orderId !== 0) 
       params = params.append('orderId', this.eParams.orderId!.toString());
     
+    if (this.eParams.orderNo !== 0) 
+      params = params.append('orderNo', this.eParams.orderNo!.toString());
+  
     if (this.eParams.customerId !== 0) 
       params = params.append('customerId', this.eParams.customerId!.toString());
     
-    if (this.eParams.applicationNo !== 0) 
-      params = params.append('appicationNo', this.eParams.applicationNo!.toString());
+    if(this.eParams.applicationNo === 0) {
+      params = params.append('applicationNo', "1");   //bcz the parameters in api is otherwise null/blanks
+    } else {
+      params = params.append('applicationNo', this.eParams.applicationNo!.toString());
+    }
+
     
     if (this.eParams.candidateName !== '') 
       params = params.append('candidateName', this.eParams.candidateName);
+    
+    params = params.append('approved', this.eParams.approved );
     
     if (this.eParams.selectionDateFrom.getFullYear() > 2000) 
       params = params.append('selectionDateFrom', this.eParams.selectionDateFrom.toString());
@@ -69,6 +80,7 @@ export class EmploymentService {
     params = params.append('pageIndex', this.eParams.pageNumber.toString());
     params = params.append('pageSize', this.eParams.pageSize.toString());
 
+    console.log('httpParams sent to api:', params);
     return this.http.get<IPagination<IEmployment[]>>(this.apiUrl + 'employment', {params}).pipe(
         map(response => {
           this.cache.set(Object.values(this.eParams).join('-'), response);

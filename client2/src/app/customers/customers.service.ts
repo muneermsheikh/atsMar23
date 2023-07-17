@@ -71,7 +71,6 @@ export class CustomersService {
   }
 
   getCustomer(id: number) {
-    console.log('calling customers/byid/' + id);
     return this.http.get<ICustomer>(this.apiUrl + 'customers/byid/' + id);
   }
 

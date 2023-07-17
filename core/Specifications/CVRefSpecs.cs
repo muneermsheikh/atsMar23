@@ -20,7 +20,7 @@ namespace core.Specifications
                 (specParams.Ids.Count() == 0 || specParams.Ids.Contains(x.Id))
             )
         {
-            if(specParams.IncludeDeployments) AddInclude(x => x.Deploys);
+            if(specParams.IncludeDeployments) AddInclude(x => x.Deployments);
             
             if(specParams.Sort?.ToLower() == "orderid") {
                 AddOrderBy(x => x.OrderId);

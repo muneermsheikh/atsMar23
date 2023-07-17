@@ -8,12 +8,16 @@ namespace core.Dtos
     public class RegisterCustomerDto
     {
         public int Id { get; set; }
-        [Required,MinLength(5), MaxLength(10)]public string CustomerType { get; set; }
-        [Required,MinLength(5), MaxLength(50)]public string CustomerName { get; set; }
-        [Required,MinLength(4), MaxLength(20)]public string KnownAs { get; set; }
+        [Required,MinLength(5), MaxLength(10)]
+        public string CustomerType { get; set; }
+        [Required,MinLength(5), MaxLength(50)]
+        public string CustomerName { get; set; }
+        [Required,MinLength(4), MaxLength(20)]
+        public string KnownAs { get; set; }
         public string Add { get; set; }
         public string Add2 { get; set; }
-        [Required, MinLength(5), MaxLength(25)]public string City { get; set; }
+        [Required, MinLength(5), MaxLength(25)]
+        public string City { get; set; }
         public string Pin { get; set; }
         public string District {get; set;}
         public string State { get; set; }

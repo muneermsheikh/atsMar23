@@ -1,0 +1,31 @@
+<div class="modal-header">
+	<div class="b">{{title}}</div>
+
+	<button type="button" title="submit" class="stdd btn btn-default green fa fa-2x fa-check" (click)="returnDateRange()"></button>
+	<button class="stdd close pull-right fa fa-2x fa-close" type="button" aria-label="Close" (click)="bsModalRef.hide()"></button>
+ </div>
+ 
+ <div class="modal-body">
+	<label class="stdd w75 b">First Date: </label>
+	<input class="stdd w110"
+		type="text"
+		placeholder="First Date"
+		[(ngModel)] = "minDate"
+		bsDatepicker
+		[bsValue]="bsValueDate"
+		[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+	>
+	
+	<label class="stdd w90 b rAlign mx-2">Second Date: </label>
+	<input class="stdd w110"
+		type="text"
+		placeholder="Second Date"
+		[(ngModel)]="maxDate"
+		bsDatepicker
+		[bsValue]="bsValueDate"
+		[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+	>
+ </div>
+<div class="modal-footer">
+
+</div>

@@ -10,7 +10,7 @@ import { IPagination } from '../shared/models/pagination';
 import { IUser } from '../shared/models/admin/user';
 import { depProcessParams } from '../shared/params/process/depProcessParams';
 import { map } from 'rxjs/operators';
-import { IDeployment } from '../shared/models/process/deploy';
+import { IDeployment } from '../shared/models/process/deployment';
 import { IDeploymentDtoWithErrorDto } from '../shared/dtos/process/deploymentDtoWithErrorDto';
 import { IDeployStage } from '../shared/models/masters/deployStage';
 import { ICVReferredDto } from '../shared/dtos/admin/cvReferredDto';
@@ -133,7 +133,7 @@ export class DeployService {
   updateSingleTransaction(deploy: IDeploymentDto) {
     let params = new HttpParams();
     
-    params = params.append('cVRefId', deploy.cVRefId);
+    params = params.append('cVRefId', deploy.deployCVRefId);
     params = params.append('id', deploy.id);
     params = params.append('nextSequence', deploy.nextSequence);
     params = params.append('sequence', deploy.sequence);
@@ -143,9 +143,8 @@ export class DeployService {
     return this.http.put<boolean>(this.apiUrl + 'deploy/editSingleTransaction', {params});
   }
 
-  updateDeployment(cvref: ICVReferredDto) {
-    console.log('cvref', cvref);
-    return this.http.put<boolean>(this.apiUrl + 'deploy', {cvref});
+  updateDeployment(deps: IDeployment[]) {
+    return this.http.put<boolean>(this.apiUrl + 'deploy', deps);
   }
 
   InsertDeployTransactions(deploys: IDeployment[] ){

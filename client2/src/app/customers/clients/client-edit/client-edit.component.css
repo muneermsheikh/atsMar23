@@ -19,15 +19,25 @@
     margin: 1px;
     padding: 1px;
     font-size: medium;
+    vertical-align: top;
+}
+
+.mt15ml5 {
+    margin-top: 15px; 
+    margin-left: 5px; 
+    vertical-align: top; 
+    border: inset;
 }
 .b {font-weight: bold;}
+.fSmall {font-size: small};
+
 .red {color: red; display:inline-block;}
 .black {color: black; display: inline-block;}
 
 .w25 {width: 25px;}
 .w50 {width: 50px;}
 .w75 {width: 75px;;}
-.w100 {width: 100px;}
+.w100 {width: 125px;}
 .w150 {width: 150px;}
 .w125 {width: 125px;}
 .w200 {width: 200px;}

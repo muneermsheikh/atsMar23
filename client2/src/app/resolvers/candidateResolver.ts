@@ -7,15 +7,15 @@ import { CandidateService } from "../candidates/candidate.service";
 @Injectable({
      providedIn: 'root'
  })
- export class CandidateResolver implements Resolve<ICandidate|null> {
+ export class CandidateResolver implements Resolve<ICandidate|undefined | null> {
  
      constructor(private candidateService: CandidateService) {}
  
-     resolve(route: ActivatedRouteSnapshot): Observable<ICandidate|null> {
+     resolve(route: ActivatedRouteSnapshot): Observable<ICandidate| undefined | null> {
 
         var routeid = route.paramMap.get('id');
         
-        if (routeid === '0' || routeid === null) return of(null);
+        if (routeid === '0' || routeid === null) return of(undefined);
 
         return this.candidateService.getCandidate(+routeid);
      }

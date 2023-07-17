@@ -1,0 +1,56 @@
+<div class="modal-header">
+	<div class="b">{{title}}</div>
+
+	<button type="button" title="submit" class="stdd btn btn-default green fa fa-2x fa-check" (click)="updateCOA()"></button>
+	<button class="stdd close pull-right fa fa-2x fa-close" type="button" aria-label="Close" (click)="bsModalRef.hide()"></button>
+</div>
+
+<div class="modal-body" *ngIf="coa !== undefined">
+	<div class="stdd">
+		<label class="stdd w150 b">Account Class</label>
+		
+		<ng-select *ngIf="accountClasses" class="stdd w150"  
+			[items]="accountClasses"
+			bindLabel="accountClass"
+			bindValue="accountClass"
+			labelForId="accountClass"
+			placeholder="Select Account Class"
+			clearAllText="Clear"
+			(click)="classChanged()"
+			[(ngModel)]="coa.accountClass">
+		</ng-select>
+		<br>
+		<label class="stdd w150 b">Account Name: </label>
+		<input type="text" class="stdd w250" (change)="checkExists()" [(ngModel)]="coa.accountName" >
+		<br>
+		<div class="stdd">
+			<div *ngIf="!coa.accountName">
+				<div *ngIf="matchingNames.length===0">No matching Accounts exist</div>
+				<div *ngIf="matchingNames.length > 0">
+					<div *ngFor="let item of matchingNames">
+						{{item}}
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+
+		<label class="stdd w150 b">Account Type: </label>
+		<input type="text" class="stdd w25" [(ngModel)]="coa.accountType" >
+		<br>
+		<label class="stdd w150 b">Division: </label>
+		<input type="text" class="stdd w25" [(ngModel)]="coa.divn" >
+		<br>
+		<label class="stdd w150 b">Opening Balance</label>
+		<input type="text" class="stdd w90" [(ngModel)]="coa.opBalance" >
+		
+		
+	</div>
+	<div class="stdd col-4" style="vertical-align: top;">
+		
+	</div>	
+</div>
+
+<div class="modal-footer">
+
+</div>

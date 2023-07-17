@@ -1,0 +1,14 @@
+.stdd {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.red {color: red;}
+
+.rAlign{text-align: right;}
+.rTop {text-align: center;}
+
+.w30 {width: 30px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w300 {width: 300px;}

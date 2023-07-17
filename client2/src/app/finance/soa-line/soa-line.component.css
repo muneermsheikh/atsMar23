@@ -1,0 +1,16 @@
+.stdd {
+	display: inline-block;
+	margin-right: 1px;
+	margin-left: 1px;
+}
+
+.tAlignRight {text-align: right;}
+.fontSmaller {font-size: smaller;}
+.fontSmallest {font-size: x-small;}
+
+.vAlignTop {vertical-align: top;}
+
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w250 {width: 250px;}
+.w300 {width: 300px;}

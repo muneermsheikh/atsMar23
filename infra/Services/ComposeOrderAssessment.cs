@@ -91,7 +91,8 @@ namespace infra.Services
                 var emailMsg = new EmailMessage("HR", loggedinEmployeeId, item.EmployeeId, senderObj.Email,
                         senderObj.EmployeeName, item.AppUserName, item.AppUserEmail, "", "",
                         "Task to design assessment Questions",
-                        content, (int)EnumMessageType.OrderAssessmentQDesigning, 3);
+                        content, (int)EnumMessageType.OrderAssessmentQDesigning, 3, item.AppUserId, senderObj.AppUserId, "Order Assessment Q Designing");
+
                 emailmessages.Add(emailMsg);
             }
 

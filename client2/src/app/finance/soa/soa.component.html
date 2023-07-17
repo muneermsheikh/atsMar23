@@ -1,0 +1,40 @@
+<br><br>
+<div *ngIf="soa===undefined">
+	no data available
+</div>
+<div *ngIf="soa!==undefined && soa!==null">
+	Statement of Account of: <strong> {{soa.accountName}} </strong> 
+		for the period between {{soa.fromDate | date: 'dd-MMM-yy'}} and {{soa.uptoDate | date: 'dd-MMM-yy'}}
+</div>
+
+<br>
+<div *ngIf="soa!==undefined && soa!==null" class="container">
+	<label class="stdd w100">Voucher No </label>
+	<label class="stdd w100">Date</label>
+	<label class="stdd w300 fontSmaller">Account</label>
+	<label class="stdd w250 fontSmallest">Narration</label>
+	<label class="stdd w75 tAlignRight">Debit</label>
+	<label class="stdd mx-2 w75 tAlignRight">Credit</label>
+	
+	<button class="btn stdd ml-15 fa fa-2x fa-undo" (click)="returnToCaller()" ></button>
+	<br>
+	<div class="stdd w150 my-1" style="margin-left: 580px;">Opening Balance</div>
+	<div class="stdd w75 tAlignRight" *ngIf="soa.opBalance > 0" style="margin-left: 30px;">{{soa.opBalance}}</div>
+	<div class="stdd w75 tAlignRight" *ngIf="soa.opBalance <= 0" style="margin-left: 190px;">{{soa.opBalance}}</div>
+	
+	<div *ngFor="let item of soa.statementOfAccountItems">
+
+		<app-soa-line
+			[soaItem]="item"
+			(displayVoucherEvent)="displayVoucherClicked($event)"
+			>
+		</app-soa-line>
+	</div>
+	<br>
+
+	<div class="stdd w150" style="margin-left: 580px;" >Overall Total</div>
+	<div class="stdd w75 tAlignRight" style="margin-left: 30px;">{{overallTotalDr}}</div>
+	<div class="stdd w75 tAlignRight" >{{overallTotalCr}}</div>
+
+	<div class="stdd w150 tAlignRight" style="margin-left:1px;" >Bal: {{overallBal }} {{overallBalSuffix}}</div>
+</div>

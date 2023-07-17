@@ -1,0 +1,114 @@
+ 
+ <div class="col-12 d-flex justify-contents-between align-items-center">
+	<div style="display: inline-block; margin-left: 5px;">
+		<app-paging 
+			[pageSize]="prospectParams.pageSize" 
+            [totalCount]="totalCount" 
+			[pageNumber]="prospectParams.pageNumber" 
+            (pageChanged)="onPageChanged($event)"  >
+		</app-paging>
+		<app-paging-header 
+            [totalCount]="totalCount" 
+            [pageNumber]="prospectParams.pageNumber" 
+            [pageSize]="prospectParams.pageSize">
+        </app-paging-header>
+	</div>
+	<br>
+	<div class="d-flex justify-contents-between align-items-center">
+	     <div class="form-inline mt-2" >
+		    <input (keyup.enter)="onSearch()" type="text" class="stdd form-control ml-5 w300" #search placeholder="Search">
+		    <button type="button" (click)="onSearch()" title="search on Category" 
+		    	class="stdd btn btn-outline-primary mx-1 my-1" >Search on Category Ref</button>
+		    <button type="button" (click)="onReset()" class="stdd btn btn-outline-success mx-1 my-1" >Reset</button>
+	     
+		    	<input class="form-check-input" type="radio" value="pending" id="statusParams"
+			   	[(ngModel)]="statusParams" name="statusParams" (click)="statusPendingClicked()"
+			/>  pending 
+ 
+			<input class="form-check-input ml-4" type="radio" value="concluded" id="statusParams" 
+		    		[(ngModel)]="statusParams" name="statusParams" (click)="statusConcludedClicked()"
+		    	/> concluded
+		    	<input class="form-check-input ml-4" type="radio" value="all" id="statusParams" 
+			   [(ngModel)]="statusParams" name="statusParams" (click)="statusAllClicked()"
+			/>  all
+			<button type="button" (click)="Refresh()" title="Refresh changes" 
+				style="display: inline-block;" class="btn btn-outline-success mx-5 my-1 fa fa-refresh" ></button>
+			<button type="button" [disabled]="!form.dirty" (click)="Update()" title="Update changes" 
+				style="display: inline-block;" class="btn btn-outline-success mx-5 my-1 fa fa-save" ></button>
+			<button class="btn btn-secondary fa fa-step-backward mx-2" title="return" (click)="returnToCalling()" ></button>
+	     </div>
+	</div>
+ </div>
+ 
+ <div *ngIf="prospectives === undefined || prospectives?.length===0">
+	No filter applied or no relevant Prospective candidates on record
+ </div>
+ 
+<form [formGroup]="form" class="ml-5" (ngSubmit)="Update()">
+	<!--<div class="stdd w40 b">Choose</div> -->
+	<div class="stdd w50 b">Source</div>
+	<div class="stdd w90 b">ResumeId</div>
+	<div class="stdd w150 b">Category Ref / Name</div>
+	<div class="stdd w150 b">Candidate Name</div>
+	<div class="stdd w75 b">City</div>
+	
+	<div class="stdd w50 b">Dated</div>
+	<div class="stdd w30 b">Age</div>
+	<div class="stdd w100 b">Phone</div>
+	
+	<div class="stdd w100 b">Existing Status</div>
+	<div class="stdd w250 b">New Status</div>
+	<div class="stdd w200 b">Remarks</div>
+	<div class="stdd w75 b">Close</div>
+ 
+	<div formArrayName="prospectiveCandidates">
+		<div *ngFor="let cv of prospectives; let i=index">
+			<div [formGroupName]="i">
+				<!--<input class="stdd w40 ml-2" type="checkbox" formControlName="cv.checked">-->
+				<div class="stdd w50">{{cv.source.substring(0,5)}}</div>
+				<div class="stdd w90 ">{{cv.resumeId}}</div>
+				<input type="text" readonly class="stdd w150" formControlName="categoryRef" >
+				<input type="text" readonly class="stdd w150" formControlName="candidateName" >	
+				<input type="text" readonly class="stdd w75" formControlName="city" >
+				<div class="stdd w50">{{cv.date|date:'ddMMM'}}</div>
+				<div class="stdd w30">{{cv.age.substring(0,2)}}</div>
+				<div class="stdd w100">{{cv.phoneNo}} {{cv.alternatePhoneNo}}</div>
+				<input type="text" readonly class="stdd w100" formControlName="status" >
+				<ng-select *ngIf="results" class="stdd w250 fontSmaller" 
+					[items]="results"
+					bindLabel="name"
+					bindValue="resultId"
+					labelForId="newStatus"
+					placeholder="Select Status"
+					clearAllText="Clear"
+					formControlName="newStatus">
+				</ng-select>
+                                
+				<input type="text" class="stdd w200" formControlName="remarks" >
+				<!--
+				<div class="stdd form-check mx-1 w10" >
+					<input type="checkbox"
+					    class="form-check-input"
+					    [checked]="cv.closed"
+					    value="cv.closed"
+					    formControlName="closed"
+					    (change)="closeChanged($event, i, cv.id)"
+					>
+				  </div>
+				-->
+		   <!--(change)="cv.closed = !cv.closed"-->
+				<button class="btn btn-primary ml-2 fa fa-history" 
+                    title="show contact history" 
+                    (click)="showUserTask(cv.resumeId, cv.categoryRef)"
+                    >
+                </button>
+			</div>
+		</div>
+	</div>
+</form>
+
+<!--
+<div style="float:inline-end; margin-top: 5px; font-size: smaller;">
+	{{this.form.value | json}}
+</div>
+-->

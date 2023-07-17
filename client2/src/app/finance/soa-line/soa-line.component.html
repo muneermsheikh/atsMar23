@@ -1,0 +1,25 @@
+
+<div *ngIf="soaItem !== null && soaItem !== undefined">
+
+	<div class="stdd row mb-0">
+		<div class="stdd w100 vAlignTop" title="click to display voucher"
+			(click)="displayVoucher()" style="vertical-align: top;"
+			>
+			{{soaItem.voucherNo}}
+		</div>
+		
+		<div class="stdd w100">{{soaItem.transDate | date : 'dd-MMM-yy' }}</div>
+		
+		<div class="stdd w300 vAlignTop fontSmaller ">{{soaItem.accountName}}</div>
+		<div class="stdd w250 vAlignTop fontSmaller">{{soaItem.narration}}</div>
+		
+		<div class="stdd w75 tAlignRight" *ngIf="soaItem.dr ===0"  style="vertical-align: top;">-</div>
+		<div class="stdd w75 tAlignRight" *ngIf="soaItem.dr !==0"  style="vertical-align: top;">{{soaItem.dr}}</div>
+		
+		<div class="stdd w75 tAlignRight" *ngIf="soaItem.cr! ===0" style="vertical-align: top;">-</div>
+		<div class="stdd w75 tAlignRight" *ngIf="soaItem.cr !==0"  style="vertical-align: top;">{{soaItem.cr}}</div>
+		
+		
+
+	</div>
+</div>

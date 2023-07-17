@@ -1,0 +1,23 @@
+.hCentre {text-align: center;}
+.hAlignRight {text-align: right;}
+
+.b {font-weight: bold;}
+
+.w50 {width: 50px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w125 {width: 125px;}
+
+.w150 {width: 150px;}
+
+.stdd {
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 1px;
+	margin-right: 1px;
+	font-size: small;
+}
+
+.readonly{background-color: darkgray;}
+
+.green {color: green;}

@@ -120,6 +120,7 @@ namespace infra.Data
 
       //Process
           public DbSet<Deploy> Deploys {get; set;}
+          public DbSet<Deployment> Deployments {get; set;}
           
      //Tasks
           public DbSet<ApplicationTask> Tasks {get; set;}

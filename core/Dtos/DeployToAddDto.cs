@@ -6,7 +6,7 @@ namespace core.Dtos
     public class DeployToAddDto
     {
         [Required]
-        public int CVRefId { get; set; }
+        public int DeployCVRefId { get; set; }
         [Required]
         public DateTime TransactionDate { get; set; }
         [Required]

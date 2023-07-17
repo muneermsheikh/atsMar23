@@ -869,13 +869,21 @@ namespace infra.Services
                return dto;
           }
 
-          public async Task<EmailMessage> ComposeMsg_AckToClient(int orderid) 
+          public async Task<bool> ComposeMsg_AckToClient(int orderid) 
           {
-               var order = await _context.Orders.FindAsync(orderid);
+               var order = await _context.Orders
+                    .Include(x => x.OrderItems)
+                    .Include(x => x.Customer).ThenInclude(x => x.CustomerOfficials)
+                    .Where(x => x.Id==orderid)
+
+                    .FirstOrDefaultAsync();
                
                var msg = await _composeMessages.AckEnquiryToCustomer(new OrderMessageParamDto { Order = order});
 
-               return msg;
+               _unitOfWork.Repository<EmailMessage>().Add(msg);
+
+               return await _unitOfWork.Complete() > 0;
+               
           }
          
      }

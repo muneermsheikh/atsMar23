@@ -1,4 +1,4 @@
-<form [formGroup]="registerForm" (ngSubmit)="registerForm.valid && register()" autocomplete="off">
+<form [formGroup]="registerForm" (ngSubmit)="registerForm.valid && savewithattachments()" autocomplete="off">
      <h2 class="text-center text-primary">Sign up</h2>
      <hr>
      <div class="stdd col-6" style="border-style: groove;">
@@ -19,8 +19,8 @@
                </div>
                <div class="stdd col-2 mt-2">
                     <button class="btn btn-default fa fa-undo" type="button" (click)="cancel()"></button>
-                    <button [disabled]="!registerForm.valid" class="btn btn-success me-2 fa fa-save pull-right" type="submit"></button>
-                    
+                    <button [disabled]="!registerForm.valid" title="save without attachments" 
+                         class="btn btn-success me-2 fa fa-save " type="submit"></button>
                </div>
                <div class="mt-2">
                     <div class="stdd col-3">
@@ -31,9 +31,6 @@
                     </div>
                     <div class="stdd col-3">
                          <app-text-input [label]="'Family name'" [formControl]="$any(registerForm.controls['familyName'])" ></app-text-input>
-                    </div>
-                    <div class="stdd col-3">
-                         <app-text-input [label]="'Referred By'" [formControl]="$any(registerForm.controls['referredBy'])" ></app-text-input>
                     </div>
                </div>     
                <div class="mt-2">
@@ -53,11 +50,23 @@
                     <div class="lbl">Employee</div>
                </div>
                <div class="mt-2">
-                    <div class="stdd col-6">
+                    <div class="stdd col-4">
                          <app-date-input [maxDate]="maxDate" [label]="'Date of birth'" [formControl]="$any(registerForm.controls['dOB'])"  ></app-date-input>
                     </div>
-                    <div class="stdd col-6">
+                    <div class="stdd col-4">
                          <app-text-input [label]="'Place of birth'" [formControl]="$any(registerForm.controls['placeOfBirth'])" ></app-text-input>
+                    </div>
+                    <div class="stdd col-4">
+                         <ng-select   
+                              [items]="agents" 
+                              [searchable]=true 
+                              bindLabel = "name"
+                              bindValue = "id"
+                              formControlName="referredBy"
+                              (change)="getAgentValue($event)"
+                         >
+                         </ng-select>
+                         <br style="margin:0px;padding: 0px;"><label>Referred By</label>
                     </div>
                </div>
 
@@ -71,10 +80,12 @@
                     
                     <div class="stdd">
                          <label class="lbl w150" style="margin-left: 10px; font-weight: bold;">Emig Clearance: </label>
-                         <input type="radio" class="form-check-input" style="margin-right:25px;" value="ecnr" formControlName="ecnr">
-                         <label class="lbl w100">ECNR</label>
-                         <input type="radio" class="form-check-input" style="margin-right:25px;" value="ecr" formControlName="ecnr">
-                          <label class="lbl w100">ECR</label>
+                         <br style="margin:0px; padding: 0px; ">
+                         <label class="lbl w100" style="margin-left: 15px; margin-top: 0px;">ECNR</label>
+                         <input type="radio" class="form-check-input" style="margin-right: 15px;" value="ecnr" formControlName="ecnr">
+                         <label class="lbl w100" style="margin-left: 15px; margin-top: 0px;">ECR</label>
+                         <input type="radio" class="form-check-input" style="margin-right:15px;" value="ecr" formControlName="ecnr">
+                          
                     </div>
                </div>
                <div class="mt-2">
@@ -100,10 +111,10 @@
                     </div>
                     <!-- <div *ngIf="candidate===undefined"> -->
                          <div class="stdd col-4">
-                              <app-text-input [label]="'Password'" [formControl]="$any(registerForm.controls['password'])"  [type]="'password'"></app-text-input>
+                              <app-text-input [label]="'Password'" autocomplete="new-password" [formControl]="$any(registerForm.controls['password'])"  [type]="'password'"></app-text-input>
                          </div>
                          <div class="stdd col-4">
-                              <app-text-input [label]="'Confirm Password'" [formControl]="$any(registerForm.controls['password'])"  [type]="'password'" ></app-text-input>
+                              <app-text-input [label]="'Confirm Password'" autocomplete="new-password" [formControl]="$any(registerForm.controls['password'])"  [type]="'password'" ></app-text-input>
                          </div>
                     <!-- </div> -->
                               
@@ -219,7 +230,9 @@
                          <div *ngFor="let ph of userAttachments.controls; let j=index"> 
                               <div [formGroupName]="j">
                                    <div class="stdd col-8" style="font-size: x-small;">
-                                        <input class="stdd" type="file" id="file" formControlName="fileName" (change)="handleFileInput($event)">
+                                        <input class="stdd" type="file" id="file" formControlName="fileName" 
+                                        (change)="onFileInputChange($event)"
+                                        >
                                    </div>
                                    <div class="stdd col-3">
                                         <app-text-input [label]="'File Type'" formControlName="attachmentType" ></app-text-input>

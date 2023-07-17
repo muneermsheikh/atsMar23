@@ -15,11 +15,13 @@ import { paramsCustomer } from "../shared/params/admin/paramsCustomer";
  
      resolve(route: ActivatedRouteSnapshot): Observable<IPagination<ICustomerBriefDto[]>|null> {
         var id = route.paramMap.get('custType');
+        console.log('customer type:', id);
         if(id===null) return of(null);
         if(!(id==='customer' || id==='associate' || id==='vendor')) return of(null);
         
         var params = new paramsCustomer();
         params.customerType=id;
+        
         this.customerService.setCustParams(params);
         return this.customerService.getCustomers(false);
      }

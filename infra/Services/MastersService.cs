@@ -30,8 +30,11 @@ namespace infra.Services
                if (await _unitOfWork.Complete() > 0) return industryEntity;
                return null;
           }
-          public async Task<bool> DeleteIndustryyAsync(Industry industry)
+          public async Task<bool> DeleteIndustryyAsync(int industryid)
           {
+               var industry = await _context.Industries.FindAsync(industryid);
+               if (industry == null) return false;
+
                _unitOfWork.Repository<Industry>().Delete(industry);
                return (await _unitOfWork.Complete() > 0);
           }
@@ -57,10 +60,24 @@ namespace infra.Services
           {
                return await _context.Industries.OrderBy(x => x.Name).ToListAsync();
           }
-     public async Task<Industry> GetIndustry(int id)
+          
+          public async Task<Industry> GetIndustry(int id)
           {
                return await _context.Industries.FindAsync(id);
           }
+
+          public async Task<Pagination<Industry>> GetIndustryPaginated(IndustrySpecParams specParams)
+          {
+               var qry= _context.Industries.AsQueryable();
+               if(specParams.IndustryId > 0) qry= qry.Where(x => x.Id==specParams.IndustryId);
+               if(!string.IsNullOrEmpty(specParams.IndustryNameLike)) qry = qry.Where(x => x.Name.Contains(specParams.IndustryNameLike));
+
+               var count = await qry.CountAsync();
+               var obj = await qry.ToListAsync();
+
+               return new Pagination<Industry>(specParams.PageIndex, specParams.PageSize, count, obj);
+          }
+          
 
      //category
                public async Task<Category> AddCategory(string categoryName)
@@ -82,8 +99,11 @@ namespace infra.Services
                return (await _unitOfWork.Complete() > 0);
           }
 
-          public async Task<bool> DeleteCategoryAsync(Category category)
+          public async Task<bool> DeleteCategoryAsync(int categoryid)
           {
+               var category = await _context.Categories.FindAsync(categoryid);
+               if (category==null) return false;
+
                _unitOfWork.Repository<Category>().Delete(category);
                return (await _unitOfWork.Complete() > 0);
           }
@@ -105,14 +125,20 @@ namespace infra.Services
           }
 
      //reviewitemdata
-          public async Task<bool> DeleteReviewItemDataAsync(ReviewItemData reviewItemData)
+          public async Task<bool> DeleteReviewItemDataAsync( int reviewitemdataid)
           {
+               var reviewItemData = await _context.ReviewItemDatas.FindAsync(reviewitemdataid);
+               if(reviewItemData==null) return false;
+
                _unitOfWork.Repository<ReviewItemData>().Delete(reviewItemData);
                return (await _unitOfWork.Complete() > 0);
           }
 
-          public async Task<bool> DeleteReviewItemStatusAsync(ReviewItemStatus reviewItemStatus)
+          public async Task<bool> DeleteReviewItemStatusAsync(int reviewitemstatusid)
           {
+               var reviewItemStatus = await _context.ReviewItemStatuses.FindAsync(reviewitemstatusid);
+               if(reviewItemStatus==null) return false;
+
                _unitOfWork.Repository<ReviewItemStatus>().Delete(reviewItemStatus);
                return (await _unitOfWork.Complete() > 0);
           }
@@ -159,8 +185,11 @@ namespace infra.Services
 
 
      //skilldata
-          public async Task<bool> DeleteSkillDataAsync(SkillData skillData)
+          public async Task<bool> DeleteSkillDataAsync(int skilldataid)
           {
+               var skillData = await _context.SkillDatas.FindAsync(skilldataid);
+               if(skillData==null) return false;
+               
                _unitOfWork.Repository<SkillData>().Delete(skillData);
                return (await _unitOfWork.Complete() > 0);
           }
@@ -192,8 +221,11 @@ namespace infra.Services
                return null;
 		}
 
-		public async Task<bool> DeleteQualificationAsync(Qualification qualification)
+		public async Task<bool> DeleteQualificationAsync(int qualificationid)
 		{
+               var qualification = await _context.Qualifications.FindAsync(qualificationid);
+               if(qualification==null) return false;
+
 			_unitOfWork.Repository<Qualification>().Delete(qualification);
                return (await _unitOfWork.Complete() > 0);
 		}

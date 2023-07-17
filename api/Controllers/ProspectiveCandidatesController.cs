@@ -13,21 +13,23 @@ namespace api.Controllers
      public class ProspectiveCandidatesController : BaseApiController
      {
           private readonly IProspectiveCandidateService _prospectiveService;
-          private readonly RoleManager<AppRole> _roleManager;
+          //private readonly RoleManager<AppRole> _roleManager;
           private readonly ITokenService _tokenService;
           private readonly IUserService _userService;
           private readonly UserManager<AppUser> _userManager;
           
-          public ProspectiveCandidatesController(UserManager<AppUser> userManager,
-               IProspectiveCandidateService prospectiveService, 
-               IUserService userService, 
-               ITokenService tokenService,
-               RoleManager<AppRole> roleManager)
+          public ProspectiveCandidatesController(
+               UserManager<AppUser> userManager
+               , IProspectiveCandidateService prospectiveService
+               , IUserService userService
+               , ITokenService tokenService
+               //, RoleManager<AppRole> roleManager
+               )
           {
                _userManager = userManager;
                _userService = userService;
                _tokenService = tokenService;
-               _roleManager = roleManager;
+               //_roleManager = roleManager;
                _prospectiveService = prospectiveService;
           }
 
@@ -50,7 +52,7 @@ namespace api.Controllers
                return NotFound(new ApiResponse(404, "No data returned"));
           }
 
-          [Authorize(Roles="CreateCV")]
+          [Authorize]    //(Roles="CreateCV")]
           [HttpPost]
           public async Task<ActionResult<UserDto>> CreateCandidateFromProspectiveModel (ProspectiveCandidateAddDto prospectiveAddDto)
           {

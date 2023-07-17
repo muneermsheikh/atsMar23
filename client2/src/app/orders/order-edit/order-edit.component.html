@@ -126,8 +126,8 @@
                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span> </button> 
 
           <div *ngIf="!isAddMode" style="display: inline-block;" class="pull-right" >
-               <button class="btn btn-primary stdd fa fa-hand-shake " (click)="acknowledgeToClient()" 
-                         title="acknowledge this Order to Client"
+               <button class="btn btn-primary stdd fa-solid fa-share-from-square" (click)="acknowledgeToClient()" 
+                    title="acknowledge this Order to Client"
                > </button>
                          
                <button class="btn btn-primary stdd fa fa-share " (click)="forwardDLToHRDept()" 
@@ -254,9 +254,9 @@
                               <button class="w30 fa fa-question" title="Show prospective candidates"
                                    (click)="showProspectives(i)" ></button>
 
-                              <button class="w30 mx-1 fa fa-bars" title="Open Job Description"
+                              <button class="w30 mx-1 fa-solid fa-list-check" title="Open Job Description"
                                    (click)="openJDModal(i)" ></button>
-                              <button class="w30 mb-1 fa fa-bars" title="Open Remuneration"
+                              <button class="w30 mb-1 fa-solid fa-file-invoice-dollar" title="Open Remuneration"
                                    (click)="openRemunerationModal(i)" ></button>
                          </div>
                          <button (click)="removeItem(i)" class="w30 mx-1 btn btn-danger fa fa-trash" 
@@ -274,8 +274,8 @@
      </ul>
 </div>
 
-
+<!--
      <div style="float:inline-end; margin-top: 5px; font-size: smaller;">
          {{this.form.value | json}}
      </div>
-
+-->

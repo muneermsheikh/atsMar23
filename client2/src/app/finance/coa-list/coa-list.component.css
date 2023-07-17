@@ -1,0 +1,15 @@
+.stdd {
+	display: inline-block;
+}
+
+.w50 {width: 50px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w150 {width: 150px;}
+.w300 {width: 300px;}
+
+.b {font-weight: bold;}
+
+.rAlign {text-align: right;}
+
+.fontSmall {font-size: small;}

@@ -5,14 +5,17 @@ import { RouterModule, Routes } from '@angular/router';
 import { QualificationListResolver } from '../resolvers/qualificationListResolver';
 import { CategoryListResolver } from '../resolvers/categoryListResolver';
 import { CandidateResolver } from '../resolvers/candidateResolver';
+import { AgentsResolver } from '../resolvers/agents.resolver';
 
 const routes: Routes = [
   {path: '', component: LoginComponent,  data: {breadcrumb: 'Login Admin'}},
   {path: 'login', component: LoginComponent,data: {breadcrumb: {alias: 'logIn'}}},
   {path: 'register', component: RegisterComponent, 
       resolve: {
-        qualifications: QualificationListResolver,
-        categories: CategoryListResolver
+        categories: CategoryListResolver,
+        agents: AgentsResolver,
+        //qualifications: QualificationListResolver,
+        candidate: CandidateResolver
       },
       data: {breadcrumb: {alias: 'register'}}
   },

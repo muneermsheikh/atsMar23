@@ -32,13 +32,17 @@ namespace core.Entities.HR
                LeaveAirfareEntitlementAfterMonths = leaveAirfareEntitlementAfterMonths;
           }
 
-            public Employment(int cVRefId, int weeklyhours, DateTime selectedOn, string salaryCurrency, int salary, 
-                int contractPeriodInMonths, bool housingProvidedFree, int housingAllowance, bool foodProvidedFree, 
-                int foodAllowance, bool transportProvidedFree, int transportAllowance, int otherAllowance, 
-                int leavePerYearInDays, int leaveAirfareEntitlementAfterMonths, int charges,
-                int categoryid, int candidateid, int appno, string candidatename, string employername,
-                string categoryname)
+            public Employment(int cVRefId, int weeklyhours, DateTime selectedOn, string salaryCurrency, 
+                  int salary, int contractPeriodInMonths, bool housingProvidedFree, int housingAllowance, 
+                  bool foodProvidedFree, int foodAllowance, bool transportProvidedFree, int transportAllowance, 
+                  int otherAllowance, int leavePerYearInDays, int leaveAirfareEntitlementAfterMonths, int charges,
+                  int categoryid, int candidateid, int appno, string candidatename, string employername,
+                  string categoryname, int orderitemid, int orderid, int orderno, string agentname, int customerid)
             {
+                  OrderItemId = orderitemid;
+                  OrderId = orderid;
+                  OrderNo = orderno;
+                  AgentName=agentname;
                   CVRefId = cVRefId;
                   WeeklyHours = weeklyhours;
                   SelectedOn = selectedOn;
@@ -61,6 +65,7 @@ namespace core.Entities.HR
                   CandidateName = candidatename;
                   CustomerName = employername;
                   CategoryName = categoryname;
+                  CustomerId = customerid;
           }
 
           public Employment(int cVRefId, int weeklyhours, DateTime selectedOn, string salaryCurrency, int salary, 

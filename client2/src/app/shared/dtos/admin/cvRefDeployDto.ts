@@ -3,5 +3,7 @@ export interface ICVRefDeployDto
      id: number;
      cvRefId: number;
      transactionDate: Date;
-     stageId: number;
+     sequence: number;
+     nextSequence: number;
+     nextStageDate: Date;
 }

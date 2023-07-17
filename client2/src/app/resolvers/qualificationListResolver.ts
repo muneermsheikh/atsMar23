@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import { Resolve } from "@angular/router";
 import { Observable } from "rxjs";
-import { IQualification } from "../shared/models/masters/profession";
 import { MastersService } from "../masters/masters.service";
+import { IQualification } from "../shared/models/hr/qualification";
 
 @Injectable({
      providedIn: 'root'
@@ -12,7 +12,9 @@ import { MastersService } from "../masters/masters.service";
      constructor(private qService: MastersService) {}
  
      resolve(): Observable<IQualification[]> {
+        console.log('entered qualifictionListResolver');
         var qs = this.qService.getQualificationList();
+        console.log('qs:', qs);
         return qs;
      }
 

@@ -33,6 +33,8 @@ namespace core.Dtos
 		public long Amount { get; set; }
 		public string Narration { get; set; }
 		public bool Approved {get; set;}
+		public string ReviewedByName {get; set;}
+		public DateTime ReviewedOn {get; set;}
 		public string LoggedInName { get; set; }
 
 	}

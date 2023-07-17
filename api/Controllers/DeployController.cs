@@ -1,6 +1,7 @@
 using api.Errors;
 using api.Extensions;
 using core.Dtos;
+using core.Entities.HR;
 using core.Entities.Identity;
 using core.Entities.MasterEntities;
 using core.Entities.Process;
@@ -41,13 +42,13 @@ namespace api.Controllers
 
           [Authorize]  //(Roles = "DocumentControllerProcess, EmigrationExecutive, MedicalExecutive, MedicalExecutiveGAMMCA, ProcessExecutive, VisaExecutiveDubai, VisaExecutiveKSA, VisaExecutiveQatar, VisaExecutiveBahrain")]
           [HttpPost("posts")]
-          public async Task<ActionResult<DeploymentDtoWithErrorDto>> AddDeploymentTransactions(ICollection<Deploy> deployPosts)
+          public async Task<ActionResult<DeploymentDtoWithErrorDto>> AddDeploymentTransactions(ICollection<Deployment> deployPosts)
           {
                var loggedInDto = await GetLoggedInUserDto();
                if(deployPosts.Count==0) return BadRequest(new ApiResponse(402, "No input provided"));
                foreach(var dto in deployPosts)
                {
-                    if(dto.CVRefId == 0 || dto.Sequence==0 ) return BadRequest(new ApiResponse(402, "Deploy Id or Status not provided"));
+                    if(dto.DeployCVRefId == 0 || dto.Sequence==0 ) return BadRequest(new ApiResponse(402, "Deploy Id or Status not provided"));
                     if(dto.TransactionDate.Year < 2000) dto.TransactionDate = DateTime.Now;
                }
 
@@ -79,9 +80,10 @@ namespace api.Controllers
 
           [Authorize]  //(Roles = "DocumentControllerProcess, EmigrationExecutive, MedicalExecutive, MedicalExecutiveGAMMCA, ProcessExecutive, VisaExecutiveDubai, VisaExecutiveKSA, VisaExecutiveQatar, VisaExecutiveBahrain")]
           [HttpPut]
-          public async Task<ActionResult<bool>> EditDeploymentTransactions( CVReferredDto cvref)
+          public async Task<ActionResult<bool>> EditDeploymentTransactions( ICollection<Deployment> deps)
           {
-               return await _deployService.EditDeploymentTransactions(cvref);
+               var succeeded =  await _deployService.EditDeploymentTransactions(deps);
+               return Ok(false);
           }
 
           [Authorize]  //(Roles = "DocumentControllerProcess, EmigrationExecutive, MedicalExecutive, MedicalExecutiveGAMMCA, ProcessExecutive, VisaExecutiveDubai, VisaExecutiveKSA, VisaExecutiveQatar, VisaExecutiveBahrain")]          
@@ -121,7 +123,7 @@ namespace api.Controllers
           public async Task<ActionResult<CVReferredDto>> GetCVRefDto(int cvrefid)
           {
                var dto = await _deployService.GetDeploymentDto(cvrefid);
-               if (dto == null) return NotFound(new ApiResponse(404, "Record not found"));
+               if (dto == null) return Ok(null);  // NotFound(new ApiResponse(404, "Record not found"));
                return Ok(dto);
           }
      }

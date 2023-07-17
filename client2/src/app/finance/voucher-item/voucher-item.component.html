@@ -1,0 +1,21 @@
+<div *ngIf="t===null">
+	No Financial tranaction on record
+ </div>
+ <div *ngIf="t!==null && t!==undefined" class="col-12">
+	<div class="stdd row mb-0">
+		<div class="stdd w60" title="edit the transaction"  >{{t.voucherNo}}</div>
+		<div class="stdd w90">{{t.voucherDated | date: 'dd-MMM-yy'}}</div>
+		<div class="stdd w200" title="view this transaction">{{t.accountName}}</div>
+		<div class="stdd w75 alignRight">{{t.amount}}</div>
+		<div class="stdd fSmall w250" style="margin-left: 50px;" >{{t.narration}}</div>
+		<div class="stdd w100 hM w100" style="border:aqua" >{{t.approved ? 'Y': 'N'}} </div>
+		<div class="stdd w100 hM w100" style="border:aqua" >{{t.reviewedByName === null ? '--': t.reviewedByName}} </div>
+		<div class="stdd w100 hM w100" style="border:aqua" >{{t.reviewedOn===null ? '--' : t.reviewedOn | date: 'dd-MMM-yy' === null ? '--': t.reviewedByName}} </div>
+		
+		<div class="stdd w30 mx-2 fa fa-pencil" title="edit this Voucher" (click)="editTransaction(t.id)" ></div>
+		<div class="stdd w30 mx-2 fa fa-eye" title="view this Voucher" (click)="viewTransaction(t.id)" ></div>
+		<div class="stdd w30 mx-2 fa fa-trash red" title="delete this Voucher" (click)="deleteTransaction(t.id)" ></div>
+	</div>
+ </div>
+ 
+ 

@@ -57,8 +57,9 @@ const routes: Routes = [
   {path: 'interviews', loadChildren:() => import('./interview/interview.module').then(mod => mod.InterviewModule), data: {breadcrumb: 'Interviews'}},
   {path: 'servererror',component: SeverErrorComponent},
   {path: 'testerrors',component: TestErrorComponent},
-  {path: 'finance', loadChildren:() => import('./finance/finance.module').then(mod => mod.FinanceModule) },
   */
+  {path: 'finance', loadChildren:() => import('./finance/finance.module').then(mod => mod.FinanceModule) },
+  
   {path: '**', redirectTo: 'not-found', pathMatch: 'full'}
   
 ];

@@ -9,7 +9,7 @@ namespace core.Dtos
         {
         }
 
-        public int CVRefId { get; set; }
+        public int DeployCVRefId { get; set; }
         public DateTime ReferredOn {get; set;}
         public int ApplicationNo {get; set;}
         //public int CandidateId { get; set; }

@@ -35,6 +35,7 @@ namespace infra.Services
                 .FirstOrDefaultAsync();               
             */
             var hrExecIds = dtos.Select(x => x.HrExecId).Distinct().ToList();
+            
             var order = dtos.Select(x => new {x.OrderNo, x.CustomerId, x.OrderDate, x.ProjectManagerId, x.CityOfWorking}).FirstOrDefault();
             var msgs = new List<EmailMessage>();
 
@@ -68,8 +69,9 @@ namespace infra.Services
 
                 var emailMsg = new EmailMessage("AssignTasksToHRExec", projMgr.EmployeeId, hrExec.EmployeeId, 
                         projMgr.OfficialEmailAddress, projMgr.UserName, hrExec.UserName, hrExec.OfficialEmailAddress, "", "", 
-                        "Tasks to mobilize suitable candidates - Order No. " + order.OrderNo,
-                        msg, (int)EnumMessageType.TaskAssignmentToHRExecToShortlistCV, postAction);
+                        "Tasks to mobilize suitable candidates - Order No. " + order.OrderNo, msg, 
+                        (int)EnumMessageType.TaskAssignmentToHRExecToShortlistCV, postAction, 
+                        hrExec.AppUserId, projMgr.AppUserId, "Task to HR Exec" );
                 msgs.Add(emailMsg);
             }
             return msgs;
@@ -116,7 +118,8 @@ namespace infra.Services
                         var emailMsg = new EmailMessage("AssignTasksToHRExec", owner.EmployeeId, owner.EmployeeId, 
                             owner.OfficialEmailAddress, owner.UserName, assignee.UserName, assignee.OfficialEmailAddress, "", "", 
                             "Tasks to mobilize suitable candidates - Order No. " + order.OrderNo,
-                            msg, (int)EnumMessageType.TaskAssignmentToHRExecToShortlistCV, 3);
+                            msg, (int)EnumMessageType.TaskAssignmentToHRExecToShortlistCV, 3, assignee.AppUserId, owner.AppUserId, "Task to HR Sup");
+                        
                         msgs.Add(emailMsg);
                 }
             }
@@ -165,7 +168,8 @@ namespace infra.Services
                         var emailMsg = new EmailMessage("AssignTasksToHRExec", owner.EmployeeId, owner.EmployeeId, 
                             owner.OfficialEmailAddress, owner.UserName, assignee.UserName, assignee.OfficialEmailAddress, "", "", 
                             "Tasks to mobilize suitable candidates - Order No. " + order.OrderNo,
-                            msg, (int)EnumMessageType.TaskAssignmentToHRExecToShortlistCV,3);
+                            msg, (int)EnumMessageType.TaskAssignmentToHRExecToShortlistCV,3, assignee.AppUserId, 
+                            owner.AppUserId, "Task to HRM");
                         msgs.Add(emailMsg);
                 }
             }
@@ -193,7 +197,7 @@ namespace infra.Services
             var email = new EmailMessage("advisory", loggedInDto.LoggedInEmployeeId, recipient.EmployeeId, loggedInDto.LoggedInAppUserEmail, 
                 loggedInDto.LoggedIAppUsername, recipient.KnownAs, recipient.Email, "", "", 
                 "Applications submitted to HR Supervisor for review, initiated by " + emp.EmployeeId, msg, 
-                (int)EnumMessageType.Publish_CVReviewedByHRSup, 3);
+                (int)EnumMessageType.Publish_CVReviewedByHRSup, 3, recipient.AppUserId, emp.AppUserId, "Task for HR Sup");
             
             return email;
 
@@ -218,7 +222,7 @@ namespace infra.Services
             var email = new EmailMessage("advisory", loggedInDto.LoggedInEmployeeId, recipient.EmployeeId, loggedInDto.LoggedInAppUserEmail, 
                 loggedInDto.LoggedIAppUsername, recipient.KnownAs, recipient.Email, "", "", 
                 "Applications submitted to HR Supervisor for review, initiated by " + emp.EmployeeId, msg, 
-                (int)EnumMessageType.Publish_CVReviewedByHRSup, 3);
+                (int)EnumMessageType.Publish_CVReviewedByHRSup, 3, recipient.AppUserId, emp.AppUserId, "Task For HR Sup");
             
             return email;
         }
@@ -244,7 +248,7 @@ namespace infra.Services
             var email = new EmailMessage("advisory", loggedInDto.LoggedInEmployeeId, recipient.EmployeeId, loggedInDto.LoggedInAppUserEmail, 
                 loggedInDto.LoggedIAppUsername, recipient.KnownAs, recipient.Email, "", "", 
                 "Applications readied for forwarding to Customers" + emp.EmployeeId, msg, 
-                (int)EnumMessageType.Publish_CVReviewedByHRManager, 3);
+                (int)EnumMessageType.Publish_CVReviewedByHRManager, 3, recipient.AppUserId, emp.AppUserId, "Task for HR Manager");
             
             return email;
         }

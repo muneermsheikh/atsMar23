@@ -2,9 +2,7 @@ import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import { Observable } from "rxjs";
 import { ProspectiveService } from "../prospectives/prospective.service";
-import { IProspectiveSummaryDto } from "../shared/dtos/prospectiveSummaryDto";
-import { IPaginationProspectiveSummary } from "../shared/pagination/paginationProspectiveSummary";
-import { prospectiveSummaryParams } from "../shared/params/prospectiveSummaryParams";
+import { IProspectiveSummaryDto } from "../shared/dtos/hr/propectiveSummaryDto";
 
 
 @Injectable({
@@ -15,11 +13,12 @@ import { prospectiveSummaryParams } from "../shared/params/prospectiveSummaryPar
      constructor(private prospectiveService: ProspectiveService) {}
  
      resolve(route: ActivatedRouteSnapshot): Observable<IProspectiveSummaryDto[]> {
-        var usecache = route.paramMap.get('useCache');
+        /*var usecache = route.paramMap.get('useCache');
 
         var useCache=usecache==='' ? true : Boolean(usecache);
-
-        return this.prospectiveService.getProspectiveSummary(useCache);
+        console.log('useCache in resolver:', useCache);
+        */
+        return this.prospectiveService.getProspectiveSummary(false);
      }
  
  }

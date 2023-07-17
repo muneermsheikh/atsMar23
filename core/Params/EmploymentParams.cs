@@ -1,11 +1,8 @@
-using System;
-using core.Entities.HR;
-using core.Dtos;
-
 namespace core.Params
 {
     public class EmploymentParams: ParamPages
     {
+        public string Approved {get; set;}
         public int SelDecisionId { get; set; }
         public int CvRefId { get; set; }
         public int OrderItemId { get; set; }

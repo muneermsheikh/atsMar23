@@ -4,8 +4,8 @@ import { AccountService } from '../account.service';
 import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute, Router } from '@angular/router';
-import { IProfession, IQualification } from 'src/app/shared/models/masters/profession';
+import { ActivatedRoute } from '@angular/router';
+import { IProfession } from 'src/app/shared/models/masters/profession';
 import { ICandidate } from 'src/app/shared/models/hr/candidate';
 import { of, timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -17,10 +17,9 @@ import { IUserExp } from 'src/app/shared/models/hr/userExp';
 import { IUserProfession } from 'src/app/shared/params/admin/userProfession';
 import { IUserQualification } from 'src/app/shared/params/admin/userQualification';
 import { IUserPhone } from 'src/app/shared/params/admin/userPhone';
-import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
-import { FileService } from 'src/app/shared/services/file.service';
-import { FileUploadService } from 'src/app/shared/services/file-upload.service';
 import { IApiReturnDto } from 'src/app/shared/dtos/admin/apiReturnDto';
+import { ICustomerNameAndCity } from 'src/app/shared/models/admin/customernameandcity';
+import { IQualification } from 'src/app/shared/models/hr/qualification';
 
 
 @Component({
@@ -41,12 +40,12 @@ export class RegisterComponent implements OnInit {
 
   candidate: ICandidate|undefined;
   professions: IProfession[]=[];
-
+  agents: ICustomerNameAndCity[]=[];
   qualifications: IQualification[]=[] ;
   
   errors: string[]=[];
 
-  id: string='';
+  //id: string='';
   isAddMode: boolean=false;
   loading = false;
   submitted = false;
@@ -83,27 +82,36 @@ export class RegisterComponent implements OnInit {
   lastTimeCalled: number= Date.now();
   //end of file upload
 
-  constructor(private accountService: AccountService, 
+  constructor(
+    private accountService: AccountService, 
     private toastrService: ToastrService, 
-    private fb: FormBuilder, private router: Router, 
+    private fb: FormBuilder, 
     private activatedRoute: ActivatedRoute,
     private mastersService: MastersService,
-    private candidateService: CandidateService,
-    private fileService: FileService,
-    private uploadService: FileUploadService) { }
+    private candidateService: CandidateService
+    ) { }
 
   ngOnInit(): void {
-    this.getProfessions();
+    this.activatedRoute.data.subscribe( data => {
+        this.professions = data.professions,
+        //this.qualifications = data.qualifications,
+        this.agents = data.agents,
+        this.candidate = data.candidate;
+
+        this.isAddMode = this.candidate === undefined;
+        console.log('qualifications:', this.qualifications);
+    });
+    //this.getProfessions();
     this.getQualifications();
     
     this.initializeForm();
     this.maxDate.setFullYear(this.maxDate.getFullYear() -18);
 
-    this.id = this.activatedRoute.snapshot.params['id'];
-    this.isAddMode = !this.id;
+    //this.id = this.activatedRoute.snapshot.params['id'];
+    //this.isAddMode = !this.id;
     //this.createRegisterForm();
 
-    if (!this.isAddMode) this.getCVById(+this.id);
+    //if (!this.isAddMode) this.getCVById(+this.id);
   }
 
   initializeForm() {
@@ -128,9 +136,9 @@ export class RegisterComponent implements OnInit {
         referredBy: 0,
         referredByName: '',
         
-        password: ['']  , /*[Validators.required, 
+        password: ['Pa$$w0rd']  , /*[Validators.required, 
           Validators.minLength(4), Validators.maxLength(8)]], */
-        confirmPassword: '',  // [Validators.required, this.matchValues('password')]],
+        confirmPassword: 'Pa$$w0rd',  // [Validators.required, this.matchValues('password')]],
         
       //}),
       //userAddressForm: this.fb.group({
@@ -271,7 +279,7 @@ export class RegisterComponent implements OnInit {
       })
   }
 
-  //data 
+  /*
   getProfessions() {
     return this.mastersService.getCategoryList().subscribe( {
       next: response => {
@@ -280,14 +288,14 @@ export class RegisterComponent implements OnInit {
       error: error => this.toastrService.error('error:', error)
     })
   }
-
+  */
   getQualifications(){
     return this.mastersService.getQualificationList().subscribe({
       next: response => this.qualifications=response,
       error: error => this.toastrService.error('error in qualificatin', error)
     })
   }
-
+  
   matchValues(matchTo: string): ValidatorFn {
     return (control: AbstractControl) => {
       return control.value === control.parent?.get(matchTo)?.value ? null : {notMatching: true}
@@ -314,12 +322,6 @@ export class RegisterComponent implements OnInit {
     this.cancelRegister.emit(false);
   }
 
-  private getDateOnly(dob: string | undefined) {
-    if (!dob) return;
-    let theDob = new Date(dob);
-    return new Date(theDob.setMinutes(theDob.getMinutes()-theDob.getTimezoneOffset()))
-      .toISOString().slice(0,10);
-  }
 
   selectTab(tabId: number) {
     this.memberTabs!.tabs[tabId].active = true;
@@ -370,6 +372,11 @@ export class RegisterComponent implements OnInit {
     //this.fileToUpload = files.item(0);
     this.fileToUpload = files[0];
     this.filesToUpload.push(files[0]);
+  }
+
+  getAgentValue(agt: ICustomerNameAndCity)
+  {
+    console.log('agent selected', agt);
   }
 
   getProfessionValue(prof: IProfession) {
@@ -461,12 +468,14 @@ export class RegisterComponent implements OnInit {
   }
   newUserAttachment(): FormGroup {
     return this.fb.group({
+      candidateId: this.candidate===undefined ? 0 : this.candidate.id,
       attachmentType: ['', Validators.required],
       fileName: ['', Validators.required],
       attachmentSizeInBytes: 0,
       url: ''
     })
   }
+
   addUserAttachment() {
     this.userAttachments.push(this.newUserAttachment());
   }
@@ -474,7 +483,7 @@ export class RegisterComponent implements OnInit {
     this.userAttachments.removeAt(i);
   }
 
-  getValues(event: any ) {
+  getValues( $event: any) {
     console.log('ngx dropdown selected', this.selectedProfession);
   }
 
@@ -482,14 +491,15 @@ export class RegisterComponent implements OnInit {
     const target = event.target as HTMLInputElement;
     const files = target.files as FileList;
     const f = files[0];
-    
+    /*
     var newAttachment =  this.fb.group({
-        candidateId: this.candidate?.id===0 ? 0 : this.candidate?.id,
+        candidateId: this.candidate===undefined ? 0 : this.candidate.id,
         attachmentType: '',
-        fileName: this.candidate!.applicationNo ===0  ? f.name : this.candidate!.applicationNo + '-' + f.name,
+        fileName: this.candidate===undefined ? '' : this.candidate.applicationNo  + f.name,
         attachmentSizeInBytes: Math.round(f.size/1024)
       })
-    this.userAttachments.push(newAttachment);
+    */
+    //this.userAttachments.push(newAttachment);
     this.userFiles.push(f);
   }
 /*
@@ -515,18 +525,28 @@ export class RegisterComponent implements OnInit {
 
 */
 
-  register = () => {
+  savewithattachments = () => {
     var microsecondsDiff: number= 28000;
     var nowDate: number =Date.now();
     
     if(nowDate < this.lastTimeCalled+ microsecondsDiff) return;
     
     this.lastTimeCalled=Date.now();
+    const formData = new FormData();
+    const formValue = this.registerForm.value;
+
     
-    const mData = this.registerForm.value;  // JSON.stringify(this.registerForm.value);
+    if(this.userFiles.length > 0) {
+      this.userFiles.forEach(f => {
+        formData.append('file', f, f.name);
+      })
+    }
+
+    formData.append('data', JSON.stringify(this.registerForm.value));
+
     if(this.candidate=== undefined || this.candidate?.id === 0) {   //insert new cv
 
-        this.candidateService.register(mData).subscribe({
+        this.candidateService.registerWithFiles(formData).subscribe({
           next: (response: IApiReturnDto) => {
             
             if(response.errorMessage!==null) {
@@ -536,7 +556,7 @@ export class RegisterComponent implements OnInit {
             }},
           error: error => this.toastrService.error('failed to save the candidate', error)
     })} else {
-        this.candidateService.UpdateCandidate(mData).subscribe({
+        this.candidateService.UpdateCandidate(formData).subscribe({
           next: (response: ICandidate) => {
             if(response === null) {
               this.toastrService.error('failed to update the candidate');
@@ -553,21 +573,17 @@ export class RegisterComponent implements OnInit {
 }
 
 /*
-  register = () => {
+  registerWithUpload = () => {
       var microsecondsDiff: number= 28000;
       var nowDate: number =Date.now();
       
       if(nowDate < this.lastTimeCalled+ microsecondsDiff) return;
       
       this.lastTimeCalled=Date.now();
-      
-      const formData = new FormData();
-      //console.log('registerForm.Value:', this.registerForm.value);
+
       const mData = JSON.stringify(this.registerForm.value);
-      //const mData = this.registerForm.value;
-      console.log('mData', mData);
+      const formData = new FormData();
       formData.append('data', mData);
-      console.log('formdata', formData);
       
       if(this.userFiles.length > 0) {
         this.userFiles.forEach( f => {
@@ -586,7 +602,7 @@ export class RegisterComponent implements OnInit {
         })
       }
 
-      if(this.candidate?.id === 0) {   //insert new cv
+      if(this.candidate === undefined || this.candidate.id ===0) {   //insert new cv
           this.fileService.registerNewCandidate(formData).subscribe({
             next: (event) => 
             {

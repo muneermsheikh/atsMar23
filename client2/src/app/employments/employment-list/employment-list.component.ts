@@ -118,11 +118,6 @@ export class EmploymentListComponent implements OnInit {
   }
 
   editEmployment(employment: IEmployment) {
-
-    /*var id= evet;
-    let route = '/employments/edit/' + id;
-    this.router.navigate([route], { state: { toedit: true, returnUrl: '/employments' } });
-  */
     
     const initialState = {
       class: 'modal-dialog-centered modal-lg',

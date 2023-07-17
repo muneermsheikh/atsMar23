@@ -8,13 +8,6 @@
                 >{{sort.name}}</option>
             </select>
 
-            <div class="stdd b w50 blue">Status</div>
-            <select name="" id="" class="dropdown custom-select" (change)="onStatusSelected($event)">
-                <option *ngFor="let st of employmentStatus"
-                    [value] = "st.value"
-                >{{st.name}}</option>
-            </select>
-            
             <app-paging-header class="stdd ml5"
                 [totalCount]="totalCount"
                 [pageNumber]="eParams.pageNumber"

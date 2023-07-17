@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using core.Entities.HR;
-using core.Entities.Process;
-
 namespace core.Dtos
 {
     public class CVRefAndDeployDto

@@ -1,0 +1,51 @@
+<br><br>
+<div class="col-5 stdd">
+	<app-paging-header 
+		[totalCount]="totalCount" 
+		[pageNumber]="sParams.pageNumber" 
+		[pageSize]="sParams.pageSize">
+	</app-paging-header>
+	<app-paging 
+		[pageSize]="sParams.pageSize" 
+		[totalCount]="totalCount" 
+		[pageNumber]="sParams.pageNumber" 
+		(pageChanged)="onPageChanged($event)"  >
+	</app-paging>
+</div>
+
+<div class="col-7 stdd">
+	<div style="display:inline-block; margin-left: 10px; width: 350px;" 
+		 title="displays Task to edit if it exists.  To create a new task, select a candidate from the list">Search Task by App No, PP, Aadhar, phone or email</div>
+	<span>Press Enter in search box</span>
+	<input (keyup.enter)="onSearch()" type="text" class="stdd form-control mx-2 w150" #search placeholder="Search">
+
+	<button class="btn btn-primary x-2 fa fa-plus" 
+		style="display:inline-block;" title="add a new Finance Voucher" (click)="addNewFinanceTransaction()" ></button>
+	<button title="return to calling program" class="btn btn-primary mx-2 fa fa-undo" 
+		style="display:inline-block;" (click)="returnToCaller()" ></button>
+	
+</div>
+
+<hr style="padding-top: 0px;  padding-bottom:0px;margin-top:0px; margin-bottom: 0px; margin-left: 10px; padding-right: 10px;" >
+
+<div class="displayInBlockV my-0 py-0 ml-5" >
+	<div class="stdd vAlignM w65 b">Voucher No</div>
+	<div class="stdd vAlignM w100 b">Dated</div>
+	<div class="stdd vAlignM mx-1 w200 b">Account Name</div>
+	<div class="stdd vAlignM w75 b" style="text-align:center;">Amount</div>
+	<div class="stdd vAlignM w250 b">Narration</div>
+	<div class="stdd vAlignM hM w125 b">Approved</div>
+	<div class="stdd vAlignM hM w100 b">By</div>
+	<div class="stdd vAlignM hM w100 b">On</div>
+	
+<hr class="my-0 py-0 ml-5">
+	<div *ngFor="let item of vouchers">
+		<app-voucher-item
+			[t]="item"
+			(editEvent)="editTransaction($event, true)"
+			(viewEvent)="editTransaction($event, false)"
+			(deleteEvent)="deleteVoucher($event)"
+			>
+		</app-voucher-item>
+	</div>
+</div>

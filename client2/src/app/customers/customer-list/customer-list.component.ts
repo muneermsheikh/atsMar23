@@ -3,13 +3,16 @@ import { ICustomer } from 'src/app/shared/models/admin/customer';
 import { ICustomerCity } from 'src/app/shared/models/admin/customerCity';
 import { IIndustryType } from 'src/app/shared/models/masters/profession';
 import { CustomersService } from '../customers.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Navigation, Router } from '@angular/router';
 import { SharedService } from 'src/app/shared/shared.service';
 import { ToastrService } from 'ngx-toastr';
 import { ICustomerBriefDto } from 'src/app/shared/dtos/admin/customerBriefDto';
 import { IPagination } from 'src/app/shared/models/pagination';
 import { MastersService } from 'src/app/masters/masters.service';
 import { paramsCustomer } from 'src/app/shared/params/admin/paramsCustomer';
+import { IUser } from 'src/app/shared/models/admin/user';
+import { BreadcrumbService } from 'xng-breadcrumb';
+import { IndustriesResolver } from 'src/app/resolvers/industriesResolver';
 
 @Component({
   selector: 'app-customer-list',
@@ -26,7 +29,9 @@ export class CustomerListComponent implements OnInit {
   pagination?: IPagination<ICustomerBriefDto[]>;
   totalCount: number=0;
   custType: string='';
-
+  user?: IUser;
+  returnUrl ='';
+  
   sortOptions = [
     {name:'By Name Asc', value:'name'},
     {name:'By Name Desc', value:'namedesc'},
@@ -39,14 +44,29 @@ export class CustomerListComponent implements OnInit {
   constructor(private service: CustomersService, 
       private activatedRouter: ActivatedRoute, 
       private mastersService: MastersService,
-      private toastrService: ToastrService
+      private toastrService: ToastrService,
+      private router: Router,
+      private bcService: BreadcrumbService
       ) {
+        let nav: Navigation|null = this.router.getCurrentNavigation() ;
+
+        if (nav?.extras && nav.extras.state) {
+            if(nav.extras.state.returnUrl) this.returnUrl=nav.extras.state.returnUrl as string;
+
+            if( nav.extras.state.user) {
+              this.user = nav.extras.state.user as IUser;
+              //this.hasEditRole = this.user.roles.includes('AdminManager');
+              //this.hasHRRole =this.user.roles.includes('HRSupervisor');
+            }
+            
+        }
+        this.bcService.set('@deployentList',' ');
    }
 
   ngOnInit(): void {
     this.custType = this.activatedRouter.snapshot.paramMap.get('custType')!;
     this.cParams.customerType=this.custType;
-    
+    this.service.setCustParams(this.cParams);
     this.getCustomers();
     //this.getCities();
     //this.getIndustryTypes();
@@ -124,4 +144,21 @@ export class CustomerListComponent implements OnInit {
     //}
   }
 
+  editCustomer(customerid: number) {
+    this.navigateByRoute(customerid, '/customers/edit', true)
+  }
+
+  navigateByRoute(id: number, routeString: string, editable: boolean, ) {
+    let route =  routeString + '/' + id;
+
+    this.router.navigate(
+        [route], 
+        { state: 
+          { 
+            user: this.user, 
+            toedit: editable, 
+            returnUrl: '/customers/customerlist/' + this.custType,
+          } }
+      );
+  }
 }

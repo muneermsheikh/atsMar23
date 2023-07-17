@@ -22,6 +22,7 @@ namespace core.Entities.AccountsNFinance
             EmployeeId=employeeId;
             VoucherDated=voucherDated;
             VoucherEntries=voucherentries;
+            Narration = narration;
 		}
 
 		[MaxLength(1)]
@@ -35,11 +36,12 @@ namespace core.Entities.AccountsNFinance
         public string Narration {get; set;}
         [Required]
         public int EmployeeId {get; set;}
-        public int ReviewedById { get; set; }
+        /* public int ReviewedById { get; set; }
         [MaxLength(10)]
         public string ReviewedByName {get; set;}
         public DateTime ReviewedOn { get; set; }
         public bool Approved { get; set; }
+        */
         public ICollection<VoucherEntry> VoucherEntries { get; set; }
         public ICollection<VoucherAttachment> VoucherAttachments {get; set;}
     }

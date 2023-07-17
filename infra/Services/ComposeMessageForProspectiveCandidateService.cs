@@ -29,7 +29,8 @@ namespace infra.Services
                
                var emailMsg = new EmailMessage("HR", userDto.LoggedInEmployeeId, dto.Id, userDto.LoggedInAppUserEmail,
                     userDto.LoggedIAppUsername, dto.CandidateName, dto.Email, "", "",
-                    sSubject, content, (int)EnumMessageType.CVAcknowledgementByEMail, 3);
+                    sSubject, content, (int)EnumMessageType.CVAcknowledgementByEMail, 3, 
+                    null, userDto.LoggedInAppUserId, "candidate");
           
                return emailMsg;
 
@@ -50,7 +51,8 @@ namespace infra.Services
                
                var emailMsg = new EmailMessage("HR", userDto.LoggedInEmployeeId, dto.Id, userDto.LoggedInAppUserEmail,
                     userDto.LoggedIAppUsername, dto.CandidateName, dto.Email, "", "",
-                    sSubject, content, (int)EnumMessageType.CandidateFollowup, 3);
+                    sSubject, content, (int)EnumMessageType.CandidateFollowup, 3,  
+                    null, userDto.LoggedInAppUserId, "candidate");
 
                return emailMsg;
           }
@@ -94,8 +96,8 @@ namespace infra.Services
                     "<br><br>Should you change your mind, please do reach us.<br><br>Regards<br><br>";
                
                var emailMsg = new EmailMessage("HR", userDto.LoggedInEmployeeId, dto.Id, userDto.LoggedInAppUserEmail,
-                    userDto.LoggedIAppUsername, dto.CandidateName, dto.Email, "", "",
-                    sSubject, content, (int)EnumMessageType.CandidateFollowup, 3);
+                    userDto.LoggedIAppUsername, dto.CandidateName, dto.Email, "", "", sSubject, content, 
+                    (int)EnumMessageType.CandidateFollowup, 3, null, userDto.LoggedInAppUserId, "candidate");
 
                return emailMsg;
           }
@@ -109,8 +111,8 @@ namespace infra.Services
                     "<br><br>We will revert to you Should there be other openings that suit your requirement.<br><br>Regards<br><br>";
                
                var emailMsg = new EmailMessage("HR", userDto.LoggedInEmployeeId, dto.Id, userDto.LoggedInAppUserEmail,
-                    userDto.LoggedIAppUsername, dto.CandidateName, dto.Email, "", "",
-                    sSubject, content, (int)EnumMessageType.CandidateFollowup, 3);
+                    userDto.LoggedIAppUsername, dto.CandidateName, dto.Email, "", "", sSubject, content, 
+                    (int)EnumMessageType.CandidateFollowup, 3, null, userDto.LoggedInAppUserId, "candidate");
 
                return emailMsg;
           }
@@ -124,8 +126,8 @@ namespace infra.Services
                     "<br><br>Should there be openings that suit your needs, we will revert to you.<br><br>Regards<br><br>";
                
                var emailMsg = new EmailMessage("HR", userDto.LoggedInEmployeeId, dto.Id, userDto.LoggedInAppUserEmail,
-                    userDto.LoggedIAppUsername, dto.CandidateName, dto.Email, "", "",
-                    sSubject, content, (int)EnumMessageType.CandidateFollowup, 3);
+                    userDto.LoggedIAppUsername, dto.CandidateName, dto.Email, "", "", sSubject, content, (int)EnumMessageType.CandidateFollowup, 
+                    3, null, userDto.LoggedInAppUserId, "candidate");
 
                return emailMsg;
           }
@@ -139,8 +141,8 @@ namespace infra.Services
                     "<br><br>We have noted your interested accordingly in our database.  Should you ever change your mind, please do let us know.<br><br>Regards<br><br>";
                
                var emailMsg = new EmailMessage("HR", userDto.LoggedInEmployeeId, dto.Id, userDto.LoggedInAppUserEmail,
-                    userDto.LoggedIAppUsername, dto.CandidateName, dto.Email, "", "",
-                    sSubject, content, (int)EnumMessageType.CandidateFollowup, 3);
+                    userDto.LoggedIAppUsername, dto.CandidateName, dto.Email, "", "", sSubject, content, (int)EnumMessageType.CandidateFollowup, 
+                    3, null, userDto.LoggedInAppUserId, "candidate");
 
                return emailMsg;
 
@@ -155,8 +157,8 @@ namespace infra.Services
                     "<br><br>Please reach us when you are free to discuss the above opening. If we fail to hear from you in next couple of days, we will assume you are not interested. <br><br>Regards<br><br>";
                
                var emailMsg = new EmailMessage("HR", userDto.LoggedInEmployeeId, dto.Id, userDto.LoggedInAppUserEmail,
-                    userDto.LoggedIAppUsername, dto.CandidateName, dto.Email, "", "",
-                    sSubject, content, (int)EnumMessageType.CandidateFollowup, 3);
+                    userDto.LoggedIAppUsername, dto.CandidateName, dto.Email, "", "", sSubject, content, (int)EnumMessageType.CandidateFollowup, 
+                    3, null, userDto.LoggedInAppUserId, "candidate");
 
                return emailMsg;
 

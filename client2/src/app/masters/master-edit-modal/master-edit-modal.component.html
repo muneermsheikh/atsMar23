@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="modal-header">
+        <div style="font-weight: bold;">{{title}}</div>
+        <button class="btn btn-primary pull-right fa fa-check" (click)="updateString()"></button>
+    </div>
+    <div class="modal-body">
+        <label class="stdd w100">{{caption}} to edit:</label>
+        <input type="text" style="margin-left: 2px;" [(ngModel)]="returnString" name="inputString">    
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-secondary fa fa-undo pull-right" (click)="close()" ></button>
+    </div>
+    
+    
+
+</div>
+    

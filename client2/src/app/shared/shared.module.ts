@@ -17,6 +17,8 @@ import { HelpModalComponent } from './components/help-modal/help-modal.component
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { customerStatusPipe } from './pipes/customer-status.pipe';
 import { DepStatusPipe } from './pipes/dep-status.pipe';
+import { InputModalComponent } from './components/input-modal/input-modal.component';
+import { DateInputRangeModalComponent } from './components/date-input-range-modal/date-input-range-modal.component';
 
 
 @NgModule({
@@ -30,6 +32,8 @@ import { DepStatusPipe } from './pipes/dep-status.pipe';
     HelpModalComponent,
     customerStatusPipe,
     DepStatusPipe,
+    InputModalComponent,
+    DateInputRangeModalComponent,
   ],
   imports: [
     CommonModule,

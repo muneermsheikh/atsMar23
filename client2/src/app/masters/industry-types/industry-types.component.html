@@ -1,1 +1,47 @@
-<p>industry-types works!</p>
+<br><br>
+<div class="container" style="margin-top:15px;" >
+	<div class="col-10">
+	     <div class="d-flex justify-contents-between align-items-center">
+		    	
+			<app-paging-header 
+				[totalCount]="totalCount" 
+				[pageNumber]="cParams.pageNumber" 
+				[pageSize]="cParams.pageSize">
+			</app-paging-header>
+
+			<app-paging
+				[pageSize]="cParams.pageSize" 
+				[totalCount]="totalCount" 
+				[pageNumber]="cParams.pageNumber" 
+				(pageChanged)="onPageChanged($event)" 
+			>
+			></app-paging>
+			<br>
+			<br>
+		    <div class="d-flex justify-contents-between align-items-center">
+			   <div class="form-inline mt-2" *ngIf="indTypes">
+				  <input (keyup.enter)="onSearch()" type="text" class="stdd mx-2 form-control w300" #search placeholder="Search">
+				  <button (click)="onSearch()" class="btn btn-outline-primary my-1">Search</button>
+				  <button (click)="onReset()" class="btn btn-outline-success mx-2 my-1">Reset</button>
+				 <div class="stdd pull-right">
+					<button class="stdd btn btn-outline-success ml-2 my-1 fa fa-plus" routerLink="/orders/add"></button>
+					<button class="stdd btn btn-outline-success ml-2 my-1 fa fa-undo" (click)="goBack()" ></button>
+				 </div> 
+			   </div>
+		    </div>
+	     </div>
+		 
+		 <div class="b ul">Categories</div>
+		<div class="justify-contents-between align-items-center row">
+				
+				<br>
+				<div *ngFor="let c of indTypes" >
+					<div class="stdd w300">{{c.name}}</div>
+					<div class="stdd w50 pull-right fa fa-trash red" title="delete this category" (click)="deleteIndustry(c.id, c.name)"></div>
+					<div class="stdd w50 pull-right fa fa-pencil" title="edit this category" (click)="openIndTypeEditModal(c)"></div>
+				</div>
+				<div class="d-flex justify-content-between align-items-center mt-2" *ngIf="totalCount > 0">
+				</div>
+		</div>
+	<div>
+ </div>

@@ -15,6 +15,7 @@ using AutoMapper;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Net.Http.Headers;
+using core.Entities.AccountsNFinance;
 
 namespace api.Controllers
 {
@@ -341,6 +342,7 @@ namespace api.Controllers
                     await _userManager.UpdateAsync(user);
                }
      
+          
                dtoToReturn.CandidateId = candidateCreated.Id;
                dtoToReturn.UserAttachments = candidateCreated.UserAttachments;
                dtoToReturn.ApplicationNo = candidateCreated.ApplicationNo;

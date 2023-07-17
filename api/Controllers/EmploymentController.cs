@@ -23,6 +23,7 @@ namespace api.Controllers
           public async Task<ActionResult<Pagination<Employment>>> GetEmployments([FromQuery] EmploymentParams employmentParams)
           {
               var emps = await _employmentService.GetEmployments(employmentParams);
+              
               if(emps == null) return BadRequest("failed to return matching records");
 
               return Ok(emps);

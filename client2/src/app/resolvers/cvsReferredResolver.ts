@@ -17,13 +17,6 @@ import { CVRefParams } from "../shared/params/admin/cvRefParams";
         var refparams = new CVRefParams();
         var id = route.paramMap.get('orderid');
         if(id==='' || id==='0' || id === null) {
-            /* id = route.paramMap.get('orderitemid');
-            if (id === '' || id === null) {
-                return of(undefined);
-            } else {
-                refparams.orderItemId=+id;
-            }
-            */
            return of(undefined);
         } else {
             refparams.orderId=+id;

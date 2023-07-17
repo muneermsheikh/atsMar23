@@ -7,10 +7,13 @@ namespace core.Dtos
     {
         public bool LogInCredential {get; set;}
         public int AppUerId {get; set;}
+        [Required, MaxLength(10)]
         public string Divn {get; set;}
         public int CompanyId {get; set;}
-        [Required, MaxLength(1)]public string Gender { get; set; }="M";
-        [MaxLength(5)]public string Title { get; set; }
+        [Required, MaxLength(1)]
+        public string Gender { get; set; }="M";
+        [MaxLength(5)]
+        public string Title { get; set; }
         [Required, MaxLength(25)]
         public string OfficialName { get; set; }
         //public string SecondName { get; set; }
@@ -20,8 +23,8 @@ namespace core.Dtos
         public string Designation { get; set; }
         public string Nationality {get; set;}
         public string ImageUrl { get; set; }
-        
         public string PhoneNo {get; set;}
+        [Required, MinLength(10)]
         public string Mobile { get; set; }
         //public DateTime DOB { get; set; }
         //public string Add { get; set; }

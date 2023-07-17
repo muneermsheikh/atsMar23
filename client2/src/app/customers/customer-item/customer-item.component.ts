@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ICustomerBriefDto } from 'src/app/shared/dtos/admin/customerBriefDto';
 import { ICustomer } from 'src/app/shared/models/admin/customer';
 
@@ -8,6 +8,7 @@ import { ICustomer } from 'src/app/shared/models/admin/customer';
   styleUrls: ['./customer-item.component.css']
 })
 export class CustomerItemComponent implements OnInit {
+  @Output() editCustEvent = new EventEmitter<number>();
 
   @Input() cust: ICustomerBriefDto | undefined;
   
@@ -16,4 +17,7 @@ export class CustomerItemComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  edit() {
+    if(this.cust !== undefined) this.editCustEvent.emit(this.cust.id);
+  }
 }

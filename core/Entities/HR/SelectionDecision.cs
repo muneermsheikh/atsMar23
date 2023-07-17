@@ -29,21 +29,23 @@ namespace core.Entities.HR
 
         public SelectionDecision(int categoryId, string categoryName, int orderId, int orderNo, string customerName, 
             int applicationNo, string candidateName, DateTime decisionDate, int selectionStatusId, string remarks, 
-            CVRef cvRef, Employment employment)
+            int orderitemid, int candidateid,DateTime selectedon,
+            int charges, CVRef cvRef, Employment employment)
            {
                //CVRefId = cVRefId;
-               //OrderItemId = orderItemId;
+               OrderItemId = orderitemid;
                CategoryId = categoryId;
                CategoryName = categoryName;
                OrderId = orderId;
                OrderNo = orderNo;
                CustomerName = customerName;
                ApplicationNo = applicationNo;
-               //CandidateId = candidateId;
+               CandidateId = candidateid;
                CandidateName = candidateName;
                DecisionDate = decisionDate;
                SelectionStatusId = selectionStatusId;
                Remarks = remarks;
+               Charges=charges;
                CVRef = cvRef;
                Employment = employment;
           }

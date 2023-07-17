@@ -163,10 +163,10 @@ namespace infra.Services
                               dbChanged=true;
                          }
                     } else {
-                         //add the record for cVRef
-                         cvref =new CVRef(q.OrderItemId, q.CategoryId, q.OrderId, q.OrderNo,
+                         //add the record for cVRef 
+                         cvref =new CVRef(q.OrderItemId, q.CandidateId, q.CategoryId, q.OrderId, q.OrderNo,
                               q.CustomerName, q.CategoryName, q.CandidateId, q.Ecnr, q.ApplicationNo,
-                              q.CandidateName, dateTimeNow
+                              q.CandidateName, dateTimeNow, dateTimeNow
                               , q.Charges    //, (int)q.ChargesAgreed
                               , (int)q.HRExecId , 
                               q.CandidateAssessmentId);
@@ -392,7 +392,7 @@ namespace infra.Services
 
           public async Task<bool> DeleteReferral(CVRef cvref)
           {
-               if (await _context.Deploys.Where(x => x.CVRefId == cvref.Id).ToListAsync() != null)
+               if (await _context.Deploys.Where(x => x.DeployCVRefId == cvref.Id).ToListAsync() != null)
                {
                     throw new System.Exception("The referral has related records in Deployments");
                }
@@ -559,8 +559,8 @@ namespace infra.Services
                }).FirstOrDefaultAsync();
 
                if (qry != null) {
-               var deploys = (from d in _context.Deploys where d.CVRefId==CVRefId
-                    select new DeployDto(d.Id, d.CVRefId, d.TransactionDate, Convert.ToInt32(d.Sequence), 
+               var deploys = (from d in _context.Deploys where d.DeployCVRefId==CVRefId
+                    select new DeployDto(d.Id, d.DeployCVRefId, d.TransactionDate, Convert.ToInt32(d.Sequence), 
                     Convert.ToInt32(d.NextSequence), d.NextStageDate))
                     .AsQueryable();
 

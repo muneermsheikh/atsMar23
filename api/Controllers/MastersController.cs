@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using api.Errors;
 using core.Entities;
 using core.Entities.Admin;
@@ -12,8 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-     //[Authorize]    //(Roles = "Admin, HRManager, HRSupervisor")]
-     public class MastersController : BaseApiController
+    //[Authorize]    //(Roles = "Admin, HRManager, HRSupervisor")]
+    public class MastersController : BaseApiController
      {
           private readonly IMastersService _mastersService;
           public MastersController(IMastersService mastersService)
@@ -41,10 +39,10 @@ namespace api.Controllers
           }
 
           //[Authorize]         //(Policy = "MastersEditRole")]
-          [HttpDelete("deletecategory")]
-          public async Task<ActionResult<bool>> DeleteCategory(Category category)
+          [HttpDelete("deletecategory/{categoryid}")]
+          public async Task<ActionResult<bool>> DeleteCategory(int categoryid)
           {
-               var succeeded = await _mastersService.DeleteCategoryAsync(category);
+               var succeeded = await _mastersService.DeleteCategoryAsync(categoryid);
                if (!succeeded) return BadRequest(new ApiResponse(400, "Failed to delete the category"));
                return true;
           }
@@ -86,10 +84,10 @@ namespace api.Controllers
           }
 
           //[Authorize]         //(Policy = "MastersEditRole")]
-          [HttpDelete("deleteindustry")]
-          public async Task<ActionResult<bool>> DeleteCategory(Industry industry)
+          [HttpDelete("deleteindustry/{industryid}")]
+          public async Task<ActionResult<bool>> DeleteIndustry(int industryid)
           {
-               var succeeded = await _mastersService.DeleteIndustryyAsync(industry);
+               var succeeded = await _mastersService.DeleteIndustryyAsync(industryid);
                if (!succeeded) return BadRequest(new ApiResponse(400, "Failed to delete the industry"));
                return true;
           }
@@ -101,14 +99,6 @@ namespace api.Controllers
                if (item!=null) return BadRequest(new ApiResponse(404, "Not Found"));
                return Ok(item);
           }
-          
-          [HttpGet("industrylist")]
-          public async Task<ActionResult<Industry>> GetIndustryListAsync(IndustrySpecParams industryParams)
-          {
-               var lst = await _mastersService.GetIndustryListAsync(industryParams);
-               if (lst == null) return BadRequest(new ApiResponse(400, "no data returned"));
-               return Ok(lst);
-          }
 
           [HttpGet("industrieslist")]
           public async Task<ActionResult<ICollection<Industry>>> GetIndustriesListAsync()
@@ -116,6 +106,16 @@ namespace api.Controllers
                var lst = await _mastersService.GetIndustryListWOPaginationAsync();
                return Ok(lst);
           }
+
+          [HttpGet("indpaginated")]
+          public async Task<ActionResult<Pagination<Category>>> GetIndustryTypes([FromQuery] IndustrySpecParams IParams)
+          {
+               var lst = await _mastersService.GetIndustryPaginated(IParams);
+               if (lst == null) return BadRequest(new ApiResponse(400, "no data returned"));
+               return Ok(lst);
+          }
+
+
           
           [HttpGet("skilldatalist")]
           public async Task<ActionResult<ICollection<SkillData>>> GetSkillDataListAsync()
@@ -143,10 +143,10 @@ namespace api.Controllers
                return true;
           }
 
-          [HttpDelete("deleteq")]
-          public async Task<ActionResult<bool>> DeleteCategory(Qualification qualification)
+          [HttpDelete("deletequalification/{qualificationid}")]
+          public async Task<ActionResult<bool>> DeleteQualification(int qualificationid)
           {
-               var succeeded = await _mastersService.DeleteQualificationAsync(qualification);
+               var succeeded = await _mastersService.DeleteQualificationAsync(qualificationid);
                if (!succeeded) return BadRequest(new ApiResponse(400, "Failed to delete the qualification"));
                return true;
           }
@@ -155,14 +155,6 @@ namespace api.Controllers
           public async Task<ActionResult<Pagination<Qualification>>> GetQListPaginatedAsync([FromQuery] QualificationSpecParams specs)
           {
                var lst = await _mastersService.GetQualificationPaginated(specs);
-               if (lst == null) return BadRequest(new ApiResponse(400, "no data returned"));
-               return Ok(lst);
-          }
-
-          [HttpGet("qualifications")]
-          public async Task<ActionResult<Pagination<Qualification>>> GetQListAsync(QualificationSpecParams specParams)
-          {
-               var lst = await _mastersService.GetQualificationPaginated(specParams);
                if (lst == null) return BadRequest(new ApiResponse(400, "no data returned"));
                return Ok(lst);
           }

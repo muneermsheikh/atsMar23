@@ -5,7 +5,7 @@
           <div>
                <a class="navbar-brand" routerLink='/' routerLinkActive='active' >Ideal Solutions</a>
                <a class="p-2" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" >Home</a>
-               <a class="p-2" routerLink="/candidate/add" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" >Add CV</a>
+               <a class="p-2" routerLink="/candidates/add" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" >Add CV</a>
                <ng-container *ngIf="currentUser$ | async">
                     <ul class="navbar-nav me-auto" style="display: inline-block;">
                     <li class="nav-item mx-2" style="display: inline-block;">
@@ -25,7 +25,7 @@
                          <a class="nav-link" routerLink='candidate/historyfromcvid/0' routerLinkActive='active'>Call History</a>
                     </li>
                     <li class="nav-item mx-2" style="display: inline-block;">
-                         <a class="nav-link" routerLink='/prospectives/false' routerLinkActive='active'>Prospective</a>
+                         <a class="nav-link" routerLink='/prospectives' routerLinkActive='active'>Prospective</a>
                     </li>
 
                     <li class="nav-item mx-2" style="display: inline-block;">

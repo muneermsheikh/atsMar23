@@ -1,0 +1,22 @@
+<div *ngIf="t===null">
+	No Chart of Accounts data on record
+ </div>
+ <div *ngIf="t!==null && t!==undefined" >
+ 	<div class="stdd row mb-0 ">
+		<div class="stdd w100" title="view this account" (click)="viewCOA(t)" >{{t.divn}}</div>
+		<div class="stdd w300" (click)="updateCOA(t)" title="edit this account">{{t.accountName}}</div>
+		<div class="stdd w75 rTop" title="click to display statement of account of this account" 
+			(click)="statementOfAccount(t.id)">{{t.accountType}}</div>
+		<div class="stdd w100 rAlign" style="border:aqua" >{{t.opBalance}} </div>
+		
+		<div class="stdd w30 fa fa-pencil" style="margin-left: 30px;" title="edit this chart of account" (click)="editCOA()" ></div>
+		<div class="stdd w30 mx-3 fa fa-table" title="statement of account" (click)="statementOfAccount(t.id)" ></div>
+		<div class="stdd w30 mx-2 green fa fa-pencil" *ngIf="t.accountClass==='candidate'"
+			title="update accountname to include application number" (click)="updateCandidateAccountName()" 
+		></div>
+		<div class="stdd w30 fa fa-trash red" title="delete this account along with all its tranactions" (click)="deleteTransaction(t.id)" ></div>
+
+	</div>
+ </div>
+ 
+ 

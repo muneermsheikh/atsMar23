@@ -3,8 +3,21 @@
     Employments
 </div>
 <div class="container d-flex justify-contents-between align-items-center mt-5">
+    <div class="col-4">
+            <label class="stdd w150">Not Approved:</label>
+            <input class="stdd mx-3" type="checkbox" value="true" [(ngModel)]="notApproved">
+            <br><label class="stdd w150">Only Approved:</label>
+            <input class="stdd mx-3" type="checkbox" [(ngModel)]="approved">
+            <br><label class="stdd w150">Order Number:</label>
+            <input class="stdd mx-3 w75" type="text" [(ngModel)]="orderNo">
+            <br><label class="stdd w150">Application No:</label>
+            <input class="stdd mx-3 w75" type="text" [(ngModel)]="applicationNo">
+
+    </div>
+    <div class="col-4">
+        <button class="stdd" (click)="showEmployments()" title="display list of emploments">Show Employment list</button>
+        <button class="stdd fa fa-undo" title="go back to home" routerLink="/employments" ></button>
     
-    <button class="stdd" routerLink="/employments/list" title="display list of emploments">Employment list</button>
-    <button class="stdd fa fa-undo" title="go back to home" routerLink="/employments" ></button>
+    </div>
 
 </div>

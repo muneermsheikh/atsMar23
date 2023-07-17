@@ -6,6 +6,7 @@ using core.Entities.EmailandSMS;
 using core.Entities.HR;
 using core.Entities.MasterEntities;
 using core.Entities.Orders;
+using core.Entities.Process;
 using core.Entities.Tasks;
 using core.Entities.Users;
 using Microsoft.Extensions.Logging;
@@ -17,16 +18,15 @@ namespace infra.Data
         public static async Task SeedAsync(ATSContext context)
         {
             
-
-                /*
+                //finance
                 if (!context.COAs.Any()) {
-                    var jsonData = File.ReadAllText("../infra/data/SeedData/AccountsCOASeedData.json");
-                    var fileData = JsonSerializer.Deserialize<List<Coa>>(jsonData);
-                    foreach(var item in fileData) {
+                    var jsonDatam = File.ReadAllText("../infra/data/SeedData/AccountsCOASeedData.json");
+                    var fileDatam = JsonSerializer.Deserialize<List<Coa>>(jsonDatam);
+                    foreach(var item in fileDatam) {
                         context.COAs.Add(item);
                     }
+                    await context.SaveChangesAsync();
                 }
-                */
                 
                 if (!context.DeployStages.Any()) {
                     var jsonData = File.ReadAllText("../infra/data/SeedData/DeployStageSeedData.json");
@@ -38,6 +38,15 @@ namespace infra.Data
                     await context.SaveChangesAsync();
                 }
                 
+                if (!context.Deployments.Any()) {
+                    var jsnData2 = File.ReadAllText("../infra/data/SeedData/DeploySeedData.json");
+                    var fData2 = JsonSerializer.Deserialize<List<Deployment>>(jsnData2);
+                    foreach(var item in fData2) {
+                        context.Deployments.Add(item);
+                    }
+
+                    await context.SaveChangesAsync();
+                }
                 
                 if (!context.Helps.Any()) {
                     var jsonData = File.ReadAllText("../infra/data/SeedData/HelpSeedData.json");
@@ -48,6 +57,7 @@ namespace infra.Data
                     await context.SaveChangesAsync();
                 }
                 
+
                 if(!context.FinanceVouchers.Any()) 
                 {
                     var jsonD = File.ReadAllText("../infra/data/SeedData/FinanceVoucherSeedData.json");
@@ -67,6 +77,7 @@ namespace infra.Data
                     }
                     await context.SaveChangesAsync();
                 }
+
 
                 if (!context.ContactResults.Any()) {
                     var jsonData = File.ReadAllText("../infra/data/SeedData/ContactResultSeedData.json");

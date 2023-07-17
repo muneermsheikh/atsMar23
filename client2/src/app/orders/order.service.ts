@@ -110,7 +110,7 @@ export class OrderService {
     }
 
     acknowledgeOrderToClient(orderid: number) {
-      return this.http.get<IMessage>(this.apiUrl + 'orders/ackToClient/' + orderid);
+      return this.http.get<boolean>(this.apiUrl + 'ordersget/ackToClient/' + orderid);
     }
 
     getOpenOrderItemCategoriesDto() {

@@ -3,10 +3,10 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { DeployService } from '../deploy.service';
 import { IDeployStage } from 'src/app/shared/models/masters/deployStage';
-import { IDeploymentDto } from 'src/app/shared/models/process/deploymentdto';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ICVReferredDto, IDeployDto } from 'src/app/shared/dtos/admin/cvReferredDto';
-import { IDeployment } from 'src/app/shared/models/process/deploy';
+import { CVReferredDto, ICVReferredDto, IDeployDto } from 'src/app/shared/dtos/admin/cvReferredDto';
+import { Deployment, IDeployment } from 'src/app/shared/models/process/deployment';
+import { CVRefDto, ICVRefDto } from 'src/app/shared/dtos/admin/cvRefDto';
 
 @Component({
   selector: 'app-deploy-add-modal',
@@ -27,7 +27,11 @@ export class DeployAddModalComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder
-    , public bsModalRef: BsModalRef, private toastr: ToastrService, private service: DeployService ) { }
+    , public bsModalRef: BsModalRef
+    , private toastr: ToastrService
+    , private service: DeployService 
+    
+    ) { }
 
   ngOnInit(): void {
     /*this.service.getDeployStatus().subscribe(response => {
@@ -50,7 +54,7 @@ export class DeployAddModalComponent implements OnInit {
         applicationNo: 0,
         candidateName: '',
         selectedOn: '',
-        deploymentItems: this.fb.array([])
+        deployments: this.fb.array([])
     })
   }
 
@@ -62,14 +66,14 @@ export class DeployAddModalComponent implements OnInit {
       selectedOn: cv.selectedOn
     });
 
-    this.form.setControl('deploymentItems', this.setExistingItems( cv.deployments ));
+    this.form.setControl('deployments', this.setExistingItems( cv.deployments ));
   }
 
   setExistingItems(items: IDeployDto[]): FormArray {
     const formArray = new FormArray([]);
     items.forEach(it => {
       formArray.push(this.fb.group({
-        id: it.id, cvRefId: it.cVRefId, transactionDate: it.transactionDate,
+        id: it.id, deployCVRefId: it.deployCVRefId, transactionDate: it.transactionDate,
         sequence: it.sequence, nextSequence: it.nextSequence, 
         nextStageDate: it.nextStageDate
       }))
@@ -79,8 +83,15 @@ export class DeployAddModalComponent implements OnInit {
   
   update() {
 
-      this.service.updateDeployment(this.form.value).subscribe({
+    //this.EditEvent.emit(this.form.value);
+    //this.bsModalRef.hide();
+    
+
+    var model = this.form.value;
+    var dep= this.form.get('deployments')?.value;
+      this.service.updateDeployment(dep).subscribe({
         next: (success: boolean) => {
+          console.log('deploy add modal edit event, subscribed value:', success);
           this.EditEvent.emit(success);
           this.bsModalRef.hide();
         },
@@ -92,33 +103,43 @@ export class DeployAddModalComponent implements OnInit {
     
   }
 
-  get deploymentItems(): FormArray {
-      return this.form.get('deploymentItems') as FormArray;
+  close() {
+    this.EditEvent.emit(false);
+    this.bsModalRef.hide();
+  }
+
+  get deployments(): FormArray {
+      return this.form.get('deployments') as FormArray;
   }
 
   newItem(): FormGroup{
     var seq = this.getSequenceForNextTransaction();
     var dt = new Date();
 
-    return this.fb.group({
-      id:0, 
-      cVRefId: this.ref!.cvRefId, 
-      sequence: seq,
-      nextSequence: this.getNextSequenceInDepStatuses(seq),
-      transactionDate: dt,
-      nextStageDate: this.getNextStageDateForNextTransaction(dt,seq)
-      
-    })
+    console.log('ref:', this.ref);
+
+      var cvrefid = this.ref===null ? 0 : this.ref?.cvRefId;
+
+      return this.fb.group({
+        id:0, 
+        cVRefId: cvrefid, 
+        sequence: seq,
+        nextSequence: this.getNextSequenceInDepStatuses(seq),
+        transactionDate: dt,
+        nextStageDate: this.getNextStageDateForNextTransaction(dt,seq)
+        
+      })
+  
   }
 
   addItem() {
-    this.deploymentItems.push(this.newItem());
+    this.deployments.push(this.newItem());
   }
 
   removeItem(i: number) {
-    this.deploymentItems.removeAt(i);
-    this.deploymentItems.markAsDirty();
-    this.deploymentItems.markAsTouched();
+    this.deployments.removeAt(i);
+    this.deployments.markAsDirty();
+    this.deployments.markAsTouched();
   }
 
   getSequenceForNextTransaction(): number {
@@ -136,7 +157,7 @@ export class DeployAddModalComponent implements OnInit {
   
   
   findMaxSeq(){
-    var t= Math.max(...this.deploymentItems.value.map((x:any) => x.sequence));
+    var t= Math.max(...this.deployments.value.map((x:any) => x.sequence));
     return t;
   }
 

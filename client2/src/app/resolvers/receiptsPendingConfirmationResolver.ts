@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import { Observable } from "rxjs";
 import { ConfirmReceiptsService } from "../finance/confirm-receipts.service";
-import { IPendingDebitApprovalDto } from "../shared/dtos/pendingDebitApprovalDto";
+import { IPendingDebitApprovalDto } from "../shared/dtos/finance/pendingDebitApprovalDto";
 
 @Injectable({
      providedIn: 'root'

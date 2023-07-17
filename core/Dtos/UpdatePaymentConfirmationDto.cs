@@ -9,6 +9,7 @@ namespace core.Dtos
     {
         public int VoucherEntryId { get; set; }
         public bool DrEntryApproved { get; set; }
-        public DateTime DrEntryReviewedOn { get; set; }
+        public DateTime DrEntryApprovedOn { get; set; }
+        public int DrEntryApprovedByEmployeeById {get; set;}
     }
 }

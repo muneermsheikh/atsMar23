@@ -21,7 +21,7 @@ namespace core.Interfaces
             Task<OrderBriefDtoR> GetOrderBrief(int OrderId);
             //Task<ICollection<OrderBriefDtoR>> GetOpenOrdersBrief();
 
-            Task<EmailMessage> ComposeMsg_AckToClient(int orderid);
+            Task<bool> ComposeMsg_AckToClient(int orderid);
             
         //order items
             Task<IReadOnlyList<OrderItem>> GetOrderItemsByOrderIdAsync(int OrderId);

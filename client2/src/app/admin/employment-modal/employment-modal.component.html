@@ -28,7 +28,7 @@
                <div class="stdd w40"> months</div>
                
                <br><div class="stdd w100 b">SC</div>
-               <input type="number" class="stdd w70" [(ngModel)]="emp.charges" >
+               <input type="number" class="stdd w70" title="this value is not editable here" readonly [(ngModel)]="emp.charges" >
                <br><div class="stdd w150 b">Approved by</div> <div class="stdd w75">{{emp.approvedByEmpId}}</div>
                <br><div class="stdd w100 b">Approved On</div>
                <input type="checkbox" 
@@ -42,8 +42,9 @@
                <div class="stdd w30 b">On </div>
                <input class="stdd mx-2 w125"
                     type="text"
+                    id = "acceptedOn"
                     placeholder="Accepted On"
-                    [(ngModel)]="emp.offerAcceptedOn"
+                    [(ngModel)]="emp.approvedOn"
                     bsDatepicker
                     [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
                >   

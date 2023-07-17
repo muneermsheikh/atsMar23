@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CustomerListComponent } from './customer-list/customer-list.component';
 import { RouterModule } from '@angular/router';
-import { CustomerNameCityResolver } from '../resolvers/customerNameCityResolver';
 import { IndustriesResolver } from '../resolvers/industriesResolver';
 import { CustomersBriefResolver } from '../resolvers/customersBriefResolver';
 import { ClientEditComponent } from './clients/client-edit/client-edit.component';
@@ -12,16 +11,17 @@ import { CategoryListResolver } from '../resolvers/categoryListResolver';
 
 const routes = [
   {path: '', component: CustomersIndexComponent,
-    resolvers: {
+    /*resolvers: {
       customerCities: CustomerNameCityResolver,
       industryTypes: IndustriesResolver,
       customers: CustomersBriefResolver
-    }},
+    } */
+  },
   
   {path: 'customerlist/:custType', component: CustomerListComponent,
     resolvers: {
-      customerCities: CustomerNameCityResolver,
-      industryTypes: IndustriesResolver,
+      //customerCities: CustomerNameCityResolver,
+      //industryTypes: IndustriesResolver,
       customers: CustomersBriefResolver
     }},
 

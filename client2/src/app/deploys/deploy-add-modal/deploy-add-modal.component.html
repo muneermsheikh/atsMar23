@@ -1,7 +1,7 @@
 <div class="modal-header" >
-	
+	<label class="stdd b w300">Edit Deployments</label>	
 	<button type="button" class="btn btn-success fa fa-check" (click)="update()"></button>
-	<button type="button" class="btn btn-close mx-2 close pull-right" aria-label="Close" (click)="bsModalRef.hide()">X</button>
+	<button type="button" class="btn btn-close mx-2 close pull-right" aria-label="Close" (click)="close()">X</button>
 
 </div>
  
@@ -9,22 +9,23 @@
 	<form [formGroup]="form">
 		<div>
 			<label class="stdd b w100">Candidate: </label>
-			<input type="text" class="stdd w50" formControlName="applicationNo" >
-			<input type="text" class="stdd w50" formControlName="candidateName">
+			<input type="text" class="stdd w100" formControlName="applicationNo" >
+			<input type="text" class="stdd w300" formControlName="candidateName">
 			
-			<label class="stdd b w100">Category:</label>
-			<input type="text" class="stdd w300" formControlName="categoryRef" >
+			<br><label class="stdd b w100">Category:</label>
+			<input type="text" class="stdd w300" formControlName="categoryName" >
 			
-			<label class="stdd b w100">Date</label>
-			<label class="stdd b w225">Status</label>
+			<hr style="margin-top: 3px; margin-bottom: 0px">
+			<br><label class="stdd b mx-2 w100 fSmall">Date</label>
+			<label class="stdd b w225 fSmall">Status</label>
 			
-			<label class="stdd b w225">Next Status</label>
-			<label class="stdd b w100">Next Stage dt</label>
-			<button type="button" (click)="addItem()" class="stdd alignR mx-1 fa fa-plus blue"></button>
+			<label class="stdd b w225 fSmall">Next Status</label>
+			<label class="stdd b w150 fSmall">Next Stage dt</label>
+			<button type="button" (click)="addItem()" class="stdd fSmall mx-1 fa fa-plus blue pull-right"></button>
 			
 		</div>
-		<div formArrayName="deploymentItems">
-			<div *ngFor="let item of deploymentItems.controls; let i=index">
+		<div formArrayName="deployments">
+			<div *ngFor="let item of deployments.controls; let i=index">
 				<div [formGroupName]="i">
 	
 					<input class="stdd w100 mx-2" 
@@ -76,3 +77,7 @@
     
 </div>
 
+<!-- <div style="font-size: smaller;">
+	{{form.value | json}}
+ </div>
+-->

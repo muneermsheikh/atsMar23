@@ -1,5 +1,5 @@
 import { IDeployStage } from "../../models/masters/deployStage";
-import { Deployment, IDeployment } from "../../models/process/deploy";
+import { Deployment, IDeployment } from "../../models/process/deployment";
 
 export interface IDeployHeaderDto
 {

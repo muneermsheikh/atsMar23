@@ -36,6 +36,6 @@ export class FinanceVoucher implements IFinanceVoucher
 	narration = '';
 	approved= false;
 	voucherEntries: VoucherEntry[]=[];
-	voucherAttachments: IVoucherAttachment[];
+	voucherAttachments: IVoucherAttachment[]=[];
 }
 

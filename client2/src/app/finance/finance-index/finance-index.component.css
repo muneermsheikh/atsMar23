@@ -1,0 +1,26 @@
+.stdd{
+    display: inline-block;
+    vertical-align: top;
+}
+
+.vAlignTop5px {
+    vertical-align: top;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+.b {font-weight: bold;}
+.w45 {width: 45px;}
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w120 {width: 120px;}
+.w250 {width: 250px;}
+.w200 {width: 200px;}
+
+.w350 {width: 350px;}
+
+.tAlignRight {text-align: right;}
+.tAlignCenter {text-align: center;}
+
+.red {color: red};
+.black {color: black;}

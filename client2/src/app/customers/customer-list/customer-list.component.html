@@ -53,7 +53,10 @@
                <div class="mx-1" style="display: inline-block; width: 200px;">Industries</div>
           </div>
           <div class="row" *ngFor="let cust of customers" >
-               <app-customer-item [cust]="cust"></app-customer-item>
+               <app-customer-item 
+                    [cust]="cust"
+                    (editCustEvent)="editCustomer($event)"
+               ></app-customer-item>
           </div>
           <br>
           <div>

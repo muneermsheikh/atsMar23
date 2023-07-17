@@ -1,14 +1,14 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { IQualification } from 'src/app/shared/models/masters/profession';
 import { paramsMasters } from 'src/app/shared/params/masters/paramsMasters';
 import { MastersService } from '../masters.service';
 import { ToastrService } from 'ngx-toastr';
-import { CategoryEditModalComponent } from '../category-edit-modal/category-edit-modal.component';
-import { IPagination } from 'src/app/shared/models/pagination';
 import { Navigation, Router } from '@angular/router';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { IUser } from 'src/app/shared/models/admin/user';
+import { MasterEditModalComponent } from '../master-edit-modal/master-edit-modal.component';
+import { ConfirmService } from 'src/app/shared/services/confirm.service';
+import { IQualification } from 'src/app/shared/models/hr/qualification';
 
 @Component({
   selector: 'app-qualifications',
@@ -31,6 +31,7 @@ export class QualificationsComponent implements OnInit {
       private toastr: ToastrService
       , private router: Router
       , private bcService: BreadcrumbService
+      , private confirmService: ConfirmService
   ) { 
           //this.routeId = this.activatedRoute.snapshot.params['id'];
       //this.router.routeReuseStrategy.shouldReuseRoute = () => false;
@@ -94,20 +95,26 @@ export class QualificationsComponent implements OnInit {
     }
   }
 
-  openQualificationEditModal(index: number, categoryString: string) {
+  editQualification(index: number, categoryString: string) {
     const initialState = {
-      str: categoryString
+      title: 'Edit Qualification',
+      caption: 'Qualification ',
+      returnString: categoryString
     };
-    this.bsModalRef = this.modalService.show(CategoryEditModalComponent, {initialState});
+    this.bsModalRef = this.modalService.show(MasterEditModalComponent, {initialState});
 
     //returned from modal
-    this.bsModalRef.content.update.updateStringName.subscribe((values: any) => {
+    this.bsModalRef.content.editedStringName.subscribe((values: any) => {
       if(values === categoryString) {
         this.toastr.warning('Qualification value not changed');
         return;
       } else {
         this.mastersService.updateQualification(index, values).subscribe(response => {
-          this.toastr.success('category value updated');
+          if(response) {
+            this.toastr.success('Qualification value updated');
+          } else {
+            this.toastr.warning('failed to update the qualification');
+          }
         }, (error: any) => {
           this.toastr.error(error);
         })
@@ -115,9 +122,33 @@ export class QualificationsComponent implements OnInit {
     })
   }
 
-  deleteQ(id: number){
+  deleteQ(id: number, cat: string){
+
+    this.confirmService.confirm("Confirm", "Confirm if you want to delete the Qualification '" + 
+      cat + "' ").subscribe({
+        next: response => {
+          if(!response) return;
+        },
+        error: err => {
+          this.toastr.error('Error occured in getting the confirmation');
+          return;
+        }
+      })
     
+    this.mastersService.deleteQualification(id).subscribe({
+      next: response => {
+        if(response)  {
+          this.toastr.success('Qualification deleted')
+         } else {
+          this.toastr.info('failed to delete the Qualification')
+         }
+      }, 
+        error: err => this.toastr.error('error in deleting the Qualification')
+    })
   }
 
+  goBack() {
+    this.router.navigateByUrl(this.returnUrl);
+  }
 
 }

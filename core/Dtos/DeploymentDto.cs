@@ -3,7 +3,7 @@ namespace core.Dtos
     public class DeploymentDto
     {
         public int Id { get; set; }
-        public int CVRefId { get; set; }
+        public int DeployCVRefId { get; set; }
         public DateTime TransactionDate { get; set; }
         public int Sequence {get; set;}
         //public string StageName { get; set; }

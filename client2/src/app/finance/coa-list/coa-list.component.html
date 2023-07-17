@@ -1,0 +1,60 @@
+	<br><br>
+	<div style="font-size: small;">
+        <div class="d-flex justify-contents-between align-items-center">
+           <div class="stdd w50 rAlign mb-5">Sort by:</div>
+           <select name="" id="" class="fontSmall custom-select mb-2 w150" 
+               (change)="onSortSelected($event)"
+               >
+               <option *ngFor="let sort of sortOptions"
+                   [value] = "sort.value"
+               >{{sort.name}}</option>
+           </select>
+
+           <div class="stdd w75 mx-2">Search Text</div>
+           <div class="stdd form-inline" *ngIf="coas">
+               <input (keyup.enter)="onSearch()" type="text" class="fontSmall form-control w150 mx-2" #search 
+                placeholder="Search">
+               <button (click)="onSearch()" class="fontSmall btn btn-outline-primary mx-2 blue">Search</button>
+               <button (click)="onReset()" class="fontSmall btn btn-outline-success blue">Reset</button>
+               <button class="fontSmall" (click)="editCOAModal(null)" 
+                   class="btn btn-outline-success fa fa-plus mx-2 blue"></button>
+                <!--                    //routerLink="/finance/addaccount" -->
+               <button class="fontSmall" (click)="returnToCaller()"
+                   class="btn btn-outline-success fa fa-undo mx-2 blue"></button>
+           </div>
+           <app-paging-header
+                [totalCount]="totalCount"
+                [pageNumber]="sParams.pageNumber"
+                [pageSize]="sParams.pageSize"
+            >
+            </app-paging-header>
+            
+            <app-paging 
+                [pageSize]="sParams.pageSize" 
+                [totalCount]="totalCount" 
+                [pageNumber]="sParams.pageNumber" 
+                (pageChanged)="onPageChanged($event)"  
+            > </app-paging>            
+       </div>
+   </div>
+           
+
+   <hr>
+   <div class="container">
+       <div class="stdd w100 b" >Divn</div>    
+       <div class="stdd w300 b">Account Name</div>
+       <div class="stdd w75 b">Type</div>
+       <div class="stdd w100 b">Op Balance</div>
+       <div class="row" *ngFor="let c of coas" >
+           <app-coa-item 
+               [t]="c"
+               (editEvent)="editCOAModal($event)"
+               (viewEvent)="viewCoa($event)"
+               (deleteEvent)="deleteCoa($event)"
+               (statementOfAccountEvent)="statementOfAccount($event)"
+           >	
+   
+           </app-coa-item>
+       </div>
+   </div>
+   

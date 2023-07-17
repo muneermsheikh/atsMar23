@@ -24,7 +24,7 @@
 				  <button (click)="onReset()" class="btn btn-outline-success mx-2 my-1">Reset</button>
 					<div class="stdd pull-right">
 						<button class="stdd btn btn-outline-success ml-2 my-1 fa fa-plus" routerLink="/orders/add"></button>
-						<button class="stdd btn btn-outline-success ml-2 my-1 fa fa-home" routerLink="/admin"></button>
+						<button class="stdd btn btn-outline-success ml-2 my-1 fa fa-undo" (click)="goBack()" ></button>
 					</div> 
 			   </div>
 		    </div>
@@ -35,7 +35,8 @@
 	     </div>
 	     <div class="d-flex justify-contents-between align-items-center row" *ngFor="let c of qualifications" >
 			<div class="stdd w300">{{c.name}}</div>
-			<div class="stdd w50 pull-right fa fa-trash red" (click)="deleteQ(c.id)"></div>
+			<div class="stdd w50 fa fa-pencil" (click)="editQualification(c.id, c.name)"></div>
+			<div class="stdd w50 pull-right fa fa-trash red" (click)="deleteQ(c.id, c.name)"></div>
 	     </div>
 	     <div class="d-flex justify-content-between align-items-center mt-2" *ngIf="totalCount > 0">
 	 </div>

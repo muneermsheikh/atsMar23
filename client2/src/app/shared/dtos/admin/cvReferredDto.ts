@@ -45,7 +45,7 @@ export class CVReferredDto implements ICVReferredDto
 export interface IDeployDto
 {
      id: number;
-     cVRefId: number;
+     deployCVRefId: number;
      transactionDate: Date;
      sequence: number;
      nextSequence: number;

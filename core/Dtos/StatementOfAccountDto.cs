@@ -23,7 +23,7 @@ namespace core.Dtos
 		public DateTime FromDate {get; set;}
 		public DateTime UptoDate {get; set;}
 		public long OpBalance {get; set;}
-		public long ClBalance {get; set;}
-        	public ICollection<StatementOfAccountItemDto> StatementOfAccountItems { get; set; }
+		public long ClBalance {get; set;}	//balance for the period
+        public ICollection<StatementOfAccountItemDto> StatementOfAccountItems { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace core.Dtos
         public DeployDto(int id, int cVRefId, DateTime transactionDate, int sequence, int nextSequence, DateTime nextStageDate)
         {
             Id = id;
-            CVRefId = cVRefId;
+            DeployCVRefId = cVRefId;
             TransactionDate = transactionDate;
             Sequence = sequence;
             NextSequence = nextSequence;
@@ -15,7 +15,7 @@ namespace core.Dtos
         }
 
         public int Id { get; set; }
-        public int CVRefId { get; set; }
+        public int DeployCVRefId { get; set; }
         public DateTime TransactionDate { get; set; }
         //public EnumDeployStatus Sequence { get; set; }
         public int Sequence { get; set; }

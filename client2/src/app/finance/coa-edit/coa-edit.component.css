@@ -1,0 +1,13 @@
+.stdd {display: inline-block;
+	margin-right: 1px;
+	margin-left: 1px;
+	padding-top: 2px;
+}
+
+.green {color: green;}
+
+.red {color: red;}
+
+.w50 {width: 50px;}
+.w100 {width: 100px;}
+.w300 {width: 300px;}

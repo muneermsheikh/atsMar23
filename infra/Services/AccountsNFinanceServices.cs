@@ -1,4 +1,5 @@
 using core.Dtos;
+using core.Dtos.fiance;
 using core.Entities.AccountsNFinance;
 using core.Entities.Attachments;
 using core.Interfaces;
@@ -39,32 +40,68 @@ namespace infra.Services
 			return coas;
 		}
 
-		public async Task<Coa> GetCoaForCandidate(int applicationno)
+		public async Task<ICollection<Coa>> GetCOAsForAccountGroup(string accountgroup) {
+			var coas = await _context.COAs
+				.Where(x => x.AccountClass.ToLower()== accountgroup.ToLower())
+				.OrderBy(x => x.AccountName).ToListAsync();
+			return coas;
+		}
+
+		public async Task<long> GetClosingBalIncludingSuspense(int accountid) {
+			int cl = 0;
+			var clBal = await (from entries in _context.VoucherEntries where entries.CoaId==accountid
+				group entries by entries.CoaId into g
+				select new {clBal= g.Sum(x => -x.Cr + x.Dr)})
+				.FirstOrDefaultAsync();
+			
+			if (clBal!=null) cl = Convert.ToInt32(clBal.clBal);
+			
+			var coa = await _context.COAs.FindAsync(accountid);
+
+			return cl + coa.OpBalance;
+
+		}
+		public async Task<CoaDto> GetOrCreateCoaForCandidate(int applicationno, bool create)
 		{
 			var candidate = await _context.Candidates.Where(x => x.ApplicationNo==applicationno).FirstOrDefaultAsync();
 			if(candidate==null) return null;
 
 			var ano=Convert.ToString(applicationno);
 			
-			var coa = await _context.COAs.Where(x => 
-				x.AccountClass.ToLower()=="candidate"
-				&& x.AccountName.Contains(ano) 
-				&& x.AccountType.ToLower()=="b")
-			.FirstOrDefaultAsync();
+			var coadto = await (from c in _context.COAs 
+				where c.AccountClass=="Candidate" 
+					&& c.AccountName.Contains(ano)
+					&& c.AccountType.ToLower()=="b"
+					select new CoaDto {
+						Id=c.Id,
+						AccountClass=c.AccountClass,
+						AccountName=c.AccountName,
+						AccountType=c.AccountType,
+					}
+				).SingleOrDefaultAsync();
 
-			if(coa==null) {
-				coa = new Coa("R", "B", 
-					"Candidate - " + candidate.FullName + " - Application " + ano,
-					"Candidate",0);
-				_context.COAs.Add(coa);
-				if (await _context.SaveChangesAsync()>0) {
-					return coa;
-				} else {
-					return null;
-				}
+			if(coadto == null & !create) return null;
+			
+			if(coadto==null && create) {
+				var dto = new COAToAddDto{
+					Divn = "R",
+					AccountType="B",
+					AccountName = candidate.FullName + "- App No." + candidate.ApplicationNo,
+					AccountClass="Candidate",
+					OpBalance=0
+				};
+				var coaCreated = await AddNewCOA(dto);
+				if (coaCreated==null) return null;
+				coadto = new CoaDto {
+					Id=coaCreated.Id, Divn=coaCreated.Divn, AccountType=coaCreated.AccountType,
+					AccountClass=coaCreated.AccountClass, AccountName=coaCreated.AccountName
+				};
 			}
+			//get cl balance
+			var clBal = await GetClosingBalIncludingSuspense(coadto.Id);
+			coadto.ClBalance=clBal;
 
-			return coa;
+			return coadto;
 
 		}
 		
@@ -115,9 +152,12 @@ namespace infra.Services
 		public async Task<Coa> AddNewCOA(COAToAddDto coa)
 		{
 			var obj = new Coa(coa.Divn, coa.AccountType, coa.AccountName, coa.AccountClass, coa.OpBalance);
-            	_context.Add(obj);
+            _context.Add(obj);
 
-			if(await _context.SaveChangesAsync() > 0) return obj;
+			var ct = await _context.SaveChangesAsync();
+
+			if (ct > 0) return obj;
+			
 			return null;
 		}
 
@@ -270,11 +310,39 @@ namespace infra.Services
 
 		}
 
+		public async Task<bool>UpdateCashAndBankDebitApprovals(ICollection<UpdatePaymentConfirmationDto> models)
+		{
+			var existingDBtoUpdate = await _context.VoucherEntries
+				.Where(x => models.Select(x => x.VoucherEntryId).ToList().Contains(x.CoaId))
+				.AsNoTracking() .ToListAsync();
+			
+			foreach(var item in models)
+			{
+				var existingItem = existingDBtoUpdate
+					.Where(c => c.Id == item.VoucherEntryId && c.Id != default(int)).SingleOrDefault();
+				if(existingItem != null) {
+					existingItem.DrEntryApproved=true;
+					existingItem.DrEntryApprovedOn=item.DrEntryApprovedOn;
+					existingItem.DrEntryApprovedByEmployeeById=item.DrEntryApprovedByEmployeeById;
+					_context.Entry(existingItem).State = EntityState.Modified;
+				}
+			}
+
+			return await _context.SaveChangesAsync() > 0;
+		}
+
 	//vouchers
-		public async Task<FinanceVoucher> AddNewVoucher(FinanceVoucherToAddDto dto, int loggedInEmployeeId)
+		public async Task<FinanceVoucher> AddNewVoucher(VoucherToAddDto dto, int loggedInEmployeeId)
 		{
 			var accountname=await GetAccountNameFromCOA(dto.CoaId);
 			if(string.IsNullOrEmpty(accountname)) return null;
+
+			dto.VoucherNo=await GetNextVoucherNo();
+			foreach(var item in dto.VoucherEntries) {
+				if(string.IsNullOrEmpty(item.AccountName)) {
+					item.AccountName = await GetAccountNameFromCOA(item.CoaId);
+				}
+			}
 
 			var t = new FinanceVoucher(dto.Divn, dto.VoucherNo, dto.VoucherDated, dto.CoaId, accountname, dto.Amount, loggedInEmployeeId, dto.Narration, dto.VoucherEntries);
 
@@ -300,7 +368,7 @@ namespace infra.Services
 			var trans = await qry.OrderBy(x => x.VoucherNo)
 				.Select(x => new FinanceVoucher {
 					Id=x.Id, VoucherNo=x.VoucherNo, VoucherDated=x.VoucherDated, CoaId=x.CoaId, AccountName=x.AccountName, 
-					Amount=x.Amount, Narration=x.Narration, Approved=x.Approved})
+					Amount=x.Amount, Narration=x.Narration})
 				.Skip((tParams.PageIndex-1)*tParams.PageSize).Take(tParams.PageSize)
 				.ToListAsync();
 			
@@ -346,13 +414,15 @@ namespace infra.Services
 			
 			var attachs = await _context.VoucherAttachments.Where(x => x.FinanceVoucherId==id).ToListAsync();
 
-			//trans.VoucherAttachments=attachs;
+			trans.VoucherAttachments=attachs;
 
 			return trans;
 		}
 
-		public async Task<StatementOfAccountDto> GetStatementOfAccount(int accountid, DateTime fromDate, DateTime uptoDate)
+		public async Task<StatementOfAccountDto> GetStatementOfAccount(int accountid, DateTime fromDate, DateTime UptoDate)
 		{
+			DateTime uptoDate = UptoDate.Hour < 1 ? UptoDate.AddHours(23) : UptoDate;
+			
 			var trans =  await (from i in _context.VoucherEntries where i.CoaId == accountid && i.TransDate >= fromDate && i.TransDate <= uptoDate
 				join v in _context.FinanceVouchers on i.FinanceVoucherId equals v.Id
 				join a in _context.COAs on i.CoaId equals a.Id
@@ -366,27 +436,47 @@ namespace infra.Services
 					Cr = i.Cr,
 					Narration = i.Narration
 				}).ToListAsync();
-			if(trans.Count ==0) return null;
-			
+						
+						
+			var transtest = await (from v in _context.VoucherEntries where v.CoaId==accountid 
+				select new {v.Id, v.TransDate, v.CoaId, v.AccountName, v.Dr, v.Cr}).OrderByDescending(x => x.TransDate).ToListAsync();
 			var opBal = await (from v in _context.VoucherEntries where v.CoaId==accountid && v.TransDate < fromDate
 				group v by v.CoaId into g 
-				select new {Id = g.Key, Bal = -g.Sum(e => e.Cr) + g.Sum(E => E.Dr)}).FirstOrDefaultAsync();
-			var clBal = await (from v in _context.VoucherEntries where v.CoaId==accountid && v.TransDate <= uptoDate
+				select new {Id = g.Key, Bal = g.Sum(e => -e.Cr) + g.Sum(E => E.Dr)}).FirstOrDefaultAsync();
+			var oclBalTest = await (from v in _context.VoucherEntries where v.CoaId==accountid && v.TransDate >= uptoDate
+				select new {v.Id, v.TransDate, v.CoaId, v.AccountName, v.Dr, v.Cr}).ToListAsync();
+
+			var BalForThePeriod = await (from v in _context.VoucherEntries 
+					where v.CoaId==accountid 
+						&& v.TransDate >= fromDate 
+						&& v.TransDate <= uptoDate
 				group v by v.CoaId into g 
 				select new {Id = g.Key, Bal = -g.Sum(e => e.Cr) + g.Sum(E => E.Dr)}).FirstOrDefaultAsync();
-
 
 			var dto = new StatementOfAccountDto{
 				AccountId=accountid,
-				AccountName=trans[0].AccountName, 
+				AccountName= trans.Count()==0 ? await GetAccountNameFromCOA(accountid) : trans[0].AccountName, 
 				FromDate = fromDate,
 				UptoDate = uptoDate,
 				StatementOfAccountItems = trans,
 				OpBalance = opBal==null? 0 : opBal.Bal,
-				ClBalance = clBal==null ? 0 : clBal.Bal
+				ClBalance = BalForThePeriod==null ? 0 : BalForThePeriod.Bal
 			};
 
 			return dto;	
+		}
+
+		public async Task<ICollection<PendingDebitApprovalDto>> GetPendingDebitApprovals()
+		{
+			var cashandbank = await _context.COAs.Where(x => x.AccountClass=="CashAndBank").Select(x => x.Id).ToListAsync();
+
+			var qry = await (from e in _context.VoucherEntries 
+				where e.DrEntryApproved != true & e.Dr > 0 & cashandbank.Contains(e.CoaId)
+				join v in _context.FinanceVouchers on e.FinanceVoucherId equals v.Id
+				select new PendingDebitApprovalDto(e.Id, v.VoucherNo, v.VoucherDated, e.CoaId,
+					 e.AccountName, e.Dr)).ToListAsync();
+			
+			return qry;
 		}
 
 		public async Task<ICollection<string>> GetMatchingCOANames(string testName)

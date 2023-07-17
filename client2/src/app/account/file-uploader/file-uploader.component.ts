@@ -93,8 +93,6 @@ export class FileUploaderComponent implements OnInit {
        this.member?.userAttachments.push(attachment);
        if(attachment.attachmentType==='photo' && this.member !== undefined) 
           this.member.photoUrl=attachment.url;
-       
-        
       }
     }
   }

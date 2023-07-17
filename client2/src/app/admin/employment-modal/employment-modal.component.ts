@@ -29,7 +29,7 @@ export class EmploymentModalComponent implements OnInit {
   }
 
   approvedClicked() {
-    this.toastr.info('aproved clicked');
+
     if(this.emp !== undefined && new Date(this.emp.approvedOn).getFullYear() < 2000){
       this.emp.approvedOn = new Date();
       this.toastr.info('date set');

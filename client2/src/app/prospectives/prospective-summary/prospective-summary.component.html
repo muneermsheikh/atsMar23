@@ -1,0 +1,57 @@
+<div >
+		<div class="stdd">
+			<!-- <app-paging-header [totalCount]="totalCount" [pageNumber]="sParams.pageNumber" [pageSize]="sParams.pageSize"></app-paging-header> -->
+			<div style="display:inline-block; margin-left: 10px; width: 350px;"  title="displays Task to edit if it exists.  To create a new task, select a candidate from the list">Search Task by App No, PP, Aadhar, phone or email</div>
+			<strong>Press Enter WHILE in the search box</strong>
+			<input (keyup.enter)="onSearch()" type="text" class="stdd form-control mx-2 w150" #search placeholder="Search">
+		
+			<button title="add a new User Contact Transaction" class="btn btn-primary ml-10 fa fa-plus-square" 
+				style="display:inline-block;" (click)="addNewUserTask()" ></button>
+		</div>
+	</div>
+<br>
+		
+
+<hr class="my-0 py- ml-5">
+<div class="stddV my-2 ml-5" >
+	<div class="stdd w120 b">Category</div>
+	<div class="stdd w50 b">Source</div>
+	<div class="stdd w75 b">Dated</div>
+	<div class="stdd w60 b">Int-<br>erested</div>
+	<div class="stdd w60 b">Pending</div>
+	<div class="stdd w60 b">Wrong<br>No</div>
+	<div class="stdd w60 b">No Resp-<br>onse</div>
+	<div class="stdd w60 b">Cannot<br>reach</div>
+	<div class="stdd w60 b">Contact<br>later</div>
+	<div class="stdd w60 b">Not Int<br>erested</div>
+	<div class="stdd w60 b">SC Not<br>Acceptd</div>
+	<div class="stdd w60 b">Low<br>Salary</div>
+	<div class="stdd w60 b">Passport<br>Issues</div>
+	<div class="stdd w60 b">Con<br>cluded</div>
+	<div class="stdd w60 b">Others</div>
+	<div class="stdd w60 b">Total</div>
+<hr class="my-0 py-0 ml-5">
+	<div *ngFor="let item of summary">
+		<div class="stdd w100" title="click to display list of items under this category and status"
+			>{{item.categoryRef}}</div>
+		<div class="stdd w50">{{item.source.substring(0,5)}}</div>
+		<div class="stdd w75">{{item.date | date: 'dd-MMM-yy'}}</div>
+		<a class="stdd w60 alignR" (click)="showDetails('Interested', item.categoryRef, item.date.toString(), item.notInterested)"
+			>{{item.notInterested}}</a>
+
+		<a class="stdd w60 alignR" (click)="showDetails('Pending', item.categoryRef, item.date.toString(), item.pending)"
+			>{{item.pending}}</a>
+		<div class="stdd w60 alignR" (click)="showDetails('PhoneNumberWrong', item.categoryRef, item.date.toString(), item.phoneNoWrong)">{{item.phoneNoWrong}}</div>
+		<div class="stdd w60 alignR" (click)="showDetails('PhoneUnanswered', item.categoryRef, item.date.toString(), item.notResponding)">{{item.notResponding}}</div>
+		<div class="stdd w60 alignR" (click)="showDetails('PhoneNotReachable', item.categoryRef, item.date.toString(), item.phoneNotReachable)">{{item.phoneNotReachable}}</div>
+		<div class="stdd w60 alignR" (click)="showDetails('AskedToReachHimLater', item.categoryRef, item.date.toString(), item.askedToContactLater)">{{item.askedToContactLater}}</div>
+		<div class="stdd w60 alignR" (click)="showDetails('NotInterested', item.categoryRef, item.date.toString(), item.notInterested)">{{item.notInterested}}</div>
+		<div class="stdd w60 alignR" (click)="showDetails('ServiceChargesNotAcceptable', item.categoryRef, item.date.toString(), item.scNotAcceptable)">{{item.scNotAcceptable}}</div>
+		<div class="stdd w60 alignR" (click)="showDetails('SalaryOfferedIsLow', item.categoryRef, item.date.toString(), item.lowSalary)">{{item.lowSalary}}</div>
+		<div class="stdd w60 alignR" (click)="showDetails('PPIssues', item.categoryRef, item.date.toString(), item.ppIssues)">{{item.ppIssues}}</div>
+		<div class="stdd w60 alignR" (click)="showDetails('Concluded', item.categoryRef, item.date.toString(), item.concluded)">{{item.concluded}}</div>
+		<div class="stdd w60 alignR" (click)="showDetails('Others', item.categoryRef, item.date.toString(), item.others)">{{item.others}}</div>
+		<div class="stdd w60 alignR" (click)="showProspectiveList(item.categoryRef)">{{item.total}}</div>
+		<hr style="margin-top: 0px; margin-bottom: 0px; color:blue">
+	</div>
+</div>

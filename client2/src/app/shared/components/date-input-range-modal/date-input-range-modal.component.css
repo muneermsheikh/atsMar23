@@ -1,0 +1,12 @@
+.w75 {width: 75px;}
+.w90 {width: 90px;}
+.w110 {width: 110px;}
+
+.b {font-weight: bold;}
+
+.rAlign {text-align: right;}
+
+.green {color: green;}
+.stdd {
+	display: inline-block;
+}

@@ -5,8 +5,8 @@
     <div class="stdd w150" >{{employment.candidateName}}</div>
     <div class="stdd w150" >{{employment.categoryName}}</div>
     <div class="stdd w75" >{{employment.selectedOn | date: 'dd-MMM-yy' }}</div>
-    <div class="stdd w25" style="margin-left:25px;" >{{employment.salaryCurrency}} </div>
-    <div class="numeric" >{{employment.salary}}</div>
+    <div class="stdd w25" style="margin-left:25px;" >{{employment.salaryCurrency === '' ? '--' : employment.salaryCurrency}}</div>
+    <div class="numeric" >{{employment.salary === 0 ? 'NA' : employment.salary}}</div>
     <div class="free" >{{employment.housingProvidedFree === true ? 'Y' : 'N'}}</div>
     <div class="numeric" >{{employment.housingAllowance === undefined || employment.housingAllowance===0  ? '---' : employment.housingAllowance}}</div>
     <div class="free" >{{employment.foodProvidedFree === true ? 'Y' : 'N'}}</div>

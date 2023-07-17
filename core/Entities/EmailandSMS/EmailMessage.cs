@@ -12,21 +12,26 @@ namespace core.Entities.EmailandSMS
 
           public EmailMessage(string messageGroup, int senderId, int recipientId, string senderEmailAddress, 
             string senderUserName, string recipientUserName, string recipientEmailAddress, string ccEmailAddress, 
-            string bccEmailAddress, string subject, string content, int messageTypeId, int postaction)
+            string bccEmailAddress, string subject, string content, int messageTypeId, int postaction, 
+            string recipientappuserid, string senderappuserid, string msggroup)
           {
-               MessageGroup = messageGroup;
-               SenderId = senderId;
-               RecipientId = recipientId;
-               SenderEmailAddress = senderEmailAddress;
-               SenderUserName = senderUserName;
-               RecipientUserName = recipientUserName;
-               RecipientEmailAddress = recipientEmailAddress;
-               CcEmailAddress = ccEmailAddress;
-               BccEmailAddress = bccEmailAddress;
-               Subject = subject;
-               Content = content;
-               MessageTypeId = messageTypeId;
-               PostAction = postaction;
+                MessageGroup = messageGroup;
+                SenderId = senderId;
+                RecipientId = recipientId;
+                SenderEmailAddress = senderEmailAddress;
+                SenderUserName = senderUserName;
+                RecipientUserName = recipientUserName;
+                RecipientEmailAddress = recipientEmailAddress;
+                CcEmailAddress = ccEmailAddress;
+                BccEmailAddress = bccEmailAddress;
+                Subject = subject;
+                Content = content;
+                MessageTypeId = messageTypeId;
+                PostAction = postaction;
+                MessageTypeId = messageTypeId;
+                RecipientAppUserId = recipientappuserid;
+                SenderAppUserId = senderappuserid;
+                MessageGroup = msggroup;
           }
 
         public string MessageGroup {get; set;}
@@ -52,11 +57,13 @@ namespace core.Entities.EmailandSMS
         public bool SenderDeleted { get; set; }
         public bool RecipientDeleted { get; set; }
         public int SenderId { get; set; }
+        public string SenderAppUserId {get; set;}
         //public ICollection<string> AttachmentUrls {get; set;}
         //[ForeignKey("SenderId")]
         //public AppUser Sender { get; set; }
         public int PostAction {get; set;} = (int)EnumPostTaskAction.OnlyComposeEmailMessage;
         public int RecipientId { get; set; }
+        public string RecipientAppUserId {get; set;}
         //[ForeignKey("RecipientId")]
         //public AppUser Recipient { get; set; }
 

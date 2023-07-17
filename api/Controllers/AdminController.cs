@@ -13,14 +13,14 @@ namespace api.Controllers
      public class AdminController : BaseApiController
      {
           private readonly UserManager<AppUser> _userManager;
-          //private readonly RoleManager<AppRole> _roleManager;
-            private readonly IUserService _userService;
+          private readonly RoleManager<AppRole> _roleManager;
+          private readonly IUserService _userService;
           public AdminController(UserManager<AppUser> userManager, 
-               //RoleManager<AppRole> roleManager, 
+               RoleManager<AppRole> roleManager, 
                IUserService userService)
           {
                _userService = userService;
-               //_roleManager = roleManager;
+               _roleManager = roleManager;
                _userManager = userManager;
           }
 
@@ -31,7 +31,7 @@ namespace api.Controllers
                return Ok("Admins or moderators can see this");
           }
 
-          /*
+          
           [Authorize(Roles="Admin, HRManager" )]
           [HttpPost("edit-roles/{useremail}")]
           public async Task<ActionResult> EditRoles(string useremail, [FromQuery] string roles)
@@ -228,6 +228,6 @@ namespace api.Controllers
 
             return Ok(await _userManager.GetRolesAsync(user));
         }
-          */
+          
      }
 }

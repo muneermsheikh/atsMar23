@@ -14,7 +14,7 @@ namespace core.Dtos
     }
 
     public class CVReferralDto {
-        public int CVRefId {get; set;}
+        public int DeployCVRefId {get; set;}
         public int ApplicationNo { get; set; }
         public string CandidateName { get; set; }
         public string PPNo { get; set; }
@@ -24,7 +24,7 @@ namespace core.Dtos
     }
 
     public class CVDeployDto {
-        public int CVRefId {get; set;}
+        public int DeployCVRefId {get; set;}
         public int CVDeployId { get; set; }
         public DateTime TransactionDate { get; set; }
         public string DeployStatus { get; set; }

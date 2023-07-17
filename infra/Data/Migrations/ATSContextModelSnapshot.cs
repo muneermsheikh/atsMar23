@@ -78,9 +78,6 @@ namespace infra.Data.Migrations
                     b.Property<long>("Amount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("Approved")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("CoaId")
                         .HasColumnType("INTEGER");
 
@@ -92,16 +89,6 @@ namespace infra.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Narration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ReviewedById")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ReviewedByName")
-                        .HasMaxLength(10)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ReviewedOn")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("VoucherDated")
@@ -138,6 +125,16 @@ namespace infra.Data.Migrations
 
                     b.Property<long>("Dr")
                         .HasColumnType("INTEGER");
+
+                    b.Property<bool>("DrEntryApproved")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DrEntryApprovedByEmployeeById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DrEntryApprovedOn")
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("FinanceVoucherId")
                         .HasColumnType("INTEGER");
@@ -1136,6 +1133,9 @@ namespace infra.Data.Migrations
                     b.Property<int>("PostAction")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("RecipientAppUserId")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("RecipientDeleted")
                         .HasColumnType("INTEGER");
 
@@ -1149,6 +1149,9 @@ namespace infra.Data.Migrations
                     b.Property<string>("RecipientUserName")
                         .IsRequired()
                         .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SenderAppUserId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("SenderDeleted")
@@ -3041,10 +3044,10 @@ namespace infra.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CVRefId")
+                    b.Property<int?>("CVRefId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CVRefId1")
+                    b.Property<int>("DeployCVRefId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("NextSequence")
@@ -3062,8 +3065,6 @@ namespace infra.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CVRefId");
-
-                    b.HasIndex("CVRefId1");
 
                     b.ToTable("Deploys");
                 });
@@ -3098,6 +3099,39 @@ namespace infra.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("DeployStatus");
+                });
+
+            modelBuilder.Entity("core.Entities.Process.Deployment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("CVRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DeployCVRefId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NextSequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("NextStageDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CVRefId");
+
+                    b.HasIndex("DeployCVRefId");
+
+                    b.ToTable("Deployments");
                 });
 
             modelBuilder.Entity("core.Entities.Tasks.ApplicationTask", b =>
@@ -4137,13 +4171,23 @@ namespace infra.Data.Migrations
                 {
                     b.HasOne("core.Entities.HR.CVRef", "CVRef")
                         .WithMany()
+                        .HasForeignKey("CVRefId");
+
+                    b.Navigation("CVRef");
+                });
+
+            modelBuilder.Entity("core.Entities.Process.Deployment", b =>
+                {
+                    b.HasOne("core.Entities.HR.CVRef", null)
+                        .WithMany("Deployments")
                         .HasForeignKey("CVRefId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("core.Entities.HR.CVRef", "CVRef")
+                        .WithMany()
+                        .HasForeignKey("DeployCVRefId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("core.Entities.HR.CVRef", null)
-                        .WithMany("Deploys")
-                        .HasForeignKey("CVRefId1");
 
                     b.Navigation("CVRef");
                 });
@@ -4316,7 +4360,7 @@ namespace infra.Data.Migrations
 
             modelBuilder.Entity("core.Entities.HR.CVRef", b =>
                 {
-                    b.Navigation("Deploys");
+                    b.Navigation("Deployments");
 
                     b.Navigation("OrderItems");
                 });

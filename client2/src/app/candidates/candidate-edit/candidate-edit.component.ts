@@ -3,7 +3,7 @@ import { AbstractControl, AsyncValidatorFn, FormArray, FormBuilder, FormGroup, N
 import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { IUser } from 'src/app/shared/models/admin/user';
 import { Candidate, ICandidate } from 'src/app/shared/models/hr/candidate';
-import { IProfession, IQualification } from 'src/app/shared/models/masters/profession';
+import { IProfession} from 'src/app/shared/models/masters/profession';
 import { CandidateService } from '../candidate.service';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ActivatedRoute } from '@angular/router';
@@ -18,6 +18,7 @@ import { IUserProfession } from 'src/app/shared/params/admin/userProfession';
 import { IUserExp } from 'src/app/shared/models/hr/userExp';
 import { IUserAttachment } from 'src/app/shared/models/hr/userAttachment';
 import { IUserPhone } from 'src/app/shared/params/admin/userPhone';
+import { IQualification } from 'src/app/shared/models/hr/qualification';
 
 @Component({
   selector: 'app-candidate-edit',

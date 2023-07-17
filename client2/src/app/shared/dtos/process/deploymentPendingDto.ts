@@ -2,7 +2,7 @@
 export interface IDeploymentPendingDto {
     id: number;
     checked: boolean;
-    cvRefId: number;
+    deployCVRefId: number;
     referredOn: Date;
     selectedOn: Date;
     applicationNo: number;
@@ -22,7 +22,7 @@ export interface IDeploymentPendingDto {
 export class DeploymentPendingDto implements IDeploymentPendingDto {
     id: number=0;
     checked: boolean=false;
-    cvRefId: number=0;
+    deployCVRefId: number=0;
     referredOn = new Date('1900-01-01');
     selectedOn = new Date('1900-01-01');
     applicationNo: number=0;

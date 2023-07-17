@@ -92,7 +92,7 @@ namespace api.Helpers
 
                CreateMap<CreateSelDecision, RejDecisionToAddDto>();
                CreateMap<CVRef, DeploymentPendingDto>()
-                    .ForMember(d => d.CVRefId, o => o.MapFrom(s => s.Id));
+                    .ForMember(d => d.DeployCVRefId, o => o.MapFrom(s => s.Id));
                     //.ForMember(d => d.DeployStageId, o => o.MapFrom(s => EnumDeployStatus.GetAttribute<s.DeployStageId>()));
                CreateMap<Deploy, DeployAddedDto>();
                CreateMap<Deploy, DeployRefDto>();

@@ -1,0 +1,39 @@
+
+<div class="b">
+	Confirm receipts from candidates
+</div>
+<div *ngIf="!awaiting">
+	No Receipts awaiting confirmation
+</div>
+
+<div *ngIf="awaiting" class="container">
+	<div>total records: {{awaiting.length}}</div>
+	<div class="stdd b w75">Vchr No</div>
+	<div class="stdd b w75">Vchr Dt</div>
+	<div class="stdd b w150">Received From</div>
+	<div class="stdd b w150">Money deposited into</div>
+	<div class="stdd b w75">Amount</div>
+	<div class="stdd b w150" style="margin-left: 3px;">Reviewed On</div>
+	<div class="stdd b w75">Approved</div>
+	<div class="stdd b w50 green fa fa-check fa-2x" (click)="update()"></div>
+	<div class="stdd b w50 fa fa-close fa-2x" (click)="close()" ></div>
+
+	<form [formGroup]="form" (ngSubmit)="update()">
+		<div formArrayName="pending" class="my-1 px-1">
+			<div *ngFor="let item of pending.controls; let i=index" [formGroupName]="i">
+				
+				<input type="text" formControlName="voucherNo" readonly class="stdd w75 darkgray">
+				<input type="text" formControlName="voucherDated" readonly class="stdd w75 darkgray">
+				<input type="text" formControlName="crAccountName" readonly class="stdd w150 darkgray">
+				<input type="text" formControlName="drAccountName" readonly class="stdd w150 darkgray">
+				<input type="text" formControlName="drAmount" readonly class="stdd w75 hAlignRight darkgray">
+				<input type="text" formControlName="drEntryReviewedOn" readonly class="stdd w150 hAlignRight darkgray">
+				<input type="checkbox"
+					style="margin-left: 25px;"
+					class="form-check-input stdd hAlignCenter"
+					formControlName="drEntryApproved"
+				>
+			</div>
+		</div>
+	</form>
+</div>

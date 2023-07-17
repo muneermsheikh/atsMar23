@@ -2,12 +2,15 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IProfession } from 'src/app/shared/models/masters/profession';
 import { paramsMasters } from 'src/app/shared/params/masters/paramsMasters';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import { ToastRef, ToastrService } from 'ngx-toastr';
 import { MastersService } from '../masters.service';
-import { CategoryEditModalComponent } from '../category-edit-modal/category-edit-modal.component';
 import { IUser } from 'src/app/shared/models/admin/user';
 import { Navigation, Router } from '@angular/router';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { MasterEditModalComponent } from '../master-edit-modal/master-edit-modal.component';
+import { ConfirmService } from 'src/app/shared/services/confirm.service';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-categories',
@@ -23,14 +26,15 @@ export class CategoriesComponent implements OnInit {
   bsModalRef: BsModalRef|undefined;
 
   user?: IUser;
-  returnUrl='';
+  returnUrl='/admin';
 
   constructor(
     private mastersService: MastersService,
-      private modalService: BsModalService,
-      private toastr: ToastrService
+    private modalService: BsModalService,
+    private toastr: ToastrService
       , private router: Router
       , private bcService: BreadcrumbService
+      , private confirmService: ConfirmService
   ) {
       //this.routeId = this.activatedRoute.snapshot.params['id'];
       //this.router.routeReuseStrategy.shouldReuseRoute = () => false;
@@ -42,7 +46,8 @@ export class CategoriesComponent implements OnInit {
 
       if (nav?.extras && nav.extras.state) {
           //this.bolNavigationExtras=true;
-          if(nav.extras.state.returnUrl) this.returnUrl=nav.extras.state.returnUrl as string;
+              if(nav.extras.state.returnUrl) this.returnUrl=nav.extras.state.returnUrl as string;
+
               if( nav.extras.state.user) {
                 this.user = nav.extras.state.user as IUser;
                 //this.hasEditRole = this.user.roles.includes('AdminManager');
@@ -93,22 +98,23 @@ export class CategoriesComponent implements OnInit {
   }
 
   openCategoryEditModal(category: IProfession) {
-    var id: number, categoryString: string;
-    id=category.id;
-    categoryString=category.name;
-
+ 
+    var categoryname=category.name;
     const initialState = {
-      str: categoryString
+      title: 'Edit Category',
+      caption: 'Category ',
+      returnString: categoryname,
     };
-    this.bsModalRef = this.modalService.show(CategoryEditModalComponent, {initialState});
+
+    this.bsModalRef = this.modalService.show(MasterEditModalComponent, {initialState});
 
     //returned from modal
-    this.bsModalRef.content.update.updateStringName.subscribe((values: any) => {
-      if(values === categoryString) {
+    this.bsModalRef.content.editedStringName.subscribe((values: any) => {
+      if(values === category.name) {
         this.toastr.warning('category value not changed');
         return;
       } else {
-        this.mastersService.updateCategory(id, values).subscribe(response => {
+        this.mastersService.updateCategory(category.id, values).subscribe(response => {
           this.toastr.success('category value updated');
         }, error => {
           this.toastr.error(error);
@@ -117,8 +123,30 @@ export class CategoriesComponent implements OnInit {
     })
   }
 
-  deleteCategory(id: number){
+  
+  deleteCategory(id: number, cat: string){
+
+    this.confirmService.confirm("Confirm", "Confirm if you want to delete the Category '" + 
+      cat + "' ").subscribe({
+        next: response => {
+          if(!response) return;
+        },
+        error: err => {
+          this.toastr.error('Error occured in getting the confirmation');
+          return;
+        }
+      })
+      
+    this.mastersService.deleteCategory(id).subscribe({
+      next: succeeded => {
+        if(succeeded) this.toastr.success("Category deleted");
+      },
+      error: err => this.toastr.error('Error in deleting the category', err)
+    });
     
   }
 
+  goBack() {
+    this.router.navigateByUrl(this.returnUrl);
+  }
 }

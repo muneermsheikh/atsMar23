@@ -100,4 +100,9 @@ export class ClientsService {
   getCustomerAndCities() {
     return this.http.get<ICustomerNameAndCity[]>(this.baseUrl + 'customers/associateidandnames/associate');
   }
+
+  getCustomerAndCitiesCustomers() {
+    return this.http.get<ICustomerNameAndCity[]>(this.baseUrl + 'customers/associateidandnames/customer');
+  }
+
 }

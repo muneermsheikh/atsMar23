@@ -36,6 +36,7 @@ namespace core.Dtos
         public string OfficialName { get; set; }
         public string Designation { get; set; }
         public string OfficialEmailId { get; set; }
+        public string OfficialAppUserId {get; set;}
         public string MobileNo { get; set; }
         public bool Checked {get; set;}
         public bool CheckedPhone {get; set;}

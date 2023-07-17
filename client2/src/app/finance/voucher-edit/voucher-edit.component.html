@@ -1,0 +1,172 @@
+<br><br>
+<div *ngIf="!voucher">
+	voucher is not defined
+</div>
+<div *ngIf="voucher">
+	<form [formGroup]="form" >
+		<div class="stdd col-3" style="vertical-align: top; border-style: inset;">
+			<div class="card-body">
+				<div *ngIf="isAddMode" class="b" >
+					Create new finance voucher
+				</div>
+				<div *ngIf="!isAddMode" class="b" >
+					Edit finance voucher
+				</div>
+				<label class="stdd w100">Voucher No.:</label>
+				<input type="text" class="stdd w100" formControlName="voucherNo" >
+				<br>
+				<label class="stdd w100">Dated:</label>
+				<input class="stdd w150"
+					type="text"
+					placeholder="Voucher dated"
+					formControlName="voucherDated"
+					[minDate]="minTransDate"
+					[maxDate]="maxTransDate"
+					[bsValue]="bsValue"
+					bsDatepicker
+					#dp="bsDatepicker"
+					autocomplete="off"
+					[bsConfig]="{ adaptivePosition: true, dateInputFormat: 'YYYY-MM-DD' }"
+				>
+				<br>
+				<label>Account:<b>CR</b></label>
+				<br>
+				<ng-select *ngIf="coas" class="stdd w275"  
+					[items]="coas"
+					bindLabel="accountName"
+					bindValue="id"
+					labelForId="coaId"
+					placeholder="Select Account"
+					clearAllText="Clear"
+					formControlName="coaId">
+				</ng-select>
+				<div class="stdd w30 fa fa-plus" disabled="isAddMode" (click)="addNewCOA()"></div>
+				<br>
+				<label class="stdd w100">Divn:</label>
+				<input type="text" class="stdd w50" formControlName="divn" >
+				
+				<br>
+				<label class="stdd w100">Narration:</label>
+				<textarea formControlName="narration" cols="24" rows="3"></textarea>
+			
+				<label class="stdd w125">Amount:</label>
+				<input type="number" (change)="updateVoucherAmount()" class="stdd w150" formControlName="amount" >
+
+			</div>
+			<div class="card-footer">
+				<div class="w75">{{voucherAmount}}</div>
+				<div *ngIf="voucher.amount !== 0 && totalAmountCR !== totalAmountDR && voucherEntries.controls.length >  0" class="red">total of debits and credits should be equal</div>
+			</div>
+		</div>
+		<div class="stdd col-8" style="vertical-align: top;">
+			<!-- <input class="stdd fa fa-upload w300" title="click to upload a new voucher attachment" type="file" (change)="onFileInputChange($event)" > -->
+			
+			<div formArrayName="voucherAttachments" class="my-1 px-0" >
+				<div *ngFor="let q of voucherAttachments.controls; let i=index"  [formGroupName]="i">
+					<input class="stdd w300" formControlName="fileName" >
+					<!--
+					<input class="stdd w50" formControlName="attachmentSizeInBytes">
+					<input class="stdd w100" formControlName="voucherId" >
+					<input class="stdd w50" formControlName="uploadedByEmployeeId">
+					<input class="stdd w75" formControlName="dateUploaded">
+					<input class="stdd w100" formControlName="id" >
+					<input class="stdd w100" formControlName="url" >
+				-->
+					<button (click)="download(i)" class="stdd mx-3 fa fa-download"></button>
+					<button (click)="removeVoucherAttachment(i)" class="stdd red fa-trash"></button>
+				</div>
+			</div>
+			<hr>		 
+			<div class="stdd" >
+				<label class="stdd w125 b">Date</label>
+				<label class="stdd w300 b">Account</label>
+				<label class="stdd w75 b">Debit</label>
+				<label class="stdd w75 b">Credit</label>
+				<label class="stdd w200 b">Narration</label>
+				
+				<button (click)="addVoucherEntry()" disabled="!isAddMode" title="add a new voucher entry" class="mx-1 blue fa fa-plus"></button>
+				<button (click)="uploadFileAndFormData()" [disabled]="isAddMode" class="stdd mx-1 fa fa-save green" ></button>
+				<button class="btn btn-secondary fa fa-undo" title="return" (click)="returnToCaller()" ></button>
+				<button class="stdd fa fa-trash red pull-right" disabled="voucher.Id===0" (click)="deleteVoucher()"></button>
+
+				<br>
+				<div class="stdd b" style="margin-left: 350px;">Totals:</div>
+				<div class="stdd w75" style="text-align:right" >{{totalAmountDR}}</div>
+				<div class="stdd w75 mx-2" style="text-align:right">{{totalAmountCR}}</div>
+				<div class="stdd w150" style="text-align:right">Balance: {{diff}}</div>
+			
+				<div formArrayName="voucherEntries" class="my-1 px-0 smallFont height10px" >
+					<div *ngFor="let t of voucherEntries.controls; let i=index"  [formGroupName]="i">
+						<input class="stdd w100"
+							type="text"
+							placeholder="Date"
+							formControlName="transDate"
+							bsDatepicker
+							[bsValue]="bsValueDate"
+							[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+						>
+						<ng-select *ngIf="coas" class="stdd w300"  
+								[items]="coas"
+								bindLabel="accountName"
+								bindValue="id"
+								labelForId="coaId"
+								placeholder="Select Account"
+								clearAllText="Clear"
+								formControlName="coaId">
+						</ng-select>
+						<label class="stdd w125">Approved:</label>
+						<input type="checkbox"
+							class="stdd form-check-input"
+							formControlName="drEntryApproved"
+						>
+						
+						<br>
+						<label class="stdd w125">Approved By:</label>
+						<ng-select *ngIf="emps" class="stdd w300"  
+								[items]="emps"
+								bindLabel="knownAs"
+								bindValue="id"
+								labelForId="drEntryApprovedByEmployeeId"
+								placeholder="Select Employee"
+								clearAllText="Clear"
+								formControlName="drEntryApprovedByEmployeeId">
+						</ng-select>
+						
+						
+						<br>
+						<label class="stdd w125">Approved On:</label>
+						<input class="stdd w100"
+							type="text"
+							placeholder="Date"
+							formControlName="drEntryApprovedOn"
+							bsDatepicker
+							[bsValue]="bsValueDate"
+							[bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+						>
+
+		
+							<input class="stdd w75 tAlignRight" type="number"(change)="recalculateTotal()" formControlName="dr">
+							<input class="stdd w75 tAlignRight" type="number"(change)="recalculateTotal()" formControlName="cr">
+							<input class="stdd w300" type="text" formControlName="narration">
+							<button class="stdd red ml-2 fa fa-trash" (click)="removeVoucherEntry(i)" ></button>
+						
+					</div>
+				</div>
+				<br>
+
+			</div>
+	
+		</div>
+
+	</form>            
+	
+</div>
+	
+
+<div style="vertical-align: bottom; font-size: smaller;">
+	{{this.form.value | json}}
+</div> 
+     
+ 
+ 
+ 

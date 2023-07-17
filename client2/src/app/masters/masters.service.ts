@@ -6,10 +6,11 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { paramsMasters } from '../shared/params/masters/paramsMasters';
 import { IPagination } from '../shared/models/pagination';
-import { IIndustryType, IProfession, IQualification } from '../shared/models/masters/profession';
+import { IIndustryType, IProfession } from '../shared/models/masters/profession';
 import { IUser } from '../shared/models/admin/user';
 import { ICustomerNameAndCity } from '../shared/models/admin/customernameandcity';
 import { IEmployeeIdAndKnownAs } from '../shared/models/admin/employeeIdAndKnownAs';
+import { IQualification } from '../shared/models/hr/qualification';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,7 @@ export class MastersService {
 
   paginationCategory?: IPagination<IProfession[]>;
   paginationQualification?: IPagination<IQualification[]>;
+  paginationIndsTypes?: IPagination<IIndustryType[]>;
 
   professions: IProfession[]=[];
   
@@ -35,6 +37,7 @@ export class MastersService {
   cacheCat = new Map();
   cacheQ = new Map();   //qualifications
   cacheEmp = new Map();
+  cacheInd = new Map();
 
   constructor(private http: HttpClient) { }
   
@@ -76,6 +79,7 @@ export class MastersService {
   }
 
   getQualificationList(){
+    console.log('calling api for qlist');
     return this.http.get<IQualification[]>(this.apiUrl + 'masters/qualificationList');
   }
 
@@ -91,6 +95,10 @@ export class MastersService {
     }
 
     return this.http.get<IProfession>(this.apiUrl + 'masters/category/' + id);
+  }
+
+  deleteCategory(id: number) {
+    return this.http.delete<boolean>(this.apiUrl + 'masters/deletecategory/' + id);
   }
 
 //quaifications
@@ -146,7 +154,41 @@ export class MastersService {
     return this.http.put<IQualification>(this.apiUrl + 'masters/editqualification', prof);
   }
 
+  deleteQualification(id: number) {
+    return this.http.delete<boolean>(this.apiUrl + 'masters/deletequalification/' + id);
+  }
+  
 //industries
+
+  getIndustryPaged(useCache: boolean) {
+    if (useCache === false)  this.cacheInd = new Map();
+    
+    if (this.cacheInd.size > 0 && useCache === true) {
+      if (this.cacheInd.has(Object.values(this.mParams).join('-'))) {
+        this.paginationIndsTypes!.data = this.cacheInd.get(Object.values(this.mParams).join('-'));
+        return of(this.paginationIndsTypes);
+      }
+    }
+
+    let params = new HttpParams();
+    if (this.mParams.name !== '') params = params.append('name', this.mParams.name!);
+    if (this.mParams.id !== 0) params = params.append('id', this.mParams.id!.toString());
+    if (this.mParams.search) params = params.append('search', this.mParams.search);
+      
+    params = params.append('pageIndex', this.mParams.pageNumber.toString());
+    params = params.append('pageSize', this.mParams.pageSize.toString());
+      
+    return this.http.get<IPagination<IIndustryType[]>>(this.apiUrl + 'masters/indpaginated', 
+        {observe: 'response', params})
+        .pipe(
+          map(
+            (response) => {
+              this.cacheInd.set(Object.values(this.mParams).join('-'), response.body?.data);
+              this.paginationIndsTypes = response.body!;
+              return response.body!;
+          })
+        )
+    }
 
   getIndustry(id:number) {
     return this.http.get<IIndustryType>(this.apiUrl + 'masters/industry')
@@ -154,6 +196,10 @@ export class MastersService {
 
   getIndustries() {
     return this.http.get<IIndustryType[]>(this.apiUrl + 'masters/industrieslist');
+  }
+
+  deleteIndustry(industryid: number) {
+    return this.http.delete<boolean>(this.apiUrl+ 'masters/deleteindustry/' +  industryid);
   }
 
   updateCategory(id: number, name: string) {

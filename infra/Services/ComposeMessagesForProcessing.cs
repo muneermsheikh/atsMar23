@@ -25,7 +25,7 @@ namespace infra.Services
         {
             var deploy = deployParam.Deploy;
             var candidate = await (from cvref in _context.CVRefs
-                                where cvref.Id == deploy.CVRefId
+                                where cvref.Id == deploy.DeployCVRefId
                                 join cand in _context.Candidates on cvref.CandidateId equals cand.Id
                                 select cand).FirstOrDefaultAsync();
 
@@ -61,7 +61,7 @@ namespace infra.Services
         {
             var deploy = deployParam.Deploy;
             var candidate = await (from cvref in _context.CVRefs
-                                where cvref.Id == deploy.CVRefId
+                                where cvref.Id == deploy.DeployCVRefId
                                 join cand in _context.Candidates on cvref.CandidateId equals cand.Id
                                 select cand).FirstOrDefaultAsync();
 

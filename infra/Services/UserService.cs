@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using core.Entities.MasterEntities;
+using core.Entities.AccountsNFinance;
 
 namespace infra.Services
 {
@@ -110,6 +111,10 @@ namespace infra.Services
 
                if (result <= 0) return null;
 
+               //CREATE Chart of account
+               var coa = new Coa("R", "B", "Application No. " + cand.ApplicationNo + "-" + cand.FirstName, "Candidate",0);
+               _unitOfWork.Repository<Coa>().Add(coa);
+               await _unitOfWork.Complete();
                return cand;
           }
 

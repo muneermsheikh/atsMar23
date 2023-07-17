@@ -44,23 +44,22 @@
 
     <!--<div class="stdd b w50">Choose</div> -->
     <div class="stdd b w50">App No.</div>
-    <div class="stdd b w150">Candidate Name</div>
+    <div class="stdd b w150">Candidate<br>Name</div>
     
-    <div class="stdd b 100">Customer Name</div>
-    <div class="stdd b 75">Order No</div>
-    <div class="stdd b w175">Category Name</div>
+    <div class="stdd b 100">Customer<br>Name</div>
+    <div class="stdd b 75">Order<br>No</div>
+    <div class="stdd b w175">Category<br>Name</div>
    
     <!-- <div class="stdd b 100">Referred On</div> -->
-    <div class="stdd b w75">Selected On</div>
-    <div class="stdd b w250">Current Dep Position and Date</div>
-    <div class="stdd b w150">next Estimated Status</div>
-    <div class="stdd b 75">Next Status Date</div>
-    <div class="stdd w150" >new Status</div>
-    <div class="stdd w65">new Status Date</div>
+    <div class="stdd b w75">Selected,br>On</div>
+    <div class="stdd b w250">Current Deploy<br>Position and Date</div>
+    <div class="stdd b w150">next Status</div>
+    <div class="stdd b 75">Estimated<br>Date</div>
     <div *ngIf="referrals === undefined">
           No referrals on record - candidates selected and not yet concluded, and those with employments approved, are displayed here
     </div>
     <div *ngIf="referrals !== undefined">
+          <div style="text-align: center; font-size: x-small; font-weight: bold;">Candidates whose employents are approved are only displayed here</div>
      <div *ngFor="let ref of referrals">
           <app-deploy-item
                [dep]="ref"

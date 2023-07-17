@@ -1,0 +1,23 @@
+label {
+	display: inline-block;
+	font-weight: bold;
+	margin-right: 1px;
+	margin-left: 1px;
+}
+
+.stdd {
+	display: inline-block;
+	margin-right: 1px;
+	margin-left: 1px;
+}
+
+.b {font-weight: bold;}
+
+.tAlignRight {text-align: right;}
+.fontSmaller {font-size: smaller;}
+
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w150 {width: 150px;}
+.w250 {width: 250px;}
+.w300 {width: 300px;}

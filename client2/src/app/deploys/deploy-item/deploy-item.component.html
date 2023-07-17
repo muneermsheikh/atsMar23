@@ -7,7 +7,7 @@
     <div class="stdd w50">{{dep.orderNo}}</div>
     <div class="stdd w175">{{dep.categoryName}} </div>
     <!-- <div class="stdd w75">{{dep.referredOn | date: 'ddMMMyy'}}</div> -->
-    <div class="stdd w75" >{{dep.selectedOn | date: 'ddMMMyy'}}</div> 
+    <div class="stdd w75" >{{dep.selDecisionDate | date: 'ddMMMyy'}}</div> 
     
     <div class="stdd w200">{{dep.deploySequence | depStatus}}</div>
     <div class="stdd w46">{{dep.deployStageDate | date: 'ddMMM'}} </div>
@@ -15,7 +15,6 @@
     <div class="stdd w200">{{dep.nextSequence | depStatus}}</div>
     <div class="stdd w75">{{dep.nextStageDate | date :'ddMMM'}}</div>
 
-    <button class="stdd btn btn-secondary fa fa-eye" (click)="editViewDeploysOfCVRefId()" title="edit/view transactions"></button>
-    <button class="stdd btn btn-secondary fa fa-plus" (click)="addNew()" title="add a new transaction"></button>
+    <button class="stdd btn btn-secondary fa fa-pencil" (click)="addNew()" title="add a new transaction"></button>
     
 </div>

@@ -64,22 +64,18 @@ namespace infra.Services
 
           public async Task<Pagination<Employment>> GetEmployments(EmploymentParams empParams)
           {
-               var qry = _context.Employments.AsQueryable(); /*(from emp in _context.Employments 
-                    select new Employment (
-                         emp.CVRefId, emp.WeeklyHours, emp.SelectedOn, emp.SalaryCurrency, emp.Salary, 
-                         emp.ContractPeriodInMonths, emp.HousingProvidedFree, emp.HousingAllowance, emp.FoodProvidedFree, 
-                         emp.FoodAllowance, emp.TransportProvidedFree, emp.TransportAllowance, emp.OtherAllowance, 
-                         emp.LeavePerYearInDays, emp.LeaveAirfareEntitlementAfterMonths, emp.Charges,
-                         emp.CategoryId, emp.CandidateId, emp.ApplicationNo, emp.CandidateName,
-                         emp.CustomerName, emp.OrderItemId, emp.OrderId, emp.OrderNo ))
-                    .AsQueryable();
-                    */
+               var qry = _context.Employments.AsQueryable();
+
                if(empParams.OrderId!=0) qry=qry.Where(x => x.OrderId==empParams.OrderId);
                if(empParams.OrderItemId!=0) qry=qry.Where(x => x.OrderItemId==empParams.OrderItemId);
-               if(empParams.ApplicationNo!=0) qry=qry.Where(x => x.ApplicationNo==empParams.ApplicationNo);      
+               if(empParams.ApplicationNo > 1) qry=qry.Where(x => x.ApplicationNo==empParams.ApplicationNo);    
+                    //with applicationNo parameter 0, the parameter object reeived in controller has all null values  
                if(empParams.CandidateId!=0) qry=qry.Where(x => x.CandidateId==empParams.CandidateId);
                //if(!string.IsNullOrEmpty(empParams.CandidateName)) qry=qry.Where(x => Regex.IsMatch(x.CandidateName, WildCardToRegular("*" + empParams.CandidateName + "*")));
                if(empParams.OrderNo !=0) qry = qry.Where(x => x.OrderNo == empParams.OrderNo);
+
+               if(empParams.Approved != "null") 
+                    qry = qry.Where(x => x.Approved==Convert.ToBoolean(empParams.Approved));
 
                if((empParams.SelectionDateFrom.Year > 2000) && (empParams.SelectionDateUpto.Year > 2000)) {
                     qry = qry.Where(x => x.SelectedOn >= empParams.SelectionDateUpto && x.SelectedOn <= empParams.SelectionDateFrom);
@@ -89,7 +85,7 @@ namespace infra.Services
 
                if(empParams.SelDecisionId !=0) qry = qry.Where(x => x.SelectionDecisionId == empParams.SelDecisionId);
 
-              /* if(!string.IsNullOrEmpty(empParams.Sort)) {
+               if(!string.IsNullOrEmpty(empParams.Sort)) {
                     switch (empParams.Sort) {
                          case "appno":
                               qry = qry.OrderBy(x => x.ApplicationNo);
@@ -119,7 +115,7 @@ namespace infra.Services
                               qry = qry.OrderBy(x => x.SelectedOn);
                               break;
                     }
-               }*/
+               }
                var count = await qry.CountAsync();
 
                if(count == 0) return null;

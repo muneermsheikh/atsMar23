@@ -192,7 +192,7 @@ namespace infra.Services
                select gby.First(); */
 
                var tempQuery =  from d in _context.Deploys
-                    group d by d.CVRefId into dTop 
+                    group d by d.DeployCVRefId into dTop 
                     orderby dTop.Key descending
                     select new {
                          Key = dTop.First(),
@@ -200,7 +200,7 @@ namespace infra.Services
                     };
 
                var qry = await (from r in _context.CVRefs 
-                    join d in tempQuery on r.Id equals d.Key.CVRefId
+                    join d in tempQuery on r.Id equals d.Key.DeployCVRefId
                     join i in _context.OrderItems on r.OrderItemId equals i.Id 
                     join cat in _context.Categories on i.CategoryId equals cat.Id
                     join ordr in _context.Orders on i.OrderId equals ordr.Id 

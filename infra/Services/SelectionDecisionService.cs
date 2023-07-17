@@ -1,5 +1,6 @@
 using AutoMapper;
 using core.Dtos;
+using core.Entities.AccountsNFinance;
 using core.Entities.EmailandSMS;
 using core.Entities.HR;
 using core.Entities.Orders;
@@ -21,15 +22,19 @@ namespace infra.Services
           private readonly ATSContext _context;
           private readonly IComposeMessages _composeMessages;
           private readonly IEmailService _emailService;
-          private readonly IMapper _mapper;
+          //private readonly IMapper _mapper;
           private readonly IComposeMessagesForAdmin _composeMsgForAdmin;
           private readonly int HRSupEmpTaskId=12;
           private readonly string m_SenderEmailAddresss="hr@afreenitl.in";
-          public SelectionDecisionService(IUnitOfWork unitOfWork, ATSContext context, ICommonServices commonServices, IComposeMessagesForAdmin composeMsgForAdmin,
-          IComposeMessages composeMessages, IDeployService deployService, IEmailService emailService, IMapper mapper)
+
+          public SelectionDecisionService(IUnitOfWork unitOfWork, ATSContext context, ICommonServices commonServices, 
+               IComposeMessagesForAdmin composeMsgForAdmin, IComposeMessages composeMessages, 
+               IDeployService deployService, IEmailService emailService
+               //, IMapper mapper
+          )
           {
                _composeMsgForAdmin = composeMsgForAdmin;
-               _mapper = mapper;
+               //_mapper = mapper;
                _emailService = emailService;
                _composeMessages = composeMessages;
                _context = context;
@@ -69,6 +74,7 @@ namespace infra.Services
           //a3 - Create Deployment Record
           //a4 - Create task in the name of the HR Exec Id (defined in OrderItem) or HR Supervior of HRExec Id undefined
           //a5 - Update CVRef record with deployment stage information
+          //a6 - if selected, debit candidate's account
 
           //B1 - for all flows - selected and rejected, update CVRef with refStatus and RefStatusDate
           //b2 - update doc controller task for selection , whether seleced or rejected, teh task is over
@@ -95,15 +101,6 @@ namespace infra.Services
 
                //var cvrefs = await _context.CVRefs.Where(x => cvrefids.Contains(x.Id)).ToListAsync();
                var recAffected=0;
-               /*var dtls = await (from cvref in _context.CVRefs where cvrefids.Contains(cvref.Id)
-                    join item in _context.OrderItems on cvref.OrderItemId equals item.Id
-                    join o in _context.Orders on item.OrderId equals o.Id
-                    join empE in _context.Employees on item.HrExecId equals empE.Id into empExecutive
-                    from empExec in empExecutive.DefaultIfEmpty()
-                    select new {item.CategoryName, cvref, item.OrderNo, item.Id, o.Customer.CustomerName,  o.OrderDate,
-                         HRExecKnownAs = empExec == null ? "" : empExec.KnownAs, HRExecEmail = empExec == null ? "" : empExec.Email
-                    }).ToListAsync();
-               */
                //detals is the object that contains all details required:
                //   --   to update CVRef with selection/rejection values
                //   --   to create employment data if selected
@@ -132,7 +129,8 @@ namespace infra.Services
                          OrderItemId = cvref.OrderItemId, 
                          CategoryId = item.CategoryId, CategoryName = item.Category.Name,
                          OrderId=o.Id, OrderNo = o.OrderNo, 
-                         
+                         CustomerId = o.Customer.Id,
+                         AgentId = cv.ReferredBy,
                          HRExecId = empExec==null ? 0 : empExec.Id, 
                          HRExecName = empExec==null ? "" : empExec.KnownAs, 
                          HRExecEmail = empExec == null ? "" : empExec.Email, 
@@ -168,20 +166,7 @@ namespace infra.Services
                foreach (var s in selDto)
                {
                     var cvref = details.Find(x => x.CVRefId == s.CVRefId);
-
-                    /*var cvref = details.Where(x => x.cvref.Id== s.CVRefId)
-                         .Select(x => new {x.CVRefId, x.cvref, x.OrderItemId,
-                              x.OrderId, x.OrderNo, x.CustomerName,
-                              x.CategoryId, x.CategoryName,
-                              x.ApplicationNo, x.CandidateName, x.CandidateId, x.CandidateGender, x.CandidateEmail, 
-                                   x.CandidateKnownAs, x.CandidateTitle, x.CustomerCity,
-                              x.HRExecId, x.HRExecGender, x.HRExecName, x.HRExecEmail,
-                              x.HRSupId, x.HRSupName, x.HRSupEmai, x.HRSupGender,
-                              x.ContractPeriod, x.BasicSalary, x.HousingFree, x.HousingAllowance, 
-                              x.FoodFree, x.FoodAllowance, x.TransportFree, x.TransportAllowance, x.OtherAllowance, 
-                              x.LvPerYearInDays, x.LvAfterMonths, x.Charges, x.weeklyHours
-                         }).FirstOrDefault();
-                    */
+                    
                     if(cvref==null)  continue;        //save the error
 
                     var emp=new Employment();
@@ -189,29 +174,82 @@ namespace infra.Services
                     //A1 - create employment record
                     if(s.SelectionStatusId==(int)EnumCVRefStatus.Selected) {
                          var salCurrency = await getSalaryCurrency(cvref.OrderItemId);
+          //A6 - debit candidate's account
+                         //get Account Id
+                         var coa = await _context.COAs.Where(x => x.AccountClass=="Candidate" && x.AccountName.Contains(cvref.ApplicationNo.ToString())).FirstOrDefaultAsync();
+                         if(coa==null) {
+                              coa = new Coa("R", "B", cvref.CandidateName + ", application " + cvref.ApplicationNo, "Candidate", 0);
+                              _unitOfWork.Repository<Coa>().Add(coa);
+                              await _unitOfWork.Complete();
+                         }
                          
+                         var voucherno = await _context.FinanceVouchers.MaxAsync(x => x.VoucherNo);
+
+                         int Account_Sales_R = 9; //sales recruitment
+                         int Account_AR_Candidate = coa.Id;
+
+                         var voucherentries = new List<VoucherEntry>();
+                         voucherentries.Add(new VoucherEntry{TransDate=dateTimeNow, CoaId=Account_Sales_R,
+                              AccountName="Sales - Recruitment", Cr=cvref.Charges, Narration="entry auto-created"});
+                         voucherentries.Add(new VoucherEntry{TransDate=dateTimeNow, CoaId=Account_AR_Candidate, 
+                              AccountName=coa.AccountName, Dr=cvref.Charges, Narration="entry auto-created"});
+                         
+                         var voucher = new FinanceVoucher("R", voucherno +1, dateTimeNow, coa.Id, coa.AccountName, 
+                              Convert.ToInt32(cvref.Charges), loggedInEmployeeId, 
+                              "Recruitment Sales - Candidate - " + cvref.CandidateName + " - App No." + cvref.ApplicationNo +
+                              ", Employer: " + cvref.CustomerName + ", Category: " + cvref.CategoryRef + "-" + 
+                              cvref.CategoryName,voucherentries);
+                         
+                         //await _financeService.AddNewVoucher(voucherDto, loggedInEmployeeId);
+                         _unitOfWork.Repository<FinanceVoucher>().Add(voucher);
+          //end of vouchers
                          emp = await _context.Employments.Where(x => x.CVRefId == cvref.CVRefId).FirstOrDefaultAsync();
                          
                          if(emp==null) {
+                              //order no, customer id
                               emp = new Employment(cvref.CVRefId, cvref.weeklyHours, s.DecisionDate, salCurrency, 
                                    cvref.BasicSalary,cvref.ContractPeriod, cvref.HousingFree, cvref.HousingAllowance, 
                                    cvref.FoodFree,cvref.FoodAllowance, cvref.TransportFree, cvref.TransportAllowance, 
                                    cvref.OtherAllowance,cvref.LvPerYearInDays, cvref.LvAfterMonths, cvref.Charges,
                                    cvref.CategoryId, cvref.CandidateId, cvref.ApplicationNo, cvref.CandidateName, 
-                                   cvref.CustomerName, cvref.CategoryName);
+                                   cvref.CustomerName, cvref.CategoryName, cvref.OrderItemId, cvref.OrderId,
+                                   cvref.OrderNo, "", cvref.CustomerId );
 
                               _unitOfWork.Repository<Employment>().Add(emp);
                               recAffected++;
                          }
                          
+
                          //A2 - CREATE THE MAIN SelectionDcision record
-                         seldecision = new SelectionDecision( cvref.CategoryId, cvref.CategoryName, cvref.OrderId, cvref.OrderNo, 
-                              cvref.CustomerName, cvref.ApplicationNo, cvref.CandidateName, s.DecisionDate, 
-                              s.SelectionStatusId, s.Remarks, cvref.cvref, emp);
+                         seldecision = await _context.SelectionDecisions.Where(x => x.CVRefId == cvref.CVRefId).FirstOrDefaultAsync();
+                         if(seldecision != null) {
+                              if(seldecision.CategoryId != cvref.CategoryId) seldecision.CVRefId=cvref.CategoryId;
+                              if(seldecision.CategoryName != cvref.CategoryName) seldecision.CategoryName=cvref.CategoryName;
+                              if(seldecision.OrderId != cvref.OrderId) seldecision.OrderId=cvref.OrderId;
+                              if(seldecision.OrderNo != cvref.OrderNo) seldecision.OrderNo=cvref.OrderNo;
+                              if(seldecision.CustomerName!= cvref.CustomerName) seldecision.CustomerName=cvref.CustomerName;
+                              if(seldecision.ApplicationNo != cvref.ApplicationNo) seldecision.ApplicationNo=cvref.ApplicationNo;
+                              if(seldecision.CandidateName != cvref.CandidateName) seldecision.CandidateName=cvref.CandidateName;
+                              if(seldecision.DecisionDate != s.DecisionDate) seldecision.DecisionDate=s.DecisionDate;
+                              if(seldecision.SelectionStatusId != s.SelectionStatusId) seldecision.SelectionStatusId=s.SelectionStatusId;
+                              if(seldecision.Remarks != s.Remarks) seldecision.Remarks=s.Remarks;
+                              if(seldecision.OrderItemId != cvref.OrderItemId) seldecision.OrderItemId=cvref.OrderItemId;
+                              if(seldecision.CandidateId != cvref.CandidateId) seldecision.CandidateId=cvref.CandidateId;
+                              seldecision.SelectedOn=dateTimeNow;
+                              if(seldecision.Charges != cvref.Charges) seldecision.Charges=cvref.Charges;
+                              if(seldecision.CandidateId != cvref.CandidateId) seldecision.CandidateId=cvref.CandidateId;
+                              seldecision.CVRef=cvref.cvref;
+                              seldecision.Employment=emp;
+                              _unitOfWork.Repository<SelectionDecision>().Update(seldecision);
+                         } else {
+                              seldecision = new SelectionDecision( cvref.CategoryId, cvref.CategoryName, cvref.OrderId, 
+                                   cvref.OrderNo, cvref.CustomerName, cvref.ApplicationNo, cvref.CandidateName, s.DecisionDate, 
+                                   s.SelectionStatusId, s.Remarks,cvref.OrderItemId, cvref.CandidateId, dateTimeNow, cvref.Charges,
+                                   cvref.cvref, emp);
 
-                         seldecisions.Add(seldecision);
-
-                         _unitOfWork.Repository<SelectionDecision>().Add(seldecision);
+                              seldecisions.Add(seldecision);
+                              _unitOfWork.Repository<SelectionDecision>().Add(seldecision);
+                         }
                     }
 
                     var selectedMsgDto = new SelectionMessageDto(
@@ -231,16 +269,16 @@ namespace infra.Services
                     {
                          selectedMsgsDto.Add(selectedMsgDto);
                          //A3 - Create Deployment Record
-                         var nextStage = await _context.DeployStages.Where(x => x.Id==(int)EnumDeployStatus.Selected).FirstOrDefaultAsync();
-                         
-                         var deployTrans = new Deploy {
-                              CVRefId=cvref.CVRefId, TransactionDate=s.DecisionDate, Sequence=EnumDeployStatus.Selected, 
+                         var nextStage = await _context.DeployStages.Where(x => x.Sequence==(int)EnumDeployStatus.Selected).FirstOrDefaultAsync();
+                         if(nextStage==null) return null;
+                         var deployTrans = new Deployment {
+                              DeployCVRefId=cvref.CVRefId, TransactionDate=s.DecisionDate, Sequence=EnumDeployStatus.Selected, 
                               NextSequence=(EnumDeployStatus)nextStage.NextSequence, 
                               NextStageDate=s.DecisionDate.AddDays(nextStage.EstimatedDaysToCompleteThisStage),
                               CVRef=cvref.cvref
                          };
 
-                         _unitOfWork.Repository<Deploy>().Add(deployTrans);     
+                         _unitOfWork.Repository<Deployment>().Add(deployTrans);     
                          recAffected++;
 
                          //A4 - Create task in the name of the HR Exec Id (defined in OrderItem) or HR Supervior of HRExec Id undefined
@@ -259,8 +297,10 @@ namespace infra.Services
                     
                          //A5 - Update CVRef record with deployment stage information
                          cvref.cvref.Sequence = (int)EnumDeployStatus.Selected;
+                         
                          cvref.cvref.DeployStageDate = dateTimeNow;
                          cvref.cvref.NextSequence = (int)EnumDeployStatus.ReferredForMedical;
+
                          
                     } else {       //not selected
                          rejectedMsgsDto.Add(selectedMsgDto);
@@ -311,7 +351,10 @@ namespace infra.Services
 
                await _unitOfWork.Complete();
                //recAffected=await _context.SaveChangesAsync();
-               var cvrefidsAffected = await _context.CVRefs.Where(x => cvrefids.Contains(x.Id) && x.RefStatusDate==dateTimeNow).Select(x => x.Id).ToListAsync();
+               var cvrefidsAffected = await _context.CVRefs.Where(x => cvrefids.Contains(x.Id) 
+                    //&& x.RefStatusDate==dateTimeNow
+                    && x.DeployStageDate==dateTimeNow
+                    ).Select(x => x.Id).ToListAsync();
                return new SelectionMsgsAndEmploymentsDto{EmailMessages = msgs, CvRefIdsAffected=cvrefidsAffected};
 
                
@@ -412,7 +455,6 @@ namespace infra.Services
                return await _composeMsgForAdmin.AdviseSelectionStatusToCandidateByEmail(data, loggedInUserName, datetimenow, m_SenderEmailAddresss, loggedinEmpId);
 
           }
-   
    
           public async Task<ICollection<EmailMessage>> ComposeRejEmailMessagesFromCVRefIds(ICollection<int> cvrefids, int loggedinEmpId, string loggedInUserName, DateTime datetimenow){
 

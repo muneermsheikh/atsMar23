@@ -234,12 +234,20 @@ namespace infra.Services
         public async Task<EmailMessage> AckEnquiryToCustomer(OrderMessageParamDto orderMessageDto)
         {
             var order = orderMessageDto.Order;
-            var customer = await _context.Customers.Where(x => x.Id == orderMessageDto.Order.CustomerId)
-                .Include(x => x.CustomerOfficials).FirstOrDefaultAsync();
-            if (customer==null) throw new Exception("failed to retrieve customer data for customer no. " + orderMessageDto.Order.CustomerId);
+
+            var customer =order.Customer;
+            /*var customer = await _context.Customers
+                .Include(x => x.CustomerOfficials)
+                .Where(x => x.Id == orderMessageDto.Order.CustomerId)
+                .FirstOrDefaultAsync();
+            */
+            if (customer==null || customer.CustomerOfficials==null || customer.CustomerOfficials.Count()==0) throw new Exception("failed to retrieve customer data for customer no. " + orderMessageDto.Order.CustomerId);
             var OrderItems = orderMessageDto.Order.OrderItems.OrderBy(x => x.SrNo).ToList();
             var projectManagerId = order.ProjectManagerId == 0 ? 8 : order.ProjectManagerId;
+
             EmployeeDto projManager = await _empService.GetEmployeeFromIdAsync(projectManagerId);
+            
+            if(projManager==null) throw new Exception("Project Manager for the DL undefined");
 
             string[] officialDepts = { "main contact", "hr", "accounts", "logistics" };
             CustomerOfficial official = null;
@@ -248,6 +256,9 @@ namespace infra.Services
                 official = customer.CustomerOfficials.Where(x => x.Divn?.ToLower() == off).FirstOrDefault();
                 if (official != null) break;
             }
+
+            if(official==null) official=customer.CustomerOfficials.FirstOrDefault();
+
             bool HasException = false;
             var msg = DateTime.Now.Date + "<br><br>M/S" + customer.CustomerName;
             if (!string.IsNullOrEmpty(customer.Add)) msg += "<br>" + customer.Add;
@@ -287,9 +298,13 @@ namespace infra.Services
                 BccEmailAddress = bccEmailAddress,
                 Subject = subject,
                 Content = msg,
-                MessageTypeId = messageTypeId
+                MessageTypeId = messageTypeId,
+                RecipientAppUserId = official.AppUserId,
+                SenderAppUserId = projManager.AppUserId,
+                MessageGroup = "acknowledge To Client"
             };
 
+            
             return emailMessage;
         }
 
@@ -327,7 +342,7 @@ namespace infra.Services
 
             var emailMsg = new EmailMessage("forwardToHR", projMgr.EmployeeId, hrObj.EmployeeId, projMgr.OfficialEmailAddress,
                 projMgr.UserName, hrObj.UserName, hrObj.OfficialEmailAddress, "", "", "New Requirement No. " + order.OrderNo,
-                msg, (int)EnumMessageType.RequirementForwardToHRDept, 3);
+                msg, (int)EnumMessageType.RequirementForwardToHRDept, 3, hrObj.AppUserId, projMgr.AppUserId, "hr");
             return emailMsg;
         }
     
@@ -337,6 +352,8 @@ namespace infra.Services
             var emails = new List<EmailMessage>();
 
             int lastOfficialId=0;
+            string recipientappuserid=cvfwddtos.Select(x => x.OfficialAppUserId).FirstOrDefault();
+
             string msg="";
             int counter=0;
 
@@ -363,7 +380,8 @@ namespace infra.Services
                         msg += concludingMsg;
                         email = new EmailMessage("cv forward", loggedIn.LoggedInEmployeeId, lastCVRef.OfficialId, 
                             loggedIn.LoggedInAppUserEmail, loggedIn.LoggedIAppUsername, lastCVRef.OfficialName, lastCVRef.OfficialEmail, "", "", 
-                            counter + " CVs forwarded against your requirement", msg, (int)EnumMessageType.CVForwardingToClient, 3);
+                            counter + " CVs forwarded against your requirement", msg, (int)EnumMessageType.CVForwardingToClient, 3,
+                            cvref.OfficialAppUserId, loggedIn.LoggedInAppUserId, "cv forward");
                         emails.Add(email);
                     }
                     msg = dateTimeNow.Date.ToString("dd-MMM-yy") + "<br><br>"+  cvref.OfficialTitle + " " + cvref.OfficialName + ", " + 
@@ -387,7 +405,9 @@ namespace infra.Services
             msg += concludingMsg;
             email = new EmailMessage("cv forward", loggedIn.LoggedInEmployeeId, lastCVRef.OfficialId, 
                 loggedIn.LoggedInAppUserEmail, loggedIn.LoggedIAppUsername, lastCVRef.OfficialName, lastCVRef.OfficialEmail, "", "", 
-                counter + " CVs forwarded against your requirement", msg, (int)EnumMessageType.CVForwardingToClient, 3);
+                counter + " CVs forwarded against your requirement", msg, (int)EnumMessageType.CVForwardingToClient, 3,
+                recipientappuserid, loggedIn.LoggedInAppUserId, "CV Forward" );
+
             emails.Add(email);
 
             return emails;

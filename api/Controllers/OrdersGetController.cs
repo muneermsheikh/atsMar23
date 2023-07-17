@@ -21,11 +21,9 @@ namespace api.Controllers
 
 
         [HttpGet("ackToClient/{orderid}")]
-        public async Task<EmailMessage> GenerateOrderAcknowledgement(int orderid)
+        public async Task<bool> GenerateOrderAcknowledgement(int orderid)
         {
-            var msg = await _orderService.ComposeMsg_AckToClient(orderid);
-
-            return msg;
+            return  await _orderService.ComposeMsg_AckToClient(orderid);
         }
 
         [HttpGet("openorderitemcategorylist")]

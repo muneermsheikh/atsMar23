@@ -68,7 +68,7 @@ export class DepModalComponent implements OnInit {
         sequence: i.sequence, 
         nextSequence: i.nextSequence,
         nextStageDate: i.nextStageDate,
-        cvRefId: i.cVRefId, 
+        cvRefId: i.deployCVRefId, 
         id: i.id
       }))
     });

@@ -37,9 +37,9 @@ namespace infra.Services
                     items += "</td><td>" + item.Ecnr + "</td><td>" + item.SourceFrom;
 
                     if (item.Remuneration==null) {
-                              items += "</td><td>NA";  // + item.Remuneration?.WorkHours;
-                              items += "</td><td>NA";  // + item.Remuneration?.SalaryCurrency + item.Remuneration?.SalaryMin;
-                              items += "</td><td>NA";  // + item.Remuneration?.OtherAllowance + "</td><td>";
+                              items += "</td><td>N.A.";
+                              items += "</td><td>N.A.";
+                              items += "</td><td>N.A.";
                     } else {
                          items += "</td><td>" + item.Remuneration?.WorkHours;
                          items += "</td><td>" + item.Remuneration?.SalaryCurrency + item.Remuneration?.SalaryMin;

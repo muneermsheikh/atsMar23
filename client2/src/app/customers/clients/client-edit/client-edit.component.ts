@@ -7,9 +7,7 @@ import { IIndustryType, IProfession } from 'src/app/shared/models/masters/profes
 import { CustomersService } from '../../customers.service';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
-import { AccountService } from 'src/app/account/account.service';
 import { ToastrService } from 'ngx-toastr';
-import { take } from 'rxjs/operators';
 import { ICustomerOfficial } from 'src/app/shared/models/admin/customerOfficial';
 import { ICustomerIndustry } from 'src/app/shared/models/admin/customerIndustry';
 import { IAgencySpecialty } from 'src/app/shared/models/admin/agencySpecialty';
@@ -73,35 +71,28 @@ export class ClientEditComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    /*this.activatedRoute.data.subscribe(data => {
-        this.member = data.customer;
-        this.categories = data.categories;
-        this.industries = data.industries;
-        console.log('client edit, customer ', this.member);
-         if (this.member !==null && this.member !== undefined) {
-          this.getIndustries();
-          this.getCategories();
-        }
-        
-      })
-
-      */
-
-      this.getMember(+this.routeId);
-      this.isAddMode = !this.routeId;
       this.createForm();
+      this.isAddMode = !this.routeId;
+      this.getMember(+this.routeId);
+      
   }
 
   
   getMember(id: number) {
     this.service.getCustomer(id).subscribe( 
-      response => {
-        this.member = response;
+      {
+        next: response => {
+          this.member = response;
         this.patchCustomer(this.member);
+
+        console.log('customer:', this.member);
+        if(this.member?.customerType ==='customer') this.getIndustries();
+        if(this.member?.customerType !=='customer') this.getCategories();
+        },
+        error: err => console.log('error:', err)
       }
     )
-    this.getIndustries();
-    this.getCategories();
+    
 
   }
 
@@ -109,19 +100,22 @@ export class ClientEditComponent implements OnInit {
   createForm() {
     this.form = this.fb.group({
       id: [null],
-      customerType: '',
-      customerName: '',
-      knownAs: ['', Validators.required],
+      customerType: ['', [Validators.required, 
+        Validators.maxLength(10), Validators.minLength(5)]],
+      customerName: ['', [Validators.required,
+        Validators.maxLength(50), Validators.minLength(5)]],
+      knownAs: ['', [Validators.required,
+        Validators.maxLength(20), Validators.minLength(4)]],
       add: '',
       add2: '', 
-      city: ['', Validators.required],
+      city: ['', [Validators.required,
+        Validators.maxLength(25), Validators.minLength(5)]],
       pin: '', 
       district: '',
       state: '', country: '',
       email: [null, 
-        [Validators.required, Validators
-        .pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')]
-      ],
+        [Validators.required, Validators.email, Validators
+        .pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')]],
       website: '',
       phone: '',
       phone2: '', 
@@ -135,36 +129,31 @@ export class ClientEditComponent implements OnInit {
       
     } 
     );
-
-      if (!this.isAddMode && !this.member) {
-        console.log(this.isAddMode, this.member);
-        this.toastr.error('failed to retrieve customer');
-      } 
-      if (!this.isAddMode && this.member) this.patchCustomer(this.member);
   }
 
     patchCustomer(cv: ICustomer) {
-      this.form.patchValue( {
-        id: cv.id, customerType: cv.customerType, customerName: cv.customerName, 
-        knownAs: cv.knownAs, add: cv.add, add2: cv.add2, city: cv.city,
-        pin: cv.pin, district: cv.district, state: cv.state, country: cv.country,
-        email: cv.email, website: cv.website, phone: cv.phone, phone2: cv.phone2,
-        logoUrl: cv.logoUrl, customerStatus: cv.customerStatus, createdOn: cv.createdOn,
-        introduction: cv.introduction, 
-      });
+      if(cv!==undefined && cv!==null) {
+          this.form.patchValue( {
+            id: cv.id, customerType: cv.customerType, customerName: cv.customerName, 
+            knownAs: cv.knownAs, add: cv.add, add2: cv.add2, city: cv.city,
+            pin: cv.pin, district: cv.district, state: cv.state, country: cv.country,
+            email: cv.email, website: cv.website, phone: cv.phone, phone2: cv.phone2,
+            logoUrl: cv.logoUrl, customerStatus: cv.customerStatus, createdOn: cv.createdOn,
+            introduction: cv.introduction, 
+          });
 
-      if (cv.customerOfficials != null) {
-        this.form.setControl('customerOfficials', this.setExistingCustomerOfficials(cv.customerOfficials));
-      }
+          if (cv.customerOfficials != null) {
+            this.form.setControl('customerOfficials', this.setExistingCustomerOfficials(cv.customerOfficials));
+          }
 
-      if (cv.customerIndustries != null) {
-        this.form.setControl('customerIndustries', this.setExistingCustomerIndustries(cv.customerIndustries));
+          if (cv.customerIndustries != null) {
+            this.form.setControl('customerIndustries', this.setExistingCustomerIndustries(cv.customerIndustries));
+          }
+          
+          if (cv.agencySpecialties != null) {
+            this.form.setControl('agencySpecialties', this.setExistingAgencySpecialties(cv.agencySpecialties));
+        }
       }
-      
-      if (cv.agencySpecialties != null) {
-        this.form.setControl('agencySpecialties', this.setExistingAgencySpecialties(cv.agencySpecialties));
-      }
-      
     }
 
     
@@ -223,12 +212,19 @@ export class ClientEditComponent implements OnInit {
     
     newCustomerOfficial(): FormGroup {
         return this.fb.group({
-          id: 0, customerId: 0, logInCredential: true, appUserId: '', gender: '', 
-          title: '', officialName: '', designation: '', divn: '', phoneNo: '',
-          mobile: '',
-          email:  [null, [Validators.required, Validators
-            .pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')]
-          ],
+          id: 0, customerId: 0, logInCredential: true, 
+          appUserId: '', 
+          gender: ['',[ 
+              Validators.required, Validators.maxLength(1), 
+              Validators.minLength(1)]], 
+          title: '', 
+          officialName: ['', [Validators.required, Validators.maxLength(25)]], 
+          designation: '', 
+          divn: ['', [Validators.required, Validators.maxLength(10)]], 
+          phoneNo: '',
+          mobile: ['', [Validators.required, Validators.minLength(10)]],
+          email:  [null, [Validators.required, 
+            Validators.pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')]],
           imageUrl: '', isValid: true
         })
       }
@@ -245,11 +241,14 @@ export class ClientEditComponent implements OnInit {
       get customerIndustries() : FormArray {
         return this.form.get("customerIndustries") as FormArray
       }
+
       newCustomerIndustry(): FormGroup {
+        var customerid=this.member?.id ?? 0;
         return this.fb.group({
-          id: 0, customerId: 0, industryId: 0, name: ''
+          id: 0, customerId: customerid, industryId: 0, name: ''
         })
       }
+
       addCustomerIndustry() {
         this.customerIndustries.push(this.newCustomerIndustry());
       }
@@ -287,7 +286,8 @@ export class ClientEditComponent implements OnInit {
   // various gets from APis
 
       getCategories() {
-        this.sharedService.getCategories(false).subscribe((response: any) => {
+        console.log('getting categories');
+        this.sharedService.getCategoryList().subscribe((response: any) => {
           this.categories = response;
         }, (error: any) => {
           console.log(error);
@@ -295,8 +295,10 @@ export class ClientEditComponent implements OnInit {
       }
 
       getIndustries() {
+
         this.sharedService.getIndustries().subscribe(response => {
           this.industries = response;
+          console.log('industries:', this.industries);
         }, error => {
           this.toastr.error('failed to get the industries', error);
         })
@@ -306,7 +308,6 @@ export class ClientEditComponent implements OnInit {
         if(this.lastFormValue === this.form.value) {
           console.log('same form value returned');
           return;
-
         }
 
         if (+this.routeId ===0) {
@@ -335,7 +336,8 @@ export class ClientEditComponent implements OnInit {
             formData.append('userFormFiles', f);
         }})
         */
-        console.log('customer edit - form.value', this.form.value);
+
+
         this.service.updateCustomer(this.form.value).subscribe(() => {
           this.toastr.success('customer updated');
           this.close();
@@ -362,7 +364,7 @@ export class ClientEditComponent implements OnInit {
         this.router.navigateByUrl(this.returnUrl);
       }
 
-      navigateByRoute(routeString: string, obj: any,  editable: boolean) {
+     /* navigateByRoute(routeString: string, obj: any,  editable: boolean) {
         let route =  routeString;
         this.router.navigate(
             [route], 
@@ -375,4 +377,5 @@ export class ClientEditComponent implements OnInit {
               } }
           );
       }
+      */
 }
