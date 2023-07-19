@@ -4,6 +4,7 @@
      {"SrNo": 3, "Parameter" : "Willing to pay service charges", "IsMandatory": 0},
      {"SrNo": 4, "Parameter" : "Willing to travel as scheduled", "IsMandatory": 0},
      {"SrNo": 5, "Parameter" : "If ECNR required, candidate has ECNR PP", "IsMandatory": 0},
-     {"SrNo": 6, "Parameter" : "Accepts to do assigned work", "IsMandatory": 1}
+     {"SrNo": 6, "Parameter" : "Accepts to do assigned work", "IsMandatory": 1},
+     {"SrNo": 7, "Parameter" : "If Trade Test reqd, verified that it conducted on same person as the PP", "IsMandatory": 1}
 
 ]

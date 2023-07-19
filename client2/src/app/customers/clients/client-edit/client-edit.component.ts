@@ -74,7 +74,6 @@ export class ClientEditComponent implements OnInit {
       this.createForm();
       this.isAddMode = !this.routeId;
       this.getMember(+this.routeId);
-      
   }
 
   
@@ -85,7 +84,7 @@ export class ClientEditComponent implements OnInit {
           this.member = response;
         this.patchCustomer(this.member);
 
-        console.log('customer:', this.member);
+        //console.log('customer:', this.member);
         if(this.member?.customerType ==='customer') this.getIndustries();
         if(this.member?.customerType !=='customer') this.getCategories();
         },

@@ -16,7 +16,7 @@ import { CandidateService } from "../candidates/candidate.service";
         var routeid = route.paramMap.get('id');
         
         if (routeid === '0' || routeid === null) return of(undefined);
-
+        console.log('routeid:', routeid );
         return this.candidateService.getCandidate(+routeid);
      }
  

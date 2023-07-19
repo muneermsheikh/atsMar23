@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { RouterModule, Routes } from '@angular/router';
-import { QualificationListResolver } from '../resolvers/qualificationListResolver';
 import { CategoryListResolver } from '../resolvers/categoryListResolver';
 import { CandidateResolver } from '../resolvers/candidateResolver';
 import { AgentsResolver } from '../resolvers/agents.resolver';
@@ -10,7 +9,7 @@ import { AgentsResolver } from '../resolvers/agents.resolver';
 const routes: Routes = [
   {path: '', component: LoginComponent,  data: {breadcrumb: 'Login Admin'}},
   {path: 'login', component: LoginComponent,data: {breadcrumb: {alias: 'logIn'}}},
-  {path: 'register', component: RegisterComponent, 
+  /*{path: 'register', component: RegisterComponent, 
       resolve: {
         categories: CategoryListResolver,
         agents: AgentsResolver,
@@ -21,12 +20,13 @@ const routes: Routes = [
   },
   {path: 'edit/:id', component: RegisterComponent, 
       resolve: {
-        qualifications: QualificationListResolver,
+        //qualifications: QualificationListResolver,
+        agents: AgentsResolver,
         categories: CategoryListResolver,
         candidate: CandidateResolver
       },
-      data: {breadcrumb: {alias: 'register'}}
-},
+      data: {breadcrumb: {alias: 'Edit Or Add'}}
+},*/
 ]
 
 @NgModule({

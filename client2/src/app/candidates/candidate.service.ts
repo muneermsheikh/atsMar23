@@ -80,7 +80,6 @@ export class CandidateService {
   }
   
   getCandidate(id: number) {
-    //console.log('in getCandidate, id is:',id);
     return this.http.get<ICandidate>(this.apiUrl + 'candidate/byid/' + id);
   }
 
@@ -103,13 +102,14 @@ export class CandidateService {
     //return this.http.post<IApiReturnDto>(this.apiUrl + 'account/RegisterNewCandidate', model);
   }
 
-  register(model: any) {
-      return this.http.post<IApiReturnDto>(this.apiUrl + 'account/registerCandidate', model );
+  /*register(model: any) {
+       return this.http.post<IApiReturnDto>(this.apiUrl + 'account/registerCandidate', model );
       //return this.http.post<IApiReturnDto>(this.apiUrl + 'account/RegisterNewCandidate', model);
     }
-  
-  UpdateCandidate(model: any) {
-      return this.http.put<ICandidate>(this.apiUrl + 'candidate', model);
+  */
+
+  UpdateCandidateWithFiles(model: any) {
+      return this.http.put<string>(this.apiUrl + 'candidate/updatecandidatewithfiles', model);
     }
     
   setCurrentUser(user: IUser) {

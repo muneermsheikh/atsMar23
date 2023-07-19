@@ -1,0 +1,50 @@
+<div class="modal-header">
+    <div class="b">Call Records</div>
+    <button class="close pull-right fa fa-poweroff"
+         type="button" aria-label="Close"
+         (click)="bsModalRef.hide()">X
+    </button>
+</div>
+
+<div class="modal-body">
+
+    <div class="form-check"style="font-size: small;">
+         <label class="stdd">Create new History if no record exists</label>
+         <input type="checkbox"
+             class="stdd mx-2 form-check-input"
+             [checked]="candidateFromDb"
+             value="candidateFromDb"
+             (change)="candidateFromDb = !candidateFromDb"
+         >
+     </div>
+     <div *ngIf="histParams !== undefined && histParams !== null">
+        <form #frm="ngForm" id="frm">
+            <div class="form-check" style="font-size: medium;">
+                 <label class="stdd w100">Mobile No.</label>
+                 <input class="stdd w200" type="text" name="mobileNo" 
+                      ngModel id="mobileNo" [(ngModel)]="histParams.mobileNo" >
+            </div>
+            <div class="form-check" style="font-size: medium;">
+                 <label class="stdd w100">Email Id</label>
+                 <input class="stdd w200" type="text" name="emailId" 
+                      ngModel id="emailId" [(ngModel)]="histParams.emailId" >
+            </div>
+            <div class="form-check" style="font-size: medium;">
+                 <label class="stdd w100">Name :</label>
+                 <input class="stdd w200" type="text" name="personName" 
+                      ngModel id="personName" [(ngModel)]="histParams.personName" >
+            </div>
+            <button type="button" title="retrieve entity from Database based upon above inputs" 
+                class="btn btn-default pull-right" (click)="getCandidate()">Get Caller History"</button>
+            
+            <div class="stdd red" style="vertical-align: bottom;">{{err}}</div>
+            
+        </form>
+     </div>
+    
+    <!-- <div class="modal-footer">
+         <button type="button" class="btn btn-default fa fa-poweroff" (click)="close()">close</button>
+         <button type="button" [disabled]="cHistory===null" title="Show History" class="btn btn-default fa fa-user" (click)="emitValue()">Display History</button>
+    </div>
+-->
+    

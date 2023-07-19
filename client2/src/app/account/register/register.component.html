@@ -1,251 +1,256 @@
+<br><br>
+
 <form [formGroup]="registerForm" (ngSubmit)="registerForm.valid && savewithattachments()" autocomplete="off">
-     <h2 class="text-center text-primary">Sign up</h2>
      <hr>
-     <div class="stdd col-6" style="border-style: groove;">
-          <!-- <div class="row" formGroupName="userNamesForm"> -->
-          <div class="row">
-               <input type="text" style="visibility: hidden; width: 10px;" formControlName="id" class="stdd">
-               <br>
-               <div class="stdd col-3 mt-2">
-                    <app-text-input [label]="'Application No'" 
-                    [formControl]="$any(registerForm.controls['applicationNo'])" 
-                    ></app-text-input>
-               </div>
-               <div class="stdd col-3 mt-2">
-                    <app-text-input [label]="'Known As'" [formControl]="$any(registerForm.controls['knownAs'])" ></app-text-input>
-               </div>
-               <div class="stdd col-3 mt-2">
-                    <app-text-input [label]="'Nationality'" [formControl]="$any(registerForm.controls['nationality'])" ></app-text-input>
-               </div>
-               <div class="stdd col-2 mt-2">
-                    <button class="btn btn-default fa fa-undo" type="button" (click)="cancel()"></button>
-                    <button [disabled]="!registerForm.valid" title="save without attachments" 
-                         class="btn btn-success me-2 fa fa-save " type="submit"></button>
-               </div>
-               <div class="mt-2">
-                    <div class="stdd col-3">
-                         <app-text-input [label]="'First name'" [formControl]="$any(registerForm.controls['firstName'])" ></app-text-input>
+     <div >
+          <div class="stdd col-6" style="border-style: groove;">
+               <!-- <div class="row" formGroupName="userNamesForm"> -->
+               <div class="row">
+                    <input type="text" style="visibility: hidden; width: 10px;" formControlName="id" class="stdd">
+                    <br>
+                    <div class="stdd col-3 mt-2">
+                         <app-text-input [label]="'Application No'" 
+                         [formControl]="$any(registerForm.controls['applicationNo'])" 
+                         ></app-text-input>
                     </div>
-                    <div class="stdd col-3">
-                         <app-text-input [label]="'Second Name'" [formControl]="$any(registerForm.controls['secondName'])" ></app-text-input>
+                    <div class="stdd col-3 mt-2">
+                         <app-text-input [label]="'Known As'" 
+                              [formControlName]="'knownAs'"
+                              [formControl]="$any(registerForm.controls['knownAs'])" 
+                         ></app-text-input>
                     </div>
-                    <div class="stdd col-3">
-                         <app-text-input [label]="'Family name'" [formControl]="$any(registerForm.controls['familyName'])" ></app-text-input>
+                    <div class="stdd col-3 mt-2">
+                         <app-text-input [label]="'Nationality'" [formControl]="$any(registerForm.controls['nationality'])" ></app-text-input>
                     </div>
-               </div>     
-               <div class="mt-2">
-                    <label class="lbl w100" style="margin-left: 10px;">Gender: </label>
-                    <input type="radio" class="form-check-input" style="margin-right:25px;" value="m" formControlName="gender">
-                    <label class="lbl w100">male</label>
-                    <input type="radio" class="form-check-input" style="margin-right:25px;" value="f" formControlName="gender">
-                    <label class="lbl w100">female</label>
-               </div>
-               <div class="mt-2">
-                    <label class="lbl w100" style="margin-left: 10px;">User Type:</label>
-                    <input type="radio" class="form-check-input" value="candidate" formControlName="userType">
-                    <div class="lbl w100">candidate</div>
-                         <input type="radio" class="form-check-input ms-3" value="official" formControlName="userType">
-                    <div class="lbl w100">Official</div>
-                         <input type="radio" class="form-check-input ms-3" value="employee" formControlName="userType">
-                    <div class="lbl">Employee</div>
-               </div>
-               <div class="mt-2">
-                    <div class="stdd col-4">
-                         <app-date-input [maxDate]="maxDate" [label]="'Date of birth'" [formControl]="$any(registerForm.controls['dOB'])"  ></app-date-input>
+                    <div class="stdd col-2 mt-2">
+                         <button class="btn btn-default fa fa-undo" type="button" (click)="cancel()"></button>
+                         <button [disabled]="!registerForm.valid" title="save without attachments" 
+                              class="btn btn-success me-2 fa fa-save " type="submit"></button>
                     </div>
-                    <div class="stdd col-4">
-                         <app-text-input [label]="'Place of birth'" [formControl]="$any(registerForm.controls['placeOfBirth'])" ></app-text-input>
+                    <div class="mt-2">
+                         <div class="stdd col-3">
+                              <app-text-input [label]="'First name'" [formControl]="$any(registerForm.controls['firstName'])" ></app-text-input>
+                         </div>
+                         <div class="stdd col-3">
+                              <app-text-input [label]="'Second Name'" [formControl]="$any(registerForm.controls['secondName'])" ></app-text-input>
+                         </div>
+                         <div class="stdd col-3">
+                              <app-text-input [label]="'Family name'" [formControl]="$any(registerForm.controls['familyName'])" ></app-text-input>
+                         </div>
+                    </div>     
+                    <div class="mt-2">
+                         <label class="lbl w100" style="margin-left: 10px;">Gender: </label>
+                         <input type="radio" class="form-check-input" style="margin-right:25px;" value="m" formControlName="gender">
+                         <label class="lbl w100">male</label>
+                         <input type="radio" class="form-check-input" style="margin-right:25px;" value="f" formControlName="gender">
+                         <label class="lbl w100">female</label>
                     </div>
-                    <div class="stdd col-4">
-                         <ng-select   
-                              [items]="agents" 
-                              [searchable]=true 
-                              bindLabel = "name"
-                              bindValue = "id"
-                              formControlName="referredBy"
-                              (change)="getAgentValue($event)"
-                         >
-                         </ng-select>
-                         <br style="margin:0px;padding: 0px;"><label>Referred By</label>
+                    <div class="mt-2">
+                         <label class="lbl w100" style="margin-left: 10px;">User Type:</label>
+                         <input type="radio" class="form-check-input" value="candidate" formControlName="userType">
+                         <div class="lbl w100">candidate</div>
+                              <input type="radio" class="form-check-input ms-3" value="official" formControlName="userType">
+                         <div class="lbl w100">Official</div>
+                              <input type="radio" class="form-check-input ms-3" value="employee" formControlName="userType">
+                         <div class="lbl">Employee</div>
                     </div>
-               </div>
-
-               <div class="mt-2">
-                    <div class="stdd col-3">
-                         <app-text-input [label]="'Aadhar No'" [formControl]="$any(registerForm.controls['aadharNo'])" ></app-text-input>
-                    </div>
-                    <div class="stdd col-3">
-                         <app-text-input [label]="'PP No'" [formControl]="$any(registerForm.controls['ppNo'])" ></app-text-input>
-                    </div>
-                    
-                    <div class="stdd">
-                         <label class="lbl w150" style="margin-left: 10px; font-weight: bold;">Emig Clearance: </label>
-                         <br style="margin:0px; padding: 0px; ">
-                         <label class="lbl w100" style="margin-left: 15px; margin-top: 0px;">ECNR</label>
-                         <input type="radio" class="form-check-input" style="margin-right: 15px;" value="ecnr" formControlName="ecnr">
-                         <label class="lbl w100" style="margin-left: 15px; margin-top: 0px;">ECR</label>
-                         <input type="radio" class="form-check-input" style="margin-right:15px;" value="ecr" formControlName="ecnr">
-                          
-                    </div>
-               </div>
-               <div class="mt-2">
-                    <div class="stdd col-6">
-                         <app-text-input [label]="'Address'" [formControl]="$any(registerForm.controls['address'])" ></app-text-input>
-                    </div>
-                    <div class="stdd col-6">
-                         <app-text-input [label]="'Address2'" [formControl]="$any(registerForm.controls['address2'])" ></app-text-input>
-                    </div>
-                    
-                    <div class="stdd col-4">
-                         <app-text-input [label]="'City'" [formControl]="$any(registerForm.controls['city'])" ></app-text-input>
-                    </div>
-                    <div class="stdd col-4">
-                         <app-text-input [label]="'PIN'" [formControl]="$any(registerForm.controls['pin'])" ></app-text-input>
-                    </div>
-                    <div class="stdd col-4">
-                         <app-text-input [label]="'District'" [formControl]="$any(registerForm.controls['district'])" ></app-text-input>
-                    </div>
-
-                    <div class="stdd col-4">
-                         <app-text-input [label]="'Email'" [formControl]="$any(registerForm.controls['email'])"  ></app-text-input>
-                    </div>
-                    <!-- <div *ngIf="candidate===undefined"> -->
+                    <div class="mt-2">
                          <div class="stdd col-4">
-                              <app-text-input [label]="'Password'" autocomplete="new-password" [formControl]="$any(registerForm.controls['password'])"  [type]="'password'"></app-text-input>
+                              <app-date-input [maxDate]="maxDate" [label]="'Date of birth'" [formControl]="$any(registerForm.controls['dOB'])"  ></app-date-input>
                          </div>
                          <div class="stdd col-4">
-                              <app-text-input [label]="'Confirm Password'" autocomplete="new-password" [formControl]="$any(registerForm.controls['password'])"  [type]="'password'" ></app-text-input>
+                              <app-text-input [label]="'Place of birth'" [formControl]="$any(registerForm.controls['placeOfBirth'])" ></app-text-input>
                          </div>
-                    <!-- </div> -->
+                         <div class="stdd col-4">
+                              <ng-select   
+                                   [items]="agents" 
+                                   [searchable]=true 
+                                   bindLabel = "name"
+                                   bindValue = "id"
+                                   formControlName="referredBy"
+                                   (change)="getAgentValue($event)"
+                              >
+                              </ng-select>
+                              <br style="margin:0px;padding: 0px;"><label>Referred By</label>
+                         </div>
+                    </div>
+
+                    <div class="mt-2">
+                         <div class="stdd col-3">
+                              <app-text-input [label]="'Aadhar No'" [formControl]="$any(registerForm.controls['aadharNo'])" ></app-text-input>
+                         </div>
+                         <div class="stdd col-3">
+                              <app-text-input [label]="'PP No'" [formControl]="$any(registerForm.controls['ppNo'])" ></app-text-input>
+                         </div>
+                         
+                         <div class="stdd">
+                              <label class="lbl w150" style="margin-left: 10px; font-weight: bold;">Emig Clearance: </label>
+                              <br style="margin:0px; padding: 0px; ">
+                              <label class="lbl w100" style="margin-left: 15px; margin-top: 0px;">ECNR</label>
+                              <input type="radio" class="form-check-input" style="margin-right: 15px;" value="ecnr" formControlName="ecnr">
+                              <label class="lbl w100" style="margin-left: 15px; margin-top: 0px;">ECR</label>
+                              <input type="radio" class="form-check-input" style="margin-right:15px;" value="ecr" formControlName="ecnr">
                               
+                         </div>
+                    </div>
+                    <div class="mt-2">
+                         <div class="stdd col-6">
+                              <app-text-input [label]="'Address'" [formControl]="$any(registerForm.controls['address'])" ></app-text-input>
+                         </div>
+                         <div class="stdd col-6">
+                              <app-text-input [label]="'Address2'" [formControl]="$any(registerForm.controls['address2'])" ></app-text-input>
+                         </div>
+                         
+                         <div class="stdd col-4">
+                              <app-text-input [label]="'City'" [formControl]="$any(registerForm.controls['city'])" ></app-text-input>
+                         </div>
+                         <div class="stdd col-4">
+                              <app-text-input [label]="'PIN'" [formControl]="$any(registerForm.controls['pin'])" ></app-text-input>
+                         </div>
+                         <div class="stdd col-4">
+                              <app-text-input [label]="'District'" [formControl]="$any(registerForm.controls['district'])" ></app-text-input>
+                         </div>
+
+                         <div class="stdd col-4">
+                              <app-text-input [label]="'Email'" [formControl]="$any(registerForm.controls['email'])"  ></app-text-input>
+                         </div>
+                         <!-- <div *ngIf="candidate===undefined"> -->
+                              <div class="stdd col-4">
+                                   <app-text-input [label]="'Password'" autocomplete="new-password" [formControl]="$any(registerForm.controls['password'])"  [type]="'password'"></app-text-input>
+                              </div>
+                              <div class="stdd col-4">
+                                   <app-text-input [label]="'Confirm Password'" autocomplete="new-password" [formControl]="$any(registerForm.controls['password'])"  [type]="'password'" ></app-text-input>
+                              </div>
+                         <!-- </div> -->
+                                   
+                    </div>
                </div>
           </div>
-     </div>
-     
-     <div class="stdd col-5">
-          <tabset class="member-tabset" #memberTabs>
-               <tab heading='Professions' (selectTab)="onTabActivated($event)">
-                    <div formArrayName="userProfessions" style="height: 10px;font-size: small;" class="my-1 px-0">
-                         <div style="width: 50px; display: inline-block;">Sr No</div>
-                         <div style="width: 300px; display: inline-block;">Category</div>
-                         <div style="width: 50px; margin-left: 10px; display: inline-block;">Is Main</div>
-                         <button type="button" (click)="addUserProfession()" class="my-1 fa fa-plus" style="color: blue;"></button>
-                         <div *ngFor="let p of userProfessions.controls; let i=index">
-                              <div [formGroupName]="i"> 
-                                   <div style="width: 50px; display: inline-block;">{{i+1}}</div>
-                                   <ng-select   
-                                        class="stdd w300 py-0 my-0"
-                                        [items]="professions" 
-                                        [searchable]=true 
-                                        bindLabel = "name"
-                                        bindValue = "id"
-                                        formControlName="categoryId"
-                                        (change)="getProfessionValue($event)"
-                                        >
-                                   </ng-select>
-                                   <input type="checkbox" formControlName="isMain" style="width: 50px; margin-left: 30; display: inline-block;"  >
-                                   <button (click)="removeUserProfession(i)" style="margin-left: 20px;" class="fa fa-trash" style="color:red; display: inline-block;"></button>
-                              </div>
-                         </div>
-                    </div>
-               </tab>
-               <tab heading='Phones' (selectTab)="onTabActivated($event)">
-                    <div formArrayName="userPhones" style="height: 10px;font-size: small;" class="my-1 px-0">
-                         <div class="stdd col-1">Sr No</div>
-                         <div class="stdd col-4">Phone</div>
-                         <div class="stdd col-2">Is Main</div>
-                         <button type="button" (click)="addPhone()" class="stdd my-1 fa fa-plus" style="color: blue;"></button>
-                         
-                         <div *ngFor="let p of userPhones.controls; let i=index">
-                              <div [formGroupName]="i"> 
-                                   <div class="stdd col-1">{{i+1}}</div>
-                                   <div class="stdd col-4">
-                                        <app-text-input [label]="'Mobile No'" formControlName="mobileNo" ></app-text-input>
-                                   </div>
-                                   <div class="stdd col-2">
-                                        <input type="checkbox" formControlName="isMain" style="width: 50px; margin-left: 30; display: inline-block;" >
-                                   </div>
-                                   <div class="stdd col-2">
-                                        <button (click)="removeUserPhone(i)" style="margin-left: 20px;" class="fa fa-trash" style="color:red; display: inline-block;"></button>
+          
+          <div class="stdd col-5">
+               <tabset class="member-tabset" #memberTabs>
+                    <tab heading='Professions' (selectTab)="onTabActivated($event)">
+                         <div formArrayName="userProfessions" style="height: 10px;font-size: small;" class="my-1 px-0">
+                              <div style="width: 50px; display: inline-block;">Sr No</div>
+                              <div style="width: 300px; display: inline-block;">Category</div>
+                              <div style="width: 50px; margin-left: 10px; display: inline-block;">Is Main</div>
+                              <button type="button" (click)="addUserProfession()" class="my-1 fa fa-plus" style="color: blue;"></button>
+                              <div *ngFor="let p of userProfessions.controls; let i=index">
+                                   <div [formGroupName]="i"> 
+                                        <div style="width: 50px; display: inline-block;">{{i+1}}</div>
+                                        <ng-select   
+                                             class="stdd w300 py-0 my-0"
+                                             [items]="professions" 
+                                             [searchable]=true 
+                                             bindLabel = "name"
+                                             bindValue = "id"
+                                             formControlName="categoryId"
+                                             (change)="getProfessionValue($event)"
+                                             >
+                                        </ng-select>
+                                        <input type="checkbox" formControlName="isMain" style="width: 50px; margin-left: 30; display: inline-block;"  >
+                                        <button (click)="removeUserProfession(i)" style="margin-left: 20px;" class="fa fa-trash" style="color:red; display: inline-block;"></button>
                                    </div>
                               </div>
                          </div>
-                    </div>
-               </tab>
-               <tab heading='Qualifications' (selectTab)="onTabActivated($event)">
-                    <div formArrayName="userQualifications" style="height: 10px;font-size: small;" class="my-1 px-0">
-                         <div style="width: 50px; display: inline-block;">Sr No</div>
-                         <div style="width: 300px; display: inline-block;">Qualification</div>
-                         <div style="width: 50px; margin-left: 10px; display: inline-block;">Is Main</div>
-                         <button type="button" (click)="addQualification()" class="my-1 fa fa-plus" style="color: blue;"></button>
-                         <div *ngFor="let p of userQualifications.controls; let j=index">
-                              <div [formGroupName]="j"> 
-                                   <div style="width: 50px; display: inline-block;">{{j+1}}</div>
-                                   <ng-select   
-                                        class="stdd w300 py-0 my-0"
-                                        [items]="qualifications" 
-                                        [searchable]=true 
-                                        bindLabel = "name"
-                                        bindValue = "id"
-                                        formControlName="qualificationId"
-                                        (change)="getValues($event)"
-                                        >
-                                   </ng-select>
-                                   <input type="checkbox" formControlName="isMain" style="width: 50px; margin-left: 30; display: inline-block;"  >
-                                   <button (click)="removeUserQualification(j)" style="margin-left: 20px;" class="fa fa-trash" style="color:red; display: inline-block;"></button>
+                    </tab>
+                    <tab heading='Phones' (selectTab)="onTabActivated($event)">
+                         <div formArrayName="userPhones" style="height: 10px;font-size: small;" class="my-1 px-0">
+                              <div class="stdd col-1">Sr No</div>
+                              <div class="stdd col-4">Phone</div>
+                              <div class="stdd col-2">Is Main</div>
+                              <button type="button" (click)="addPhone()" class="stdd my-1 fa fa-plus" style="color: blue;"></button>
+                              
+                              <div *ngFor="let p of userPhones.controls; let i=index">
+                                   <div [formGroupName]="i"> 
+                                        <div class="stdd col-1">{{i+1}}</div>
+                                        <div class="stdd col-4">
+                                             <app-text-input [label]="'Mobile No'" formControlName="mobileNo" ></app-text-input>
+                                        </div>
+                                        <div class="stdd col-2">
+                                             <input type="checkbox" formControlName="isMain" style="width: 50px; margin-left: 30; display: inline-block;" >
+                                        </div>
+                                        <div class="stdd col-2">
+                                             <button (click)="removeUserPhone(i)" style="margin-left: 20px;" class="fa fa-trash" style="color:red; display: inline-block;"></button>
+                                        </div>
+                                   </div>
                               </div>
                          </div>
-                    </div>
-               </tab>
-               <tab heading='Experience' (selectTab)="onTabActivated($event)">
-                    <div formArrayName="userExperiences" style="height: 10px;font-size: small;" class="my-1 px-0">
-                         <button type="button" (click)="addUserExp()" class="my-1 fa fa-plus" style="color: blue;"></button>
-                         <div *ngFor="let p of userExperiences.controls; let i=index">
-                              <div [formGroupName]="i"> 
-                                   <div class="stdd w100">
-                                        <app-text-input [label]="'Sr No'" formControlName="srNo" ></app-text-input>
+                    </tab>
+                    <tab heading='Qualifications' (selectTab)="onTabActivated($event)">
+                         <div formArrayName="userQualifications" style="height: 10px;font-size: small;" class="my-1 px-0">
+                              <div style="width: 50px; display: inline-block;">Sr No</div>
+                              <div style="width: 300px; display: inline-block;">Qualification</div>
+                              <div style="width: 50px; margin-left: 10px; display: inline-block;">Is Main</div>
+                              <button type="button" (click)="addQualification()" class="my-1 fa fa-plus" style="color: blue;"></button>
+                              <div *ngFor="let p of userQualifications.controls; let j=index">
+                                   <div [formGroupName]="j"> 
+                                        <div style="width: 50px; display: inline-block;">{{j+1}}</div>
+                                        <ng-select   
+                                             class="stdd w300 py-0 my-0"
+                                             [items]="qualifications" 
+                                             [searchable]=true 
+                                             bindLabel = "name"
+                                             bindValue = "id"
+                                             formControlName="qualificationId"
+                                             (change)="getValues($event)"
+                                             >
+                                        </ng-select>
+                                        <input type="checkbox" formControlName="isMain" style="width: 50px; margin-left: 30; display: inline-block;"  >
+                                        <button (click)="removeUserQualification(j)" style="margin-left: 20px;" class="fa fa-trash" style="color:red; display: inline-block;"></button>
                                    </div>
-                                   <div class="stdd w300">
-                                        <app-text-input [label]="'Position'" formControlName="position" ></app-text-input>
-                                   </div>
-                                   <div class="stdd w400">
-                                        <app-text-input [label]="'Company'" formControlName="company" ></app-text-input>
-                                   </div>
-                                   <div class="stdd w150">
-                                        <app-date-input [maxDate]="maxDate" [label]="'Worked From'" formControlName="workedFrom" ></app-date-input>
-                                   </div>
-                                   <div class="stdd w150">
-                                        <app-date-input [maxDate]="maxDate" [label]="'Worked Upto'" formControlName="workedUpto" ></app-date-input>
-                                   </div>
-                                   <button (click)="removeUserExp(i)" style="margin-left: 20px;" class="fa fa-trash" style="color:red; display: inline-block;"></button>
-                                   </div>
-                         </div>
-                    </div>
-               </tab>
-               <tab heading='Attachments' (selectTab)="onTabActivated($event)">
-                    <div class="stdd col-8" >File to upload</div>
-                    <div class="stdd col-3">Type</div>
-                    <button class="stdd pull-right fa fa-plus" type="button" (click)="addUserAttachment()" ></button>
-                    <div formArrayName="userAttachments" style="height: 12px;" >
-                         <div *ngFor="let ph of userAttachments.controls; let j=index"> 
-                              <div [formGroupName]="j">
-                                   <div class="stdd col-8" style="font-size: x-small;">
-                                        <input class="stdd" type="file" id="file" formControlName="fileName" 
-                                        (change)="onFileInputChange($event)"
-                                        >
-                                   </div>
-                                   <div class="stdd col-3">
-                                        <app-text-input [label]="'File Type'" formControlName="attachmentType" ></app-text-input>
-                                   </div>
-                                   
-                                   <button (click)="removeUserAttachment(j)" class="stdd red fa fa-trash"></button>
                               </div>
                          </div>
-                    </div>
-               </tab>
-          </tabset>
-     </div>
-
+                    </tab>
+                    <tab heading='Experience' (selectTab)="onTabActivated($event)">
+                         <div formArrayName="userExperiences" style="height: 10px;font-size: small;" class="my-1 px-0">
+                              <button type="button" (click)="addUserExp()" class="my-1 fa fa-plus" style="color: blue;"></button>
+                              <div *ngFor="let p of userExperiences.controls; let i=index">
+                                   <div [formGroupName]="i"> 
+                                        <div class="stdd w100">
+                                             <app-text-input [label]="'Sr No'" formControlName="srNo" ></app-text-input>
+                                        </div>
+                                        <div class="stdd w300">
+                                             <app-text-input [label]="'Position'" formControlName="position" ></app-text-input>
+                                        </div>
+                                        <div class="stdd w400">
+                                             <app-text-input [label]="'Company'" formControlName="company" ></app-text-input>
+                                        </div>
+                                        <div class="stdd w150">
+                                             <app-date-input [maxDate]="maxDate" [label]="'Worked From'" formControlName="workedFrom" ></app-date-input>
+                                        </div>
+                                        <div class="stdd w150">
+                                             <app-date-input [maxDate]="maxDate" [label]="'Worked Upto'" formControlName="workedUpto" ></app-date-input>
+                                        </div>
+                                        <button (click)="removeUserExp(i)" style="margin-left: 20px;" class="fa fa-trash" style="color:red; display: inline-block;"></button>
+                                        </div>
+                              </div>
+                         </div>
+                    </tab>
+                    <tab heading='Attachments' (selectTab)="onTabActivated($event)">
+                         <div class="stdd col-8" >File to upload</div>
+                         <div class="stdd col-3">Type</div>
+                         <button class="stdd pull-right fa fa-plus" type="button" (click)="addUserAttachment()" ></button>
+                         <div formArrayName="userAttachments" style="height: 12px;" >
+                              <div *ngFor="let ph of userAttachments.controls; let j=index"> 
+                                   <div [formGroupName]="j">
+                                        <div class="stdd col-8" style="font-size: x-small;">
+                                             <input class="stdd" type="file" id="file" formControlName="fileName" 
+                                             (change)="onFileInputChange($event)"
+                                             >
+                                        </div>
+                                        <div class="stdd col-3">
+                                             <app-text-input [label]="'File Type'" formControlName="attachmentType" ></app-text-input>
+                                        </div>
+                                        
+                                        <button (click)="removeUserAttachment(j)" class="stdd red fa fa-trash"></button>
+                                   </div>
+                              </div>
+                         </div>
+                    </tab>
+               </tabset>
+          </div>
+     </div>    
    
       <div class="row" *ngIf="validationErrors">
          <ul class="text-danger">

@@ -4,11 +4,12 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './account/login/login.component';
 import { RegisterComponent } from './account/register/register.component';
 import { DeployListComponent } from './deploys/deploy-list/deploy-list.component';
+import { CandidateEditComponent } from './candidates/candidate-edit/candidate-edit.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent, data: {breadcrumb: 'Home'}},
   {path: 'login', component: LoginComponent, data: {breadcrumb: 'LogIn'}},
-  {path: 'register', component: RegisterComponent, data: {breadcrumb: 'Register'}},
+  {path: 'register', component: CandidateEditComponent, data: {breadcrumb: 'Register'}},
   {path: 'account', loadChildren: () => import('./account/account.module').then(mod => mod.AccountModule), data: {breadcrumb: {skip: true}}},
 
   {path: 'master values', loadChildren:() => import('./masters/masters.module').then(mod => mod.MastersModule), data: {breadcrumb: 'Master Values'}},
@@ -35,9 +36,11 @@ const routes: Routes = [
   {path: 'employments', loadChildren:() => import('./employments/employment.module').then(mod => mod.EmploymentModule),
     data: {breadcrumb: 'Employments'}},
 
+  
+  {path: 'callrecords', loadChildren:() => import('./callRecords/call-records.module').then(mod => mod.CallRecordsModule), 
+    //canActivate: [AdminGuard], 
+    data: {breadcrumb: 'Call Records'}},
   /*
-  {path: 'callrecords', loadChildren:() => import('./prospectives/prospective.module').then(mod => mod.ProspectiveModule), 
-    canActivate: [AdminGuard], data: {breadcrumb: 'Prospectives'}},
   {path: 'qualifications',component: QualificationsComponent, canActivate: [AuthorizedGuard], data: {breadcrumb: 'Qualifications'}}, 
   {path: 'masters', loadChildren:() => import('./masters/masters.module')
       .then(mod => mod.MastersModule), data: {breadcrumb: 'Masters'}},

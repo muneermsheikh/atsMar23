@@ -1,0 +1,27 @@
+.stdd {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.lbl {
+    font-weight: 125;
+    font-size:smaller;
+    display: inline-block;
+    vertical-align: top;
+    font-weight: bold;
+}
+.chkLabel {
+    width: 100px;
+    margin-right: 2px;
+    padding-left: 2px;
+}    
+
+.tAlignR {text-align: right;}
+
+.w75 {width: 75px;}
+.w100 {width: 100px;}
+.w150 {width: 150px;}
+.w300 {width: 300px;}
+.w350 {width: 350px;}
+
+.red {color: red;}

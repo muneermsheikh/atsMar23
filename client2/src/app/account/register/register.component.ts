@@ -98,10 +98,10 @@ export class RegisterComponent implements OnInit {
         this.agents = data.agents,
         this.candidate = data.candidate;
 
-        this.isAddMode = this.candidate === undefined;
-        console.log('qualifications:', this.qualifications);
+        //this.isAddMode = this.candidate === undefined;
+        if(!this.isAddMode && this.candidate !== undefined) this.editCandidate(this.candidate);
     });
-    //this.getProfessions();
+    console.log('register omponent ngoninit candidate is:', this.candidate); 
     this.getQualifications();
     
     this.initializeForm();
@@ -556,13 +556,12 @@ export class RegisterComponent implements OnInit {
             }},
           error: error => this.toastrService.error('failed to save the candidate', error)
     })} else {
-        this.candidateService.UpdateCandidate(formData).subscribe({
-          next: (response: ICandidate) => {
+        this.candidateService.UpdateCandidateWithFiles(formData).subscribe({
+          next: (response: string) => {
             if(response === null) {
               this.toastrService.error('failed to update the candidate');
             } else {
               this.toastrService.success('updated the candidate successfully');
-              this.candidate = response;
             }},
             error: error => {
               this.toastrService.error('failed to update the candidate', error)

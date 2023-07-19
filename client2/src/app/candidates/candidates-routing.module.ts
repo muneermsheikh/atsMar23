@@ -3,9 +3,7 @@ import { CandidatesListingComponent } from './candidates-listing/candidates-list
 import { CategoryListResolver } from '../resolvers/categoryListResolver';
 import { QualificationListResolver } from '../resolvers/qualificationListResolver';
 import { CandidateEditComponent } from './candidate-edit/candidate-edit.component';
-import { CandidateResolver } from '../resolvers/candidateResolver';
 import { UploadComponent } from './upload/upload.component';
-import { PreventUnsavedChangesGuard } from '../guards/prevent-unsaved-changes.guard';
 import { HrGuard } from '../guards/hr.guard';
 import { CandidateHistoryComponent } from './candidate-history/candidate-history.component';
 import { CandidateHistoryResolver } from '../resolvers/candidateHistoryResolver';
@@ -14,8 +12,8 @@ import { ContactResultsResolver } from '../resolvers/contactResultsResolver';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AgentsResolver } from '../resolvers/agents.resolver';
-import { RegisterComponent } from '../account/register/register.component';
 import { PreventUnsavedChangesRegisterGuard } from '../guards/prevent-unsaved-changes-register.guard';
+import { CandidateResolver } from '../resolvers/candidateResolver';
 
 const routes = [
   {path: '', component: CandidatesListingComponent,
@@ -32,25 +30,32 @@ const routes = [
       qualifications: QualificationListResolver
     }},
 
-  {path: 'add', component:RegisterComponent , data: {breadcrumb: {alias: 'register'}},
+  
+  {path: 'register', component: CandidateEditComponent , data: {breadcrumb: {alias: 'register'}},
     resolve: {
       //employees: EmployeeIdsAndKnownAsResolver,
-      professions: CategoryListResolver,
-      agents: AgentsResolver,
+       //qualifications: QualificationListResolver,
+       agents: AgentsResolver,
+       categories: CategoryListResolver,
+       candidate: CandidateResolver
 
     },
     canDeactivate: [PreventUnsavedChangesRegisterGuard],
   },
-  {path: 'edit/:id', component: RegisterComponent,  // CandidateEditComponent, 
-    /*resolve: {
-      categories: CategoryListResolver,
-      qualifications: QualificationListResolver,
-      candidate: CandidateResolver
-    }, */
-      canActivate: [HrGuard],
+  
+  
+  {path: 'edit/:id', component: CandidateEditComponent,   
+    resolve: {
+       qualifications: QualificationListResolver,
+       agents: AgentsResolver,
+       categories: CategoryListResolver,
+       candidate: CandidateResolver
+    }, 
+      //canActivate: [HrGuard],
       data: {breadcrumb: {alias: 'candidate Edit/Add'}},
-      canDeactivate: [PreventUnsavedChangesGuard],
+      //canDeactivate: [PreventUnsavedChangesGuard],
     },
+  
   {path: 'view/:id', component: CandidateEditComponent , data: {breadcrumb: {alias: 'candidateView'}}},
   {path: 'upload/:id', component: UploadComponent, canActivate: [HrGuard], data: {breadcrumb: {alias: 'upload'}}},
   {path: 'download/:id', component: UploadComponent, canActivate: [HrGuard], data: {breadcrumb: {alias: 'upload'}}},

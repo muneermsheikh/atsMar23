@@ -299,7 +299,7 @@ namespace api.Controllers
                return Ok(new UserAndProfessions{CandidateId = userProfessions.CandidateId, CandidateProfessions = profs});
           }
      
-          [Authorize]    //(Roles ="Admin, HRManager, HRSupervisor, HRTrainee")]
+          /*[Authorize]    //(Roles ="Admin, HRManager, HRSupervisor, HRTrainee")]
           [HttpPut]
           public async Task<ActionResult<Candidate>> EditCandidate([FromBody]Candidate candidate)
           {
@@ -307,7 +307,8 @@ namespace api.Controllers
                if (cand == null) return BadRequest(new ApiResponse(404, "Failed to update the candidate"));
                return Ok(cand);
           }
-
+          */
+          
           [HttpGet("downloadfile/{attachmentid:int}")]
           public async Task<ActionResult> DownloadFile(int attachmentid)
           {
@@ -331,8 +332,8 @@ namespace api.Controllers
           }
 
           
-          [HttpPut("updatecandidate"), DisableRequestSizeLimit]
-          public async Task<ActionResult> EditCandidateWithUpload()
+          [HttpPut("updatecandidatewithfiles"), DisableRequestSizeLimit]
+          public async Task<ActionResult<string>> EditCandidateWithUpload()
           {
                var loggedInUser = await _userManager.FindByEmailFromClaimsPrincipal(User);
                if (loggedInUser==null) return BadRequest("User not logged in");

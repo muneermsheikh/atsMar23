@@ -458,13 +458,16 @@ namespace infra.Services
                }
 
                if(recordsAffected > 0 && attachmentsToDelete.Count>0) {
-                    do {
-                         try {
-                              File.Delete(attachmentsToDelete[attachmentsToDelete.Count]);
-                         } catch (System.Exception ex) {
-                              Console.Write(ex.Message);
+                    foreach(var f in attachmentsToDelete){
+                         if(File.Exists(f)) {
+                              try {
+                                   File.Delete(f);
+                              } catch (System.Exception ex) {
+                                   Console.Write(ex.Message);
+                              }
                          }
-                    } while (attachmentsToDelete.Count > 0);
+                    }
+                    File.Delete(attachmentsToDelete[attachmentsToDelete.Count]);
                }
 
                return new CandidateWithNewAttachmentDto {Candidate = existingObject, NewAttachments=attachmentsToAdd};

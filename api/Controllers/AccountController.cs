@@ -60,13 +60,6 @@ namespace api.Controllers
           [HttpGet]
           public async Task<ActionResult<UserDto>> GetCurrentUser()
           {
-               
-               /*
-               var email = HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-               if (email==null) return BadRequest("User email not found");
-               var user = await _userManager.FindByEmailAsync(email);
-               if (user==null) return BadRequest("User Claim not found");
-               */
                var loggedInUser = await _userManager.FindByEmailFromClaimsPrincipal(User);
                if (loggedInUser==null) return BadRequest("User email not found");
                return new UserDto
@@ -162,21 +155,6 @@ namespace api.Controllers
                return  Ok(_mapper.Map<ICollection<UserDto>>(users));
           }
           
-          [HttpPost("registerCandidate")]
-          public async Task<ActionResult<ApiReturnDto>>RegisterNewCandidate(RegisterDto registerDto) {
-               var loggedInUser = await _userManager.FindByEmailFromClaimsPrincipal(User);
-               var returnDto = new ApiReturnDto();
-
-               var response = await CreateAppUserAndCandidate(registerDto,loggedInUser.loggedInEmployeeId);
-               if(!string.IsNullOrEmpty(response.ErrorString)) {
-                    returnDto.ErrorMessage=response.ErrorString;
-               } else {
-                    returnDto.ReturnInt=response.ApplicationNo;
-               }
-
-               return Ok(returnDto);
-          }
-
           [HttpPost("RegisterNewCandidate"), DisableRequestSizeLimit]
           public async Task<ActionResult<ApiReturnDto>> Upload()
           {
@@ -251,10 +229,10 @@ namespace api.Controllers
                
           }
 
-          
           //registers individuals. For customers and vendors, it will register the users for customers that exist
           //the IFormFile collection has following prefixes to filenames:
           //pp: passport; ph: photo, ec: educational certificates, qc: qualification certificates
+          
           private async Task<CandidateIdAndErrorStringDto> CreateAppUserAndCandidate(RegisterDto registerDto, int loggedInEmployeeId) 
           {
                var dtoToReturn = new CandidateIdAndErrorStringDto();
@@ -305,16 +283,16 @@ namespace api.Controllers
                     return dtoToReturn;
                }
 
-               /* if(string.IsNullOrEmpty(registerDto.UserRole)) registerDto.UserRole="Candidate";
-               if(!await _roleManager.RoleExistsAsync("Candidate")) {
-                    var succeeded = await _roleManager.CreateAsync(new AppRole{Name="Candidate"}); }    
-               */
-               /*   **role** 
-               var roleResult = await _userManager.AddToRoleAsync(user, registerDto.UserRole);
-               if (!roleResult.Succeeded) {
-                    dtoToReturn.ErrorString = roleResult.Errors.ToString();
-                    return dtoToReturn; }
-               */
+               // if(string.IsNullOrEmpty(registerDto.UserRole)) registerDto.UserRole="Candidate";
+               //if(!await _roleManager.RoleExistsAsync("Candidate")) {
+                    //var succeeded = await _roleManager.CreateAsync(new AppRole{Name="Candidate"}); }    
+               //
+               //   **role** 
+               //var roleResult = await _userManager.AddToRoleAsync(user, registerDto.UserRole);
+               //if (!roleResult.Succeeded) {
+                    //dtoToReturn.ErrorString = roleResult.Errors.ToString();
+                    //return dtoToReturn; }
+               //
                registerDto.DisplayName = registerDto.DisplayName ?? user.DisplayName;
                registerDto.PlaceOfBirth = registerDto.PlaceOfBirth ?? "";
                
@@ -348,6 +326,7 @@ namespace api.Controllers
                dtoToReturn.ApplicationNo = candidateCreated.ApplicationNo;
                return  dtoToReturn;
           }
+          
 
           [Authorize]    //(Roles ="Admin, HRManager, HRSupervisor")]
           [HttpPost("registeremployee")]
