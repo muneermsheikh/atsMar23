@@ -3,9 +3,9 @@
      margin-left: 2px;
      margin-right: 2px;
      white-space: normal;
+     vertical-align: top;
 }
 
-.vTop {vertical-align: top;}
 
 .lbl {
      display: inline-block;

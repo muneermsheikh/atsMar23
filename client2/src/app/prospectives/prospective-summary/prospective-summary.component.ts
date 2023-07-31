@@ -22,6 +22,8 @@ export class ProspectiveSummaryComponent implements OnInit {
   @ViewChild('searchCatRef', {static: false}) searchCatRef?: ElementRef;
 
   user?: IUser;
+  userFile?: File;
+  lastTimeCalled: number= Date.now();
 
   constructor(private activatedRoute: ActivatedRoute, 
       private accountService: AccountService,
@@ -43,6 +45,7 @@ export class ProspectiveSummaryComponent implements OnInit {
    taskType: number=0;
    personType: string='';
    taskStatus: string='';
+   uploadedFileNameWithPath='';
 
   showDetails(st: string, cat: string, dt: string, no: number) {
 
@@ -103,37 +106,6 @@ export class ProspectiveSummaryComponent implements OnInit {
 
   }
 
-  //search tasks
-  /*
-  personTypeClicked_CandidateClicked() {
-    this.personType='candidate';
-  }
-
-  personTypeClicked_Official() {
-    this.personType='official';
-  }
-
-  peronsTypeClicked_Employee() {
-    this.personType='employee';
-  }
-
-  taskStatusClicked_Open() {
-    this.taskStatus='open';
-  }
-
-  taskStatusClicked_Closed() {
-    this.taskStatus="closed";
-  }
-
-  taskStatus_All() {
-    this.taskStatus='';
-  }
-
-  FindTasks() {
-    
-  }
-  */
-
   onSearch() {
     //app 10105, 10106.
     //phone nos.9862238066, 9867688066, place@gmail.com, rajesh@gmail.com
@@ -179,6 +151,10 @@ export class ProspectiveSummaryComponent implements OnInit {
     this.router.navigate([route], { state: { returnUrl: '/prospectives/true' } });
   }
 
+  addNewProspectiveTask(){
+
+  }
+  
   statusPendingClicked() {
     if(this.sParams.status==='Pending') return;
     this.sParams.status="Pending";
@@ -208,4 +184,72 @@ export class ProspectiveSummaryComponent implements OnInit {
     this.getSummary();
   }
 
+  onFileInputChange(event: Event) {
+      const target = event.target as HTMLInputElement;
+      const files = target.files as FileList;
+      const f = files[0];
+      this.userFile = f;
+
+      this.toastr.info('onfileinputchange');
+      if(this.userFile === null || this.userFile === undefined) {
+        this.toastr.warning('File not selected');
+        return;
+      }
+  
+      var microsecondsDiff: number= 28000;
+      var nowDate: number =Date.now();
+      
+      /*
+      if(nowDate < this.lastTimeCalled+ microsecondsDiff) {
+        this.toastr.info('stopped');
+        return;
+      }
+      */
+      this.lastTimeCalled=Date.now();
+      const formData = new FormData();
+      
+      if(this.userFile === null && this.userFile !== undefined) {
+        this.toastr.warning('No file chosen');
+        return;
+      }
+      
+      if(this.userFile !== undefined) {
+        formData.append('file', this.userFile, this.userFile?.name);
+      } else {
+        this.toastr.info('User File undefined');
+        return;
+      }
+      
+      console.log('formData:', formData);
+      this.service.uploadProspectiveXLSFile(formData).subscribe({
+        next: (returnString: string) => {
+          if(returnString.substring(0,5)!=="Error") {
+            this.toastr.success('file uploaded and converted to prospective object');
+            this.uploadedFileNameWithPath=returnString;
+          } else {
+            this.toastr.warning('failed to upload/convert the prospective XL file');
+            this.uploadedFileNameWithPath="";
+          }
+        },
+        error: (error: any) => {
+          this.toastr.error('Error in uploading/converting prospective XLS file');
+          this.uploadedFileNameWithPath="";
+        }
+      });
+  }
+
+    convertToDb() {
+      this.service.convertProspectiveXLStoDb(this.uploadedFileNameWithPath).subscribe({
+        next: response => {
+          if(response==="") {
+            this.toastr.success('File converted to database');
+            this.uploadedFileNameWithPath="";
+          } 
+        },
+        error: error => {
+          this.toastr.error('Error encountered in converting the XLS file to Database', error);
+          this.uploadedFileNameWithPath="";
+        }
+      })
+    }
 }

@@ -102,7 +102,8 @@ export class CustomersService {
     return this.http.get<ICustomerOfficialDto[]>(this.apiUrl + 'customers/agentdetails');
   }
 
+
   getAgentIdAndNames() {
-    return this.http.get<IClientIdAndNameDto[]>(this.apiUrl + 'customers/associateidandnames/associate');
+    return this.http.get<IClientIdAndNameDto[]>(this.apiUrl + 'customers/idandnames/associate');
   }
 }

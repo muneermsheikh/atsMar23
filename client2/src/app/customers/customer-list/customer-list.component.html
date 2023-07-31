@@ -40,7 +40,7 @@
                          style="width: 300px; font-size: small;" placeholder="Search">
                     <button style="font-size: small;" (click)="onSearch()" class="btn btn-outline-primary my-1 blue">Search</button>
                     <button style="font-size: small;" (click)="onReset()" class="btn btn-outline-success ml-2 my-1 blue">Reset</button>
-                    <button style="font-size: small;" routerLink="/client/edit/{{custType}}/0" 
+                    <button style="font-size: small;" (click)="addCustomer()"  
                          class="btn btn-outline-success fa fa-plus ml-2 my-1 blue"></button>
                     <button style="font-size: small;" routerLink="/admin" class="btn btn-outline-success pull-right fa fa-home ml-2 my-1"></button>
                     

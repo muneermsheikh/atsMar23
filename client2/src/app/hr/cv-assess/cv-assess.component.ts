@@ -188,7 +188,7 @@ export class CvAssessComponent implements OnInit {
           }
           
           items.forEach(i => {
-            var cItem = new CandidateAssessmentItem(i.questionNo,i.isMandatory, i.question, i.maxMarks);
+            var cItem = new CandidateAssessmentItem(i.questionNo,i.isMandatory, i.question, i.maxPoints);
             cvItems.push(cItem);
           })
           this.cvAssessment = new CandidateAssessment(this.orderItemSelectedId, this.cvBrief!.id, this.user!.loggedInEmployeeId, 

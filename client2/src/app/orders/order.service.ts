@@ -7,7 +7,7 @@ import { IPagination } from '../shared/models/pagination';
 import { IOrderCity } from '../shared/models/admin/orderCity';
 import { ICustomerNameAndCity } from '../shared/models/admin/customernameandcity';
 import { IProfession } from '../shared/models/masters/profession';
-import { IOrderBriefDto, OrderBriefDto } from '../shared/dtos/admin/orderBriefDto';
+import { IOrderBriefDto } from '../shared/dtos/admin/orderBriefDto';
 import { IOpenOrderItemCategoriesDto } from '../shared/dtos/admin/openOrderItemCategriesDto';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, ReplaySubject, of } from 'rxjs';
@@ -157,7 +157,7 @@ export class OrderService {
     }
 
     register(model: any) {
-      return this.http.post(this.apiUrl + 'orders', model);  // also composes email msg to customer
+      return this.http.post<IOrder>(this.apiUrl + 'orders', model);  // also composes email msg to customer
       }
     
     UpdateOrder(model: any) {
@@ -195,5 +195,9 @@ export class OrderService {
 
     deleteOrder(orderid: number) {
       return this.http.delete<boolean>(this.apiUrl + 'orders')
+    }
+
+    remindClientForSelections(customerId: number) {
+      return this.http.get<boolean>(this.apiUrl + 'CVRef/selDecisionReminder/' + customerId);
     }
 }

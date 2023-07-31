@@ -23,16 +23,29 @@
             <!-- <div class="stdd my-1 w400">{{member.customerName}}</div> -->
             <input type="text" class="stdd my-1 w300" formControlName="customerName">
             <br>
-            <div class="stdd my-1 w100 b">Location:</div>
-            <div class="stdd w300">{{member.city}} </div>
+            <div class="stdd my-1 w100 b">Address:</div>
+            <input type="text" class="stdd my-1 w300" formControlName="add">
             <br>
+            <div class="stdd my-1 w100 b">Address 2:</div>
+            <input type="text" class="stdd my-1 w300" formControlName="add2">
+            <br>
+            <div class="stdd my-1 w100 b">City:</div>
+            <input type="text" class="stdd my-1 w300" formControlName="city">
+            <br>
+            <div class="stdd my-1 w100 b">PIN:</div>
+            <input type="text" class="stdd my-1 w300" formControlName="pin">
+            <br>
+            <div class="stdd my-1 w100 b">District:</div>
+            <input type="text" class="stdd my-1 w300" formControlName="district">
+            <br>
+            
             <div class="stdd my-1 b w100">Created:</div>
-            <div>{{member.createdOn | date: 'dd-MMM-YY'}} </div>
+            <div class="stdd my-1 w100">{{member.createdOn | date: 'dd-MMM-YY'}} </div>
             <br>
-            <div class="stdd my-1 w10 b">Last Active:</div>
-            <div class="stdd w300 my-1">{{member.lastActive}}</div>
+            <div class="stdd my-1 w100 b">Last Active:</div>
+            <div class="stdd w300 my-1">{{member.lastActive | date : 'dd-MMM-yy'}}</div>
             <br><div class="stdd w100 b my-1">Member since:</div>
-            <div class="stdd w300">{{member.createdOn | date: 'dd MMM yy'}}</div>
+            <div class="stdd w100">{{member.createdOn | date: 'dd MMM yy'}}</div>
             <br>
             <div class="stdd w100 b my-1">Current Status</div>
             <div class="stdd w300" [ngClass]="member.customerStatus===300 ? 'red': 'black'">{{member.customerStatus | customerStatus }}</div>
@@ -79,7 +92,7 @@
                 </div>
                 </tab>
 
-                <tab heading='customerIndustries' [disabled]="member.customerType !=='customer'"  
+                <tab *ngIf="member.customerType==='customer'" heading='customerIndustries'  
                     (selectTab)="onTabActivated($event)">
                         <div class="stdd w200">Industry Name</div>
                         <div style="width: 50px; display: inline-block;">
@@ -107,17 +120,16 @@
                         </div>
                 </tab>
 
-                <tab heading='agencySpecialties' [disabled]="member.customerType !=='associate'" 
-                        (selectTab)="onTabActivated($event)">
-                            <div class="stdd w200">Category can provide</div>
-                            <div style="width: 50px; display: inline-block;">
-                                <button type="button" (click)="addAgencySpecialty()" class="stdd alignR fa fa-plus blue"></button>
+                <tab *ngIf="member.customerType==='associate'" heading='Agecy Specialties'  
+                    (selectTab)="onTabActivated($event)">
+                        <div class="stdd w200">Agency Specialties</div>
+                        <div style="width: 50px; display: inline-block;">
+                            <button type="button" (click)="addAgencySpecialty()" class="stdd alignR fa fa-plus blue"></button>
                         </div>
-                        <div formArrayName="agencySpecialties" class="my-1 px-0" 
-                            style="width: 500px; font-size: small;" >
-                                <div *ngFor="let ind of member.agencySpecialties; let i=index;">
-                                    <div [formGroupName]="i">
-                                        <ng-select *ngIf="categories" class="stdd w350" 
+                        <div formArrayName="agencySpecialties" class="my-1 px-0 fSmall">
+                            <div *ngFor="let ind of agencySpecialties.controls; let m=index">
+                                <div [formGroupName]="m" >
+                                        <ng-select *ngIf="categories" class="mx-5 stdd w350" 
                                             [items]="categories"
                                             bindLabel="name"
                                             bindValue="id"
@@ -125,13 +137,42 @@
                                             clearAllText="Clear"
                                             formControlName="professionId">
                                         </ng-select>
-                                        <button (click)="removeCustomerIndustry(i)" class="stdd blue fa fa-trash" title="Remove the customer official"> </button>
-                                    </div>
+                                        <button (click)="removeAgencySpecialty(m)" 
+                                                style="margin-left: 5px;" class="red w25 fa fa-trash" title="Remove Agency Specialty"></button>
                                 </div>
+                            </div>
                         </div>
-                            <div *ngIf="!member.agencySpecialties">
-                                No specialties defined for the Associate
-                            </div> 
+                        
+                        <div *ngIf="!industries">
+                            No Specialties defined for the customer
+                        </div>
+                </tab>
+                <tab *ngIf="member.customerType==='vendor'" heading='Vendor Specialties'  
+                    (selectTab)="onTabActivated($event)">
+                        <div class="stdd w200">Vendor Specialties</div>
+                        <div style="width: 50px; display: inline-block;">
+                            <button type="button" (click)="addVendorSpecialty()" class="stdd alignR fa fa-plus blue"></button>
+                        </div>
+                        <div formArrayName="vendorSpecialties" class="my-1 px-0 fSmall">
+                            <div *ngFor="let ind of vendorSpecialties.controls; let n=index">
+                                <div [formGroupName]="n" >
+                                        <ng-select *ngIf="services" class="mx-5 stdd w350" 
+                                            [items]="services"
+                                            bindLabel="name"
+                                            bindValue="id"
+                                            labelForId="vendorFacilityId"
+                                            clearAllText="Clear"
+                                            formControlName="vendorFacilityId">
+                                        </ng-select>
+                                        <button (click)="removeAgencySpecialty(n)" 
+                                                style="margin-left: 5px;" class="red w25 fa fa-trash" title="Remove Agency Specialty"></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div *ngIf="!industries">
+                            No Specialties defined for the customer
+                        </div>
                 </tab>
             </tabset>
         </div>
@@ -142,9 +183,9 @@
          {{error}}
     </li>
 </ul>
-<!--
+
  <div style="font-size: small;">
      {{this.form.value | json}}
  </div>
--->
+
 

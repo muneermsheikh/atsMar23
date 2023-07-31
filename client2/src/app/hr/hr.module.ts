@@ -6,7 +6,6 @@ import { HrChecklistComponent } from './hr-checklist/hr-checklist.component';
 import { AssessQComponent } from './assess-q/assess-q.component';
 import { AssessmentStddComponent } from './assessment-stdd/assessment-stdd.component';
 import { AssessmentQbankComponent } from './assessment-qbank/assessment-qbank.component';
-import { AssessmentQbankEditComponent } from './assessment-qbank-edit/assessment-qbank-edit.component';
 import { AssessmentLineComponent } from './assessment-line/assessment-line.component';
 import { AssessComponent } from './assess/assess.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -15,6 +14,7 @@ import { SharedModule } from '../shared/shared.module';
 import { HrchecklistComponent } from './hrchecklist/hrchecklist.component';
 import { StddqEditComponent } from './stddq-edit/stddq-edit.component';
 import { CandidateAssessmentComponent } from './candidate-assessment/candidate-assessment.component';
+import { EditAssessmentQStddModalComponent } from './edit-assessment-q-stdd-modal/edit-assessment-q-stdd-modal.component';
 
 
 
@@ -26,12 +26,12 @@ import { CandidateAssessmentComponent } from './candidate-assessment/candidate-a
     AssessQComponent,
     AssessmentStddComponent,
     AssessmentQbankComponent,
-    AssessmentQbankEditComponent,
     AssessmentLineComponent,
     AssessComponent,
     StddqEditComponent,
     HrchecklistComponent,
-    CandidateAssessmentComponent
+    CandidateAssessmentComponent,
+    EditAssessmentQStddModalComponent
   ],
   imports: [
     SharedModule,

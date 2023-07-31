@@ -17,11 +17,11 @@ namespace infra.Services
 
           public async Task<bool> AddStandardAssessmentQ(ICollection<AssessmentStandardQ> Qs)
           {
-                var nextQuestionNo = await _context.AssessmentStandardQs.MaxAsync(x => (int?)x.QNo) ?? 1;
+                var nextQuestionNo = await _context.AssessmentStandardQs.MaxAsync(x => (int?)x.QuestionNo) ?? 1;
                 int ct = 0;
                 foreach (var q in Qs)
                 {
-                    q.QNo = ++nextQuestionNo;
+                    q.QuestionNo = ++nextQuestionNo;
                     _unitOfWork.Repository<AssessmentStandardQ>().Add(q);
                     ct++;
                 }
@@ -63,7 +63,7 @@ namespace infra.Services
 
           public async Task<ICollection<AssessmentStandardQ>> GetStandardAssessmentQs()
           {
-               return await _context.AssessmentStandardQs.OrderBy(x => x.QNo).ToListAsync();
+               return await _context.AssessmentStandardQs.OrderBy(x => x.QuestionNo).ToListAsync();
           }
      }
 }

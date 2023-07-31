@@ -12,7 +12,7 @@ import { ICustomerNameAndCity } from "../shared/models/admin/customernameandcity
      constructor(private service: ClientsService) {}
  
      resolve(route: ActivatedRouteSnapshot): Observable<ICustomerNameAndCity[]> {
-        return this.service.getCustomerAndCitiesCustomers();
+        return this.service.getCustomerAndCities();
      }
  
  }

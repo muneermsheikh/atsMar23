@@ -6,12 +6,14 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CallRecordsRoutingModule } from './call-records-routing.module';
 import { SharedModule } from '../shared/shared.module';
+import { CallItemComponent } from './call-item/call-item.component';
 
 
 @NgModule({
   declarations: [
     CallModalComponent,
-    CallListComponent
+    CallListComponent,
+    CallItemComponent
   ],
   imports: [
     CommonModule,

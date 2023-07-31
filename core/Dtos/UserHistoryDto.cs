@@ -52,6 +52,7 @@ namespace core.Dtos
         public string ConcludedByName {get; set;}
         public string Status { get; set; }
         public string UserName { get; set; }
+        public string ErrorMessage {get; set;}="";
         public ICollection<UserHistoryItemDto> UserHistoryItems { get; set; }
     }
 }

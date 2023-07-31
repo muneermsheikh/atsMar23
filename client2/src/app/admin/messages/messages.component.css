@@ -2,6 +2,7 @@
      display: inline-block;
      vertical-align: top;
      font-size: small;
+     word-wrap: break-word;
 }
 .b {font-weight: bold;}
 .w40 {width: 40px;}
@@ -17,3 +18,4 @@
 .w100 {width: 100px;}
 .w125{width: 125px;}
 .w150 {width: 150px;}
+.w200 {width: 200px;}

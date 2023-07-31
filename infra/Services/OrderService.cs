@@ -127,7 +127,7 @@ namespace infra.Services
 
                foreach(var order in orders)
                {
-                    await _composeMessages.AckEnquiryToCustomer(new OrderMessageParamDto { Order = order, DirectlySendMessage = false });
+                    await _composeMessages.AckEnquiryToCustomer(order);
                }
                
                //create task for Admn Manager for contract review
@@ -167,6 +167,7 @@ namespace infra.Services
                     CompleteBy = dto.CompleteBy, SalesmanId=(int)dto.SalesmanId, SalesmanName=salesmanName, Country=cus.Country, 
                     ProjectManagerId = (int)dto.ProjectManagerId, VisaProcessInchargeEmpId=dto.VisaProcessInchargeEmpId??0,
                     TravelProcessInchargeId = dto.TravelProcessInchargeId??0, OrderItems=items};
+
                _unitOfWork.Repository<Order>().Add(order);
 
                int result=0;
@@ -177,7 +178,11 @@ namespace infra.Services
                } catch {
                     return null;
                } finally {
-                    await _composeMessages.AckEnquiryToCustomer(new OrderMessageParamDto { Order = order});
+                    var email = await _composeMessages.AckEnquiryToCustomer(order);
+                    if(email != null) {
+                         _unitOfWork.Repository<EmailMessage>().Add(email);
+                         await _unitOfWork.Complete();
+                    }
                }
 
                //create task for Admn Manager for contract review
@@ -877,13 +882,16 @@ namespace infra.Services
                     .Where(x => x.Id==orderid)
 
                     .FirstOrDefaultAsync();
+               var officials = order?.Customer?.CustomerOfficials;
+               if(officials==null || officials.Count==0) throw new ArgumentNullException("CustomerOfficial", "Customer has no Officials on record");
                
-               var msg = await _composeMessages.AckEnquiryToCustomer(new OrderMessageParamDto { Order = order});
+               var msg = await _composeMessages.AckEnquiryToCustomer(order);
 
-               _unitOfWork.Repository<EmailMessage>().Add(msg);
-
-               return await _unitOfWork.Complete() > 0;
-               
+               if(msg != null) {
+                    _unitOfWork.Repository<EmailMessage>().Add(msg);
+                    return await _unitOfWork.Complete() > 0;
+               }
+               return false;
           }
          
      }

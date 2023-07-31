@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
 import { Observable, of } from "rxjs";
-import { ICustomer } from "../shared/models/admin/customer";
+import { Customer, ICustomer } from "../shared/models/admin/customer";
 import { CustomersService } from "../customers/customers.service";
 
 @Injectable({
@@ -12,13 +12,22 @@ import { CustomersService } from "../customers/customers.service";
      constructor(private customerService: CustomersService) {}
  
      resolve(route: ActivatedRouteSnapshot): Observable<ICustomer|null> {
+        console.log('entered customer resolver');
+        
         var id = route.paramMap.get('id');
-
-        if(id==='' || id==='0' || id === null) {
-            console.log('customer resolver with id=' + id + ' returned null');
-            return of(null)
+        var sCustType: string='';
+        var custType = route.paramMap.get('custType');
+        if(custType!==null) {
+            sCustType=custType;
+        } else {
+            return of(null);
         }
-        console.log('customer resolver, id=' + id);
+        console.log('customeReslver id=', id);
+        if(id==='' || id==='0' || id === null) {
+            var customer = new Customer();
+            customer.customerType=sCustType;
+            return of(customer);
+        }
         return this.customerService.getCustomer(+id);
      }
  

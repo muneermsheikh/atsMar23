@@ -25,14 +25,15 @@ const routes = [
       customers: CustomersBriefResolver
     }},
 
-  {path: 'edit/:id', component: ClientEditComponent,
-    resolvers: {
-      industries: IndustriesResolver,
-      categories: CategoryListResolver,
-      customer: CustomerResolver
-    },
+  {
+    path: 'edit/:id', component: ClientEditComponent,
     data: {breadcrumb: {alias: 'Edit Customer/Associates'}}
-}
+  },
+
+  {
+    path: 'add/:custType', component: ClientEditComponent,
+    data: {breadcrumb: {alias: 'Edit Customer/Associates'}}
+},
 ]
 
 @NgModule({

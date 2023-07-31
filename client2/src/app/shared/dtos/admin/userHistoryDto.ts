@@ -23,5 +23,6 @@ export interface IUserHistoryDto
      concludedByName: string;
      status: string;
      userName: string;
+     errorMessage: string;
      userHistoryItems: IUserHistoryItem[];
 }

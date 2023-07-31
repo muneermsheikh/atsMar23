@@ -62,6 +62,7 @@ namespace api.Controllers
           {
                var loggedInUser = await _userManager.FindByEmailFromClaimsPrincipal(User);
                if (loggedInUser==null) return BadRequest("User email not found");
+               
                return new UserDto
                {
                     loggedInEmployeeId = loggedInUser.loggedInEmployeeId,

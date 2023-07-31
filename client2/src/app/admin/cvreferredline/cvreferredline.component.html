@@ -21,7 +21,7 @@
 
     <div class="stdd w75" style="margin-left: 55px;" title="click to view CV" >{{referred.applicationNo}}</div>
 
-    <div class="stdd w150" mouseover="style.cursor = 'pointer'" 
+    <div class="stdd w150" mouseover="style.cursor=pointer" style="color: blue; cursor: pointer;"
         (click)="displayChecklistModal()" title="click to display checklist" >{{referred.candidateName}}
     </div>
 
@@ -31,7 +31,7 @@
     <div class="stdd w150 fa fa-listcheck"  >
             {{referred.referralDecision | refDecision}}
         </div>
-    <div class="stdd w150">{{
+    <div class="stdd w150" (click)="remindClientForStatus()" style="color: blue; cursor: pointer;" >{{
         referred.referralDecision > 200 ? 
             'Rejected' : referred.referralDecision === 100 ?
                 referred.deployments.length > 0 ? 'In Process' : 'not started'

@@ -124,6 +124,14 @@ export class ProspectiveService {
     
   }
 
+  uploadProspectiveXLSFile(prospectivexlFile: any){
+    console.log('prosective upload in prospecive service');
+    return this.http.post<string>(this.apiUrl + 'excel/uploadProspectiveFile', prospectivexlFile)
+  }
+
+  convertProspectiveXLStoDb(filename: string) {
+    return this.http.post<string>(this.apiUrl + 'excel/convertToDb/' + filename, {});
+  }
   createCandidateFromprospective(model: IProspectiveRegisterToAddDto) {
     return this.http.post(this.apiUrl + 'prospectivecandidates', model )
   }

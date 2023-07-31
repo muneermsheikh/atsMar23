@@ -22,7 +22,7 @@ namespace core.Interfaces
         Task<bool> DeleteAssessmentQ(int assessmentQid);
 
         //assessmentQs
-        Task<ICollection<OrderItemAssessmentQ>> GetAssessmentQsOfOrderItemId(int orderitemid);
+        Task<OrderItemAssessment> GetAssessmentOfOrderItemId(int orderitemid);
         
     }
 }

@@ -13,8 +13,10 @@ namespace core.Params
         public int? ApplicationNo { get; set; }
         public int? ProfessionId { get; set; }
         public int? AgentId { get; set; }
+        public int? CustomerId {get; set;}
         public string CustomerName {get; set;}
         public int OrderId { get; set; }
         public int OrderItemId { get; set; }
+        public int? CVRefStatus {get; set;}
     }
 }

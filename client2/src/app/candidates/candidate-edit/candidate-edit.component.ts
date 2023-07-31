@@ -201,8 +201,7 @@ export class CandidateEditComponent implements OnInit {
       id: cv.id, userType: cv.userType , applicationNo: cv.applicationNo, gender: cv.gender, firstName: cv.firstName,
       secondName: cv.secondName, familyName: cv.familyName, knownAs: cv.knownAs, referredBy: cv.referredBy, dOB: cv.dOB,
       placeOfBirth: cv.placeOfBirth, aadharNo: cv.aadharNo, ppNo: cv.ppNo, ecnr: cv.ecnr, city: cv.city, pin: cv.pin,
-      nationality: cv.nationality, email: cv.email, companyId: cv.companyId, introduction: cv.introduction, 
-      interests: cv.interests, notificationDesired: cv.notificationDesired
+      nationality: cv.nationality, email: cv.email, companyId: cv.companyId, notificationDesired: cv.notificationDesired
     });
       if(cv.photoUrl !== null) this.memberPhotoUrl = 'https://localhost:5001/api/assets/images/' + cv.photoUrl;
       
@@ -466,10 +465,22 @@ export class CandidateEditComponent implements OnInit {
   }
   newUserAttachment(): FormGroup {
     return this.fb.group({
+      id:0,
       candidateId: this.candidate===undefined ? 0 : this.candidate.id,
       attachmentType: ['', Validators.required],
       fileName: ['', Validators.required],
       attachmentSizeInBytes: 0,
+      url: ''
+    })
+  }
+
+  newUserAttachmentWithFile(f:File): FormGroup {
+    return this.fb.group({
+      id:0,
+      candidateId: this.candidate===undefined ? 0 : this.candidate.id,
+      attachmentType: ['', Validators.required],
+      fileName: [f.name, Validators.required],
+      attachmentSizeInBytes: f.size,
       url: ''
     })
   }
@@ -489,7 +500,11 @@ export class CandidateEditComponent implements OnInit {
     const target = event.target as HTMLInputElement;
     const files = target.files as FileList;
     const f = files[0];
-    this.userFiles.push(f);
+    if(f.size > 0) {
+      this.userFiles.push(f);
+      this.userAttachments.push(this.newUserAttachmentWithFile(f));
+    }
+    
   }
 
   savewithattachments = () => {
@@ -545,5 +560,13 @@ export class CandidateEditComponent implements OnInit {
     this.response = event; 
   }
 
+  download(index: number) {
+
+  }
+
+  IsNewAttachment(index: number): boolean {
+    var id = this.userAttachments.value.map((x:any) => x.id).findIndex((x:any) => x.id ===0);
+    return id !== undefined;
+  }
 
 }

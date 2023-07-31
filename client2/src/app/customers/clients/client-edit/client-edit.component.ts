@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
-import { ICustomer } from 'src/app/shared/models/admin/customer';
+import { Customer, ICustomer } from 'src/app/shared/models/admin/customer';
 import { IUser } from 'src/app/shared/models/admin/user';
 import { IIndustryType, IProfession } from 'src/app/shared/models/masters/profession';
 import { CustomersService } from '../../customers.service';
@@ -12,6 +12,9 @@ import { ICustomerOfficial } from 'src/app/shared/models/admin/customerOfficial'
 import { ICustomerIndustry } from 'src/app/shared/models/admin/customerIndustry';
 import { IAgencySpecialty } from 'src/app/shared/models/admin/agencySpecialty';
 import { MastersService } from 'src/app/masters/masters.service';
+import { IVendorSpecialty } from 'src/app/shared/models/admin/vendorSpecialty';
+import { IService } from 'src/app/shared/models/admin/service';
+import { IVendorFacility } from 'src/app/shared/models/admin/vendorFacility';
 
 @Component({
   selector: 'app-client-edit',
@@ -31,8 +34,11 @@ export class ClientEditComponent implements OnInit {
   selectedCategoryIds: number[]=[];
   categories: IProfession[]=[];
   industries: IIndustryType[]=[];
-
+  services: IVendorFacility[]=[];
+  
   isAddMode: boolean=false;
+  CustomerType: string = '';
+
   loading = false;
   submitted = false;
 
@@ -48,9 +54,8 @@ export class ClientEditComponent implements OnInit {
       , private toastr: ToastrService, private fb: FormBuilder) {
           this.bcService.set('@customerDetail',' ');
           this.routeId = this.activatedRoute.snapshot.params['id'];
-          //this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);
+          this.CustomerType  =this.activatedRoute.snapshot.params['custType'];
 
-          this.routeId = this.activatedRoute.snapshot.params['id'];
           this.router.routeReuseStrategy.shouldReuseRoute = () => false;
 
           //navigationExtras
@@ -67,30 +72,53 @@ export class ClientEditComponent implements OnInit {
               //if(nav.extras.state.object) this.orderitem=nav.extras.state.object;
           }
           this.bcService.set('@editCustomer',' ');
-
    }
 
   ngOnInit(): void {
       this.createForm();
+
       this.isAddMode = !this.routeId;
-      this.getMember(+this.routeId);
+    
+      if(!this.isAddMode) this.getMember(+this.routeId);
+
+      this.setDropdownRecordsourceAndPatchCustomer();
   }
 
-  
+  setDropdownRecordsourceAndPatchCustomer() {
+    if(this.member===undefined) {
+      this.member = new Customer();
+      this.member.customerType=this.CustomerType;
+    } 
+        switch (this.member.customerType) {
+          case 'customer':
+            this.getIndustries();
+            break;
+          case 'associate':
+            this.getCategories();
+            break;
+          case 'vendor':
+            this.getFacilities();
+            console.log('getfaciities got:', this.services);
+            break;
+          default:
+            break;
+        }
+      
+        if(this.member.id !==0) this.patchCustomer(this.member);
+    
+  }
+
   getMember(id: number) {
-    this.service.getCustomer(id).subscribe( 
+     this.service.getCustomer(id).subscribe( 
       {
         next: response => {
           this.member = response;
-        this.patchCustomer(this.member);
-
-        //console.log('customer:', this.member);
-        if(this.member?.customerType ==='customer') this.getIndustries();
-        if(this.member?.customerType !=='customer') this.getCategories();
+          this.setDropdownRecordsourceAndPatchCustomer();
         },
         error: err => console.log('error:', err)
       }
     )
+    
     
 
   }
@@ -98,7 +126,7 @@ export class ClientEditComponent implements OnInit {
 
   createForm() {
     this.form = this.fb.group({
-      id: [null],
+      id: 0,
       customerType: ['', [Validators.required, 
         Validators.maxLength(10), Validators.minLength(5)]],
       customerName: ['', [Validators.required,
@@ -124,8 +152,8 @@ export class ClientEditComponent implements OnInit {
       introduction: '',
       customerIndustries: this.fb.array([]),
       customerOfficials: this.fb.array([]),
-      agencySpecialties: this.fb.array([])
-      
+      agencySpecialties: this.fb.array([]),
+      vendorSpecialties: this.fb.array([])
     } 
     );
   }
@@ -141,21 +169,38 @@ export class ClientEditComponent implements OnInit {
             introduction: cv.introduction, 
           });
 
-          if (cv.customerOfficials != null) {
+          if (cv.customerOfficials) {
             this.form.setControl('customerOfficials', this.setExistingCustomerOfficials(cv.customerOfficials));
           }
 
-          if (cv.customerIndustries != null) {
+          if (cv.customerIndustries) {
             this.form.setControl('customerIndustries', this.setExistingCustomerIndustries(cv.customerIndustries));
           }
           
-          if (cv.agencySpecialties != null) {
+          if (cv.agencySpecialties) {
             this.form.setControl('agencySpecialties', this.setExistingAgencySpecialties(cv.agencySpecialties));
-        }
+          }
+          
+          if (cv.vendorSpecialties) {
+            this.form.setControl('vendorSpecialties', this.setExistingVendorSpecialties(cv.vendorSpecialties));
+          }
       }
     }
 
     
+    setExistingVendorSpecialties(off: IVendorSpecialty[]): FormArray {
+      const formArray = new FormArray([]);
+      off.forEach(ph => {
+        formArray.push(this.fb.group({
+          id: ph.id,
+          customerId: ph.customerId,
+          vendorFacilityId: ph.vendorFacilityId,
+          name: ph.name
+        }))
+      });
+      return formArray;
+    }
+
     setExistingCustomerOfficials(off: ICustomerOfficial[]): FormArray {
         const formArray = new FormArray([]);
         off.forEach(ph => {
@@ -228,64 +273,89 @@ export class ClientEditComponent implements OnInit {
         })
       }
 
-      addCustomerOfficial() {
-        this.customerOfficials.push(this.newCustomerOfficial());
-      }
-      removeCustomerOfficial(i:number) {
-        this.customerOfficials.removeAt(i);
-        this.customerOfficials.markAsDirty();
-        this.customerOfficials.markAsTouched();
-      }
+    addCustomerOfficial() {
+      this.customerOfficials.push(this.newCustomerOfficial());
+    }
 
-      get customerIndustries() : FormArray {
-        return this.form.get("customerIndustries") as FormArray
-      }
+    removeCustomerOfficial(i:number) {
+      this.customerOfficials.removeAt(i);
+      this.customerOfficials.markAsDirty();
+      this.customerOfficials.markAsTouched();
+    }
 
-      newCustomerIndustry(): FormGroup {
-        var customerid=this.member?.id ?? 0;
-        return this.fb.group({
-          id: 0, customerId: customerid, industryId: 0, name: ''
-        })
-      }
+    //agencyspecialties
+    get agencySpecialties() : FormArray {
+      return this.form.get("agencySpecialties") as FormArray
+    }
+  
+    newAgencySpecialty(): FormGroup {
+      this.toastr.info('new agency specialty');
+      return this.fb.group({
+        id: 0, customerId: 0, professionId: 0, 
+        name: ''
+      })
+    }
 
-      addCustomerIndustry() {
-        this.customerIndustries.push(this.newCustomerIndustry());
-      }
+    addAgencySpecialty() {
+    this.agencySpecialties.push(this.newAgencySpecialty());
+    }
+  
+    removeAgencySpecialty(i:number) {
+      this.agencySpecialties.removeAt(i);
+      this.agencySpecialties.markAsDirty();
+      this.agencySpecialties.markAsTouched();
+    }
+  
+    //customer indsutries
+    get customerIndustries() : FormArray {
+      return this.form.get("customerIndustries") as FormArray
+    }
 
-      removeCustomerIndustry(i:number) {
-        this.customerIndustries.removeAt(i);
-        this.customerIndustries.markAsDirty();
-        this.customerIndustries.markAsTouched();
-      }
+    newCustomerIndustry(): FormGroup {
+      var customerid=this.member?.id ?? 0;
+      return this.fb.group({
+        id: 0, customerId: customerid, industryId: 0, name: ''
+      })
+    }
 
-// userProfessions
-      get agencySpecialties() : FormArray {
-        return this.form.get("agencySpecialties") as FormArray
-      }
-    
-      newAgencySpecialty(): FormGroup {
-        return this.fb.group({
-          id: 0, 
-          customerId: [0, Validators.required], 
-          industryId: 0, 
-          name: ['', Validators.required]
-        })
-      }
-    
-      addAgencySpecialty() {
-        this.agencySpecialties.push(this.newAgencySpecialty());
-      }  
-    
-      removeAgencySpecialty(i:number) {
-        this.agencySpecialties.removeAt(i);
-        this.agencySpecialties.markAsDirty();
-        this.agencySpecialties.markAsTouched();
-      }
+    addCustomerIndustry() {
+      this.customerIndustries.push(this.newCustomerIndustry());
+    }
+
+    removeCustomerIndustry(i:number) {
+      
+      this.customerIndustries.removeAt(i);
+      this.customerIndustries.markAsDirty();
+      this.customerIndustries.markAsTouched();
+    }
+
+// vendorSpecialties
+    get vendorSpecialties() : FormArray {
+      return this.form.get("vendorSpecialties") as FormArray
+    }
+
+    newVendorSpecialty(): FormGroup {
+      return this.fb.group({
+        id: 0, customerId: 0, vendorFacilityId: 0, 
+        name: ''
+      })
+    }
+
+    addVendorSpecialty() {
+    this.vendorSpecialties.push(this.newVendorSpecialty());
+    }
+
+    removeVendorSpecialty(i:number) {
+      this.vendorSpecialties.removeAt(i);
+      this.vendorSpecialties.markAsDirty();
+      this.vendorSpecialties.markAsTouched();
+}
+
+  
 
   // various gets from APis
 
-      getCategories() {
-        console.log('getting categories');
+      async getCategories() {
         this.sharedService.getCategoryList().subscribe((response: any) => {
           this.categories = response;
         }, (error: any) => {
@@ -293,7 +363,7 @@ export class ClientEditComponent implements OnInit {
         })
       }
 
-      getIndustries() {
+      async getIndustries() {
 
         this.sharedService.getIndustries().subscribe(response => {
           this.industries = response;
@@ -301,6 +371,15 @@ export class ClientEditComponent implements OnInit {
         }, error => {
           this.toastr.error('failed to get the industries', error);
         })
+      }
+
+      async getFacilities() {
+        this.sharedService.getVendorFacilityList().subscribe({
+          next: (response: IVendorFacility[]) => this.services = response,
+          error: (error: any) => this.toastr.error('Error: ', error)
+        });
+
+        console.log('facilities', this.services);
       }
 
       onSubmit() {
@@ -335,8 +414,8 @@ export class ClientEditComponent implements OnInit {
             formData.append('userFormFiles', f);
         }})
         */
-
-
+        
+     
         this.service.updateCustomer(this.form.value).subscribe(() => {
           this.toastr.success('customer updated');
           this.close();

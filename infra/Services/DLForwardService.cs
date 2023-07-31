@@ -178,7 +178,7 @@ namespace infra.Services
                 .Select(x => x.CustomerOfficialId).Distinct().ToListAsync();
 
             var officialIdAndNames = await _context.CustomerOfficials.Where(x => officialIds.Contains(x.Id))
-                .Select(x => new {x.Id, x.OfficialName, x.Customer.CustomerName})
+                .Select(x => new {x.Id, x.OfficialName, order.CustomerName})
                 .ToListAsync();
 
             var categories= await _context.DLForwardCategories  

@@ -12,9 +12,11 @@
 
      <div *ngIf="stddqs">
           <div *ngFor="let q of stddqs">
-               <div class="row stdd mx-2 w75">{{q.qNo}}</div>
-               <div class="stdd mx-2 w150" >{{q.assessmentParameter}}</div>
-               <div class="stdd mx-2 w400" title="edit this question" routerLink="/hr/editstdd/{{q.id}}">{{q.question}}</div>
+               <div class="row stdd mx-2 w75">{{q.questionNo}}</div>
+               <div class="stdd mx-2 w150" >{{q.subject}}</div>
+               <div class="stdd mx-2 w400" title="edit this question" 
+                    (click)="editstddQ(q)"
+               >{{q.question}}</div>
                <div class="stdd mx-2 w75">{{q.maxPoints}}</div>
                <div class="stdd m-2 w75 fa fa-trash alignR red" (click)="deletestddq(q.id)"></div>
           </div>

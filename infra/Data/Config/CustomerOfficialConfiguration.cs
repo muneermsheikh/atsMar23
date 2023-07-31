@@ -13,7 +13,7 @@ namespace infra.Data.Config
                builder.Property(p => p.CustomerId).IsRequired();
                builder.Property(p => p.Gender).IsRequired();
                builder.Property(p => p.OfficialName).IsRequired().HasMaxLength(50);
-               builder.HasOne(p => p.Customer).WithMany().HasForeignKey(p => p.CustomerId);
+               //builder.HasOne(p => p.Customer).WithMany().HasForeignKey(p => p.CustomerId);
           }
      }
 }

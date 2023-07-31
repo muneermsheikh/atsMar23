@@ -27,7 +27,6 @@ namespace core.Entities.Admin
         public bool? Checked { get; set; }
         public string Source { get; set; }
         public string CategoryRef { get; set; }
-        public string CategoryName { get; set; }
         public string ResumeId { get; set; }
         public string Nationality { get; set; }
         public string Address { get; set; }
@@ -35,7 +34,7 @@ namespace core.Entities.Admin
         public string City { get; set; }
         public string Name {get; set;}
         public string PersonType {get; set;}
-        //public int? PersonId {get; set;}
+        public int? PersonId {get; set;}
         public string EmailId { get; set; }
         public string AlternateEmailId { get; set; }
         public string MobileNo {get; set;}

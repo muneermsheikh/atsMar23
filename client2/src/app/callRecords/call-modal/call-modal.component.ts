@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
-import { CandidateHistoryService } from 'src/app/candidates/candidate-history.service';
-import { CandidateBriefDto, ICandidateBriefDto } from 'src/app/shared/dtos/admin/candidateBriefDto';
-import { IUserHistoryDto } from 'src/app/shared/dtos/admin/userHistoryDto';
-import { userHistoryParams } from 'src/app/shared/params/admin/userHistoryParams';
+import { IUserHistoryItem, UserHistoryItem } from 'src/app/shared/models/admin/userHistoryItem';
+import { CallRecordsService } from '../call-records.service';
+import { IUser } from 'src/app/shared/models/admin/user';
+import { IUserHistory } from 'src/app/shared/models/admin/userHistory';
+import { ConfirmService } from 'src/app/shared/services/confirm.service';
 
 @Component({
   selector: 'app-call-modal',
@@ -14,63 +15,49 @@ import { userHistoryParams } from 'src/app/shared/params/admin/userHistoryParams
 export class CallModalComponent implements OnInit {
 
   @Input() callPartyId = new EventEmitter();
+  bAddNew: boolean=false;
   
+  candidateName: string='';
+
   candidateId: number=0;
-  cBrief?: ICandidateBriefDto;
-  cHistory?: IUserHistoryDto;
-  //cvParams: candidateParams;
-  histParams?: userHistoryParams;
+  cHistory?: IUserHistory;
+  personId = 0;
+  historyId = 0;
+  cHistItem?: IUserHistoryItem;
+
   candidateFromDb: boolean = true;
   bShowData: boolean=false;
   err: string = '';
+  user?: IUser;
+  bsValueDate: Date = new Date();
+  
+  constructor(
+    public bsModalRef: BsModalRef, 
+    private service: CallRecordsService, 
+    private toastr: ToastrService,
+    private confirmService: ConfirmService ) {
 
-  constructor(public bsModalRef: BsModalRef, private candidateHistoryService: CandidateHistoryService, private toastr: ToastrService ) { }
+     }
 
   ngOnInit(): void {
-    this.cBrief = new CandidateBriefDto();
-    //this.cvParams = new candidateParams();
-    this.histParams = new userHistoryParams();
+    this.getHistory();
   }
+
+  getHistory() {
+    this.service.getHistoryWithItems(this.historyId).subscribe({
+      next: (response: IUserHistory)=> this.cHistory = response,
+      error: error => this.toastr.error('Error in modal getting api values')
+    })
+
+  }
+
 
   close() {
     this.bsModalRef.hide();
   }
 
-  updateRoles() {
-    if (this.cBrief?.fullName === '' || this.cBrief?.mobileNo === '') {
-      this.toastr.warning('Name and mobile No mandatory');
-      return;
-    }
-    this.callPartyId.emit(this.cBrief);
-    this.bsModalRef.hide();
-  }
-
-  getCandidate() {
-    this.err='';
-
-      if (this.histParams?.mobileNo==='' && this.histParams.emailId ==='' && this.histParams.personId === 0) {
-        this.toastr.warning('no inputs');
-        return;
-      }
-
-      return this.candidateHistoryService.getHistory(this.histParams!)
-          .subscribe((response: any) => {
-            if (response === undefined) {
-              this.toastr.warning('failed to retrieve history data from api');
-              return;
-            }
-            console.log('response from api ', response);
-            this.cHistory = response;
-            this.bShowData=this.cHistory?.name !== '';
-      }, (error: any) => {
-        this.err = error;
-        this.toastr.error(error);
-      })
-
-}
-
   cancelEmit() {
-    this.cBrief=undefined;
+    //this.cBrief=undefined;
   }
 
   emitValue() {
@@ -82,6 +69,73 @@ export class CallModalComponent implements OnInit {
     this.bsModalRef.hide();
   }
 
+  editHistoryItem(item: IUserHistoryItem) {
+    this.cHistItem = item;
+   
+    this.bAddNew=true;
+  }
 
+  deleteHistoryItem(item: IUserHistoryItem) {
+      var response = this.confirmService.confirm("Confirm Delete Transaction", 
+      "Press 'Delete' to delete following transaction:'" + item.gistOfDiscussions.substring(0,15) + '...',
+      'Delete', 'Cancel').subscribe({
+        next: response => {
+          if(response) {
+            this.service.deleteHistoryItem(item.id).subscribe({
+              next: response => {
+                if(response) {
+                  this.toastr.success('record successfully deleted');
+                  //delete from the array
+                  var index = this.cHistory?.userHistoryItems.findIndex(x => x.id===item.id);
+                  if(index !== undefined) this.cHistory?.userHistoryItems.splice(index, 1);
+                } else {
+                  this.toastr.info('Failed to delete the record');
+                }
+              }
+            })
+          } else {
+            this.toastr.info('deletion aborted');
+          }
+        },
+        error: error => this.toastr.error('Error encountered', error)
+      });
+  }
+
+  addNewItem() {
+    this.cHistItem = new UserHistoryItem();
+    this.cHistItem.loggedInUserId=this.user?.loggedInEmployeeId!;
+    this.cHistItem.loggedInUserName=this.user?.displayName!;
+    this.cHistItem.dateOfContact = new Date();
+    this.cHistItem.subject = this.cHistory?.userHistoryItems.length 
+      ? this.cHistory.userHistoryItems[this.cHistory.userHistoryItems.length]?.subject :'';
+    this.cHistItem.userHistoryId = this.cHistory?.id!;
+    this.cHistItem.personId = this.personId;
+    
+    this.bAddNew=true;
+    
+  }
+
+  updateRecord() {
+    
+    if(this.cHistItem !== undefined ) {
+      this.service.updateHistoryItem(this.cHistItem).subscribe({
+        next: response => {
+          if(response !== null) {
+            this.toastr.success('record updated');
+            if(this.cHistItem?.id==0) this.cHistory?.userHistoryItems.push(response);
+            this.bAddNew=false;
+          } else {
+            this.toastr.info('failed to insert the record');
+          }
+        },
+        error: error => this.toastr.error('Error:', error)
+      });
+  
+    }
+  }
+
+  cancelNewRecord() {
+    this.bsModalRef.hide();
+  }
 
 }

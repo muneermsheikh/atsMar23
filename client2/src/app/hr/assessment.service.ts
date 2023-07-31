@@ -9,6 +9,8 @@ import { HttpClient } from '@angular/common/http';
 import { take } from 'rxjs/operators';
 import { IAssessment } from '../shared/models/admin/assessment';
 import { IAssessmentQ } from '../shared/models/admin/assessmentQ';
+import { IAssessmentQBank } from '../shared/models/admin/assessmentQBank';
+import { IAssessmentStandardQ } from '../shared/models/admin/assessmentStandardQ';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +33,7 @@ export class AssessmentService {
     }
 
     getOrderItemAssessment(orderitemid: number) {
-      console.log('called orderitemassessment at ', Date.now());
+
       var item = this.http.get<IAssessment>(this.apiUrl + 'orderassessment/itemassessment/' + orderitemid);
       return item;
     }
@@ -39,6 +41,13 @@ export class AssessmentService {
     getOrderAssessment(orderid: number) {
       return this.http.get<IAssessment>(this.apiUrl + 'orderassessment/orderassessment/' + orderid);
     }
+
+    getAssessmentQBankOfCategoryId(orderitemid: number, professionId: number) {
+      console.log('orderitemid', orderitemid);
+      return this.http.get<IAssessmentQ[]>(this.apiUrl + 'AssessmentQBank/catqsbycategoryid/' 
+        + orderitemid + '/' + professionId);
+    }
+
     updateAssessment(assessment: IAssessment) {
       return this.http.put<boolean>(this.apiUrl + 'orderassessment/editassessment', assessment);
     }

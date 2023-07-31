@@ -1,0 +1,12 @@
+<div *ngIf="hist !== null && hist !== undefined">
+    <div class="stdd mx-1 w50">{{hist.applicationNo}}</div>
+    <div class="stdd mx-1 w150">{{hist.name}}</div>
+    <div class="stdd mx-1w100">{{hist.personType}}</div>
+    <div class="stdd mx-1 w200">{{hist.emailId}}</div>
+    <div class="stdd mx-1 w100">{{hist.mobileNo}}</div>
+    <div class="stdd mx-1 w75">{{hist.userName}}</div>
+    <div class="stdd mx-1 w100">{{hist.status}}</div>
+
+    <button class="btn btn fa fa-pencil" title="click to add/edit transations" (click)="editClicked()" ></button>
+    <button class="btn btn fa fa-trash red" title="click to delete this record along with all its related child records" (click)="deleteClicked()" ></button>
+</div>

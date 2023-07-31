@@ -99,7 +99,7 @@ export class CandidateService {
 
   registerWithFiles(model: any) {
     return this.http.post<IApiReturnDto>(this.apiUrl + 'account/RegisterNewCandidate', model );
-    //return this.http.post<IApiReturnDto>(this.apiUrl + 'account/RegisterNewCandidate', model);
+    
   }
 
   /*register(model: any) {

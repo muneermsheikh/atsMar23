@@ -10,10 +10,11 @@ namespace core.Entities.Admin
         {
         }
 
-        public UserHistoryItem(int userHistoryId, string phoneno, DateTime? dateOfContact, 
-            int loggedInUserId, string subject, string categoryref, int contactResult, 
-            string contactResultName, bool composeMessage, string gistOfDisc)
+        public UserHistoryItem(string inout, int userHistoryId, string phoneno, DateTime? dateOfContact, 
+            int loggedInUserId, string subject, string categoryref, int contactResult,
+            string personname, string contactResultName, bool composeMessage, string gistOfDisc)
         {
+            IncomingOutgoing = inout;
             UserHistoryId = userHistoryId;
             PhoneNo = phoneno;
             DateOfContact = Convert.ToDateTime(dateOfContact);
@@ -24,14 +25,17 @@ namespace core.Entities.Admin
             ComposeEmailMessage = composeMessage;
             GistOfDiscussions = gistOfDisc;
             ContactResultName = contactResultName;
+            PersonName = personname;
         }
 
+        public string IncomingOutgoing {get; set;}
         public int UserHistoryId {get; set;}
         public string PhoneNo {get; set;} 
         public string Subject {get; set;}
         public string CategoryRef {get; set;}
         public int PersonId {get; set;}
         public string PersonType {get; set;}
+        public string PersonName {get; set;}
         [Required]
         public DateTime DateOfContact { get; set; }=DateTime.Now;
         [Required]

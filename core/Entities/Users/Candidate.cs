@@ -11,8 +11,7 @@ namespace core.Entities.Users
 
           public Candidate(string gender, string appUserId,  bool appUserIdNotEnforced, int applicationNo, 
                 string firstName, string secondName, string familyName, string knownAs, DateTime? dOB, 
-                string placeOfBirth, string aadharNo, string email, string introduction, 
-                string interests, bool notificationDesired, string nationality, 
+                string placeOfBirth, string aadharNo, string email, bool notificationDesired, string nationality, 
                 int? companyId, string ppno, string city, string pin, int? referredby,
                 
                 ICollection<UserQualification> userQualifications, 
@@ -26,8 +25,6 @@ namespace core.Entities.Users
                 FirstName = firstName;  SecondName = secondName; FamilyName=familyName;
                 KnownAs= knownAs; DOB = dOB; AadharNo=aadharNo; PpNo = ppno; Email = email;
                 PlaceOfBirth = placeOfBirth; 
-                Introduction = introduction;
-                Interests = interests;
                 City = city; Pin=pin; ReferredBy = referredby;
                 Nationality = nationality; NotificationDesired = notificationDesired;
                 UserQualifications = userQualifications;
@@ -66,8 +63,9 @@ namespace core.Entities.Users
         public int? CompanyId {get; set;}       //associate id
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
-        public string Introduction { get; set; }
+        /*public string Introduction { get; set; }
         public string Interests { get; set; }
+        */
     //navigations
         public bool AppUserIdNotEnforced { get; set; }
         public string AppUserId {get; set;}

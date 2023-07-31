@@ -106,6 +106,15 @@ namespace infra.Data
                     await context.SaveChangesAsync();
                 }
 
+                if(!context.VendorFacilities.Any()) {
+                    var jsonData = File.ReadAllText("../infra/data/SeedData/FacilitySeedData.json");
+                    var fileData = JsonSerializer.Deserialize<List<VendorFacility>>(jsonData);
+                    foreach(var item in fileData) {
+                        context.VendorFacilities.Add(item);
+                    }
+                    await context.SaveChangesAsync();
+                }
+
                 if(!context.Qualifications.Any()) {
                     var jsonData = File.ReadAllText("../infra/data/SeedData/QualificationSeedData.json");
                     var fileData = JsonSerializer.Deserialize<List<Qualification>>(jsonData);

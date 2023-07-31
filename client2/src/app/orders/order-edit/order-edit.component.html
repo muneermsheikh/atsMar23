@@ -8,10 +8,10 @@
           <label class="lbl w80">Order No</label>
           <label class="lbl w110">Dated</label>
           <label class="lbl w110">Complete By</label>
-          <label class="lbl w225">Customer</label>
+          <label class="lbl w250">Customer</label>
           <label class="lbl w80">City</label>
-          <label class="lbl w80">Country</label>
-          <label class="lbl w150">Order Ref</label>
+          <label class="lbl w100">Country</label>
+          <label class="lbl w200">Order Ref</label>
           <div *ngIf="!isAddMode" class="lbl">
                <label class="lbl w100">Review status</label>
                <label class="lbl w100">Fwd to HR On</label>
@@ -38,7 +38,7 @@
                [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
           >
 
-          <ng-select *ngIf="customers" class="stdd w225 "
+          <ng-select *ngIf="customers" class="stdd w250 "
                [items]="customers"
                bindLabel="customerName"
                bindValue="id"
@@ -48,8 +48,8 @@
                (change)="customerChange($event)">
           </ng-select>
           <input class="stdd w80" type="text" formControlName="cityOfWorking">
-          <input class="stdd w80" type="text" formControlName="country">
-          <input class="stddSmaller w150" type="text" formControlName="orderRef">
+          <input class="stdd w100" type="text" formControlName="country">
+          <input class="stddSmaller w200" type="text" formControlName="orderRef">
 
           <div *ngIf="!isAddMode" class="stdd" >
                <div class="stdd fontSmaller w100" style="border:btn-primary;" 
@@ -126,10 +126,11 @@
                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span> </button> 
 
           <div *ngIf="!isAddMode" style="display: inline-block;" class="pull-right" >
-               <button class="btn btn-primary stdd fa-solid fa-share-from-square" (click)="acknowledgeToClient()" 
+               <!-- 
+                    <button class="btn btn-primary stdd fa-solid fa-envelope" (click)="acknowledgeToClient()" 
                     title="acknowledge this Order to Client"
-               > </button>
-                         
+                    > </button>
+               -->     
                <button class="btn btn-primary stdd fa fa-share " (click)="forwardDLToHRDept()" 
                          title="forward this Requirement to HR Dept.  If no categories are selected, all categories will be forwarded"
                > </button>
@@ -143,12 +144,12 @@
                <button class="btn btn-primary stdd fa fa-cogs " (click)="showProcess()"
                     title="Display Processing records of the category"  
                ></button>
-               <button class="btn btn-primary stdd fa fa-close " (click)="close()"
-                    title="Return to calling procedure"  
-               ></button>
-               <br>
           </div>
-          
+          <button class="btn btn-primary stdd fa fa-close " (click)="close()"
+               title="Return to calling procedure"  
+          ></button>
+          <br>
+
           <hr style="margin: 1px; padding: 1px; border-width: 2px;">
           <div style="font-weight: bold; margin-left: 0px; font-size: smaller;">
                <label class="lblArrayFSmall w30">Sel</label>
@@ -160,15 +161,30 @@
                <label class="lblArrayFSmaller w30">Qnty</label>
                <label class="lblArrayFSmaller w30" >Min CVs</label>
                <label class="lblArrayFSmaller w30" >Max CVs</label>
-               <label class="lblArrayFSmaller w35" >Internl<br>Rvw</label>
-               <label class="lblArrayFSmaller w35" >Assess<br>ment</label>
-               <label class="lblArrayFSmaller w35" >No Sup<br>rvw</label>
-               <label class="lblArrayFSmall w100"> HR Exec</label>
-               <label class="lblArrayFSmall w100" style="margin-left: 2px">HR Sup</label>
-               <label class="lblArrayFSmall w100" style="margin-left: 2px">HR Manager</label>
-               <label class="lblArrayFSmall w90" style="margin-left: 2px">Complete by</label>
-               <label class="lblArrayFSmall w40" >Source<br>From</label>
-               <label class="lblArrayFSmall w50" >SC</label>
+               <label class="lblArrayFSmaller w35" title="If shortliting by HR Exective will be checked by Supervisors"
+                    >Internl<br>Rvw</label>
+               <label class="lblArrayFSmaller w35" 
+                    title="if the candidate will need to be assessed for suitability against a pre-defined set of Questions based upon Job Description" 
+                    >Assess<br>ment</label>
+               <label class="lblArrayFSmaller w35" title="internal shortlisting by HR Executive does not require review by Supervisors" 
+                    >No Sup<br>rvw</label>
+               <label class="lblArrayFSmall w100" title="the HR Executive to whom the category will be assigned" 
+                    > HR Exec</label>
+               <label class="lblArrayFSmall w100" style="margin-left: 2px"
+                    title="if internal review is required for the shortlisting of the candidates, then this Supervisor is 
+                         assigned to review the shortlisting"
+                    >HR Sup</label>
+               <label class="lblArrayFSmall w100" style="margin-left: 2px"
+                    title="if internal review is required for the shortlisting of the candidates, then this HR Manager is 
+                         assigned to review the shortlisting"
+                    >HR Manager</label>
+               <label class="lblArrayFSmall w90" style="margin-left: 2px" 
+                         title="Date by which the shortlisting of candidates is to be completed by the HR Executive"
+                    >Complete by</label>
+               <label class="lblArrayFSmall w40" title="country form where the candidate is to be sourced, as decided by the client" 
+                    >Source<br>From</label>
+               <label class="lblArrayFSmall w50" title="Service Charges to be collected from the candidate - read only on this form. +
+                    it is updated in Contract Review of the category ">SC</label>
                <label class="lblArrayFSmall w50">Review<br>Status</label>
 
                <div style="width: 50px; display: inline-block;">
@@ -249,7 +265,7 @@
                          <div *ngIf="!isAddMode" class="stdd">       
                               <button class="w30 fa fa-balance-scale" title="Open Contract Review"
                                    (click)="openReviewModal(i)" ></button>
-                              <button class="w30 mx-1 fa fa-check" title="Assessment Questions for this category" 
+                              <button class="w30 mx-1 fa-regular fa-clipboard" title="design Assessment Questions for this category" 
                                    (click)="assessItem(i)" ></button>
                               <button class="w30 fa fa-question" title="Show prospective candidates"
                                    (click)="showProspectives(i)" ></button>
@@ -259,7 +275,7 @@
                               <button class="w30 mb-1 fa-solid fa-file-invoice-dollar" title="Open Remuneration"
                                    (click)="openRemunerationModal(i)" ></button>
                          </div>
-                         <button (click)="removeItem(i)" class="w30 mx-1 btn btn-danger fa fa-trash" 
+                         <button (click)="removeItem(i)" class="w30 mx-1 btn btn-danger fa fa-trash fa-sm" 
                               title="remove this item"
                          ></button>
                     </div>
@@ -274,8 +290,8 @@
      </ul>
 </div>
 
-<!--
-     <div style="float:inline-end; margin-top: 5px; font-size: smaller;">
-         {{this.form.value | json}}
-     </div>
--->
+
+<div style="float:inline-end; margin-top: 5px; font-size: smaller;">
+     {{this.form.value | json}}
+</div>
+

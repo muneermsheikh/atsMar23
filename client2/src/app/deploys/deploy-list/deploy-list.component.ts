@@ -11,11 +11,10 @@ import { DeployService } from '../deploy.service';
 import { DepModalComponent } from '../dep-modal/dep-modal.component';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { IDeployStage } from 'src/app/shared/models/masters/deployStage';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { DeployAddModalComponent } from '../deploy-add-modal/deploy-add-modal.component';
 import { DeployEditComponent } from '../deploy-edit/deploy-edit.component';
-import { CVReferredDto, ICVReferredDto } from 'src/app/shared/dtos/admin/cvReferredDto';
-import { of } from 'rxjs';
+import { ICVReferredDto } from 'src/app/shared/dtos/admin/cvReferredDto';
 
 
 @Component({

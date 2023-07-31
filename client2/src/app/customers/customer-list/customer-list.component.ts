@@ -1,10 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ICustomer } from 'src/app/shared/models/admin/customer';
 import { ICustomerCity } from 'src/app/shared/models/admin/customerCity';
 import { IIndustryType } from 'src/app/shared/models/masters/profession';
 import { CustomersService } from '../customers.service';
 import { ActivatedRoute, Navigation, Router } from '@angular/router';
-import { SharedService } from 'src/app/shared/shared.service';
 import { ToastrService } from 'ngx-toastr';
 import { ICustomerBriefDto } from 'src/app/shared/dtos/admin/customerBriefDto';
 import { IPagination } from 'src/app/shared/models/pagination';
@@ -12,7 +10,6 @@ import { MastersService } from 'src/app/masters/masters.service';
 import { paramsCustomer } from 'src/app/shared/params/admin/paramsCustomer';
 import { IUser } from 'src/app/shared/models/admin/user';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { IndustriesResolver } from 'src/app/resolvers/industriesResolver';
 
 @Component({
   selector: 'app-customer-list',
@@ -148,9 +145,10 @@ export class CustomerListComponent implements OnInit {
     this.navigateByRoute(customerid, '/customers/edit', true)
   }
 
-  navigateByRoute(id: number, routeString: string, editable: boolean, ) {
-    let route =  routeString + '/' + id;
-
+  navigateByRoute(id: number, routeString: string, editable: boolean ) {
+    let route = routeString;
+    if(id!==0) route = route + '/' + id;
+    
     this.router.navigate(
         [route], 
         { state: 
@@ -160,5 +158,9 @@ export class CustomerListComponent implements OnInit {
             returnUrl: '/customers/customerlist/' + this.custType,
           } }
       );
+  }
+
+  addCustomer() {
+    this.navigateByRoute(0, '/customers/add/' + this.custType, true)    
   }
 }

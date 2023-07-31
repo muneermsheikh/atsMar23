@@ -12,7 +12,7 @@ import { CoaService } from '../coa.service';
 })
 export class AddPaymentModalComponent implements OnInit {
 
-  @Output() paymentVoucherEvent = new EventEmitter<IVoucherToAddNewPaymentDto>();
+  @Output() paymentVoucherEvent = new EventEmitter<IVoucherToAddNewPaymentDto|null>();
   
   title: string='';
   accountName: string='';
@@ -61,4 +61,10 @@ export class AddPaymentModalComponent implements OnInit {
     this.drEntryRequiresApproval = this.debitAccountId===2;
   }
 
+  close() {
+    this.toastr.warning('aborted');
+    console.log('aborted');
+    this.paymentVoucherEvent.emit(null);
+    this.bsModalRef.hide();
+  }
 }

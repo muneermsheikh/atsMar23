@@ -1,4 +1,9 @@
 <br><br>
+<div>CVs Referred to client - 
+    Customer: <strong><span style="color:blue;">{{referred[0].customerName}}</span></strong>
+    Category: <strong><span style="color:blue;">{{referred[0].categoryName}}</span></strong>
+    Ref: <strong><span style="color:blue;">{{referred[0].categoryRef}}</span></strong>
+</div>
 <div class="marginL15">
     <div class="stdd b w50 blue">Sort</div>
     <select name="" id="" class="custom-select mb-2 w150" (change)="onSortSelected($event)">
@@ -31,7 +36,7 @@
     <button class="stdd btn btn-outline-success pull-right fa fa-close" (click)="close()" ></button>
 
 <br>
-<hr>
+<hr style="margin: 0px; padding: 0px;">
 <div class="form-inline b marginL15">
 
     <div class="stdd mx1 w200 b" >Customer</div>

@@ -10,7 +10,6 @@ export interface IUserHistory
      checked?: boolean;
      source: string;
      categoryRef: string;
-     categoryName: string;
      resumeId: string;
      nationality: string;
      address: string;
@@ -18,7 +17,7 @@ export interface IUserHistory
      city: string;
      name: string;
      personType: string;
-     //personId?: number;
+     personId?: number;
      emailId: string;
      alternateEmailId: string;
      mobileNo: string;

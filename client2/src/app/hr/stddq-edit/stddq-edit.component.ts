@@ -51,8 +51,8 @@ export class StddqEditComponent implements OnInit {
         if (!this.isAddMode) {
           this.form.patchValue({
             id: this.stddq.id,
-            assessmentParameter: this.stddq.assessmentParameter,
-            qNo: this.stddq.qNo,
+            assessmentParameter: this.stddq.subject,
+            qNo: this.stddq.questionNo,
             question: this.stddq.question,
             maxPoints: this.stddq.maxPoints
           })

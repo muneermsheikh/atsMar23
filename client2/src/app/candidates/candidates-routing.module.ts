@@ -39,8 +39,9 @@ const routes = [
        categories: CategoryListResolver,
        candidate: CandidateResolver
 
-    },
-    canDeactivate: [PreventUnsavedChangesRegisterGuard],
+    }
+    ,canDeactivate: [PreventUnsavedChangesRegisterGuard]
+    ,
   },
   
   

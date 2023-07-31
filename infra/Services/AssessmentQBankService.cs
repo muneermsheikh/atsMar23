@@ -1,4 +1,6 @@
+using core.Entities.HR;
 using core.Entities.MasterEntities;
+using core.Entities.Orders;
 using core.Interfaces;
 using infra.Data;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +17,26 @@ namespace infra.Services
             _context = context;
         }
 
-          public async Task<AssessmentQBank> GetAssessmentQBankByCategoryId(int id)
+          public async Task<ICollection<OrderItemAssessmentQ>> GetAssessmentQBankByCategoryId(int orderitemid, int categoryid)
           {
-            var x = await _context.AssessmentQBank.Where(x => x.CategoryId == id)
-                .Include(x => x.AssessmentQBankItems.OrderBy(x => x.QNo))
-                .FirstOrDefaultAsync();
-            return x;
+                var x = await _context.AssessmentQBank.Where(x => x.CategoryId == categoryid)
+                    .Include(x => x.AssessmentQBankItems.OrderBy(x => x.QNo))
+                    .FirstOrDefaultAsync();
+
+                var orderitem = await _context.OrderItems.FindAsync(orderitemid);
+                var assessmentitem = await _context.OrderItemAssessments.FindAsync(orderitemid);
+                var questions = x.AssessmentQBankItems;
+                var qs = new List<OrderItemAssessmentQ>();
+
+                if(questions != null && questions.Count > 0) {
+                    foreach(var q in questions) {
+                        var item = new OrderItemAssessmentQ(orderitemid,  orderitem.OrderId,0,  orderitemid, q.AssessmentParameter,
+                            q.Question, q.MaxPoints, false);
+                        
+                        qs.Add(item);
+                    }
+                }
+                return qs;
           }
 
           public async Task<ICollection<AssessmentQBank>> GetAssessmentQBanks()

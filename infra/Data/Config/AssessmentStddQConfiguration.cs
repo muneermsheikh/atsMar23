@@ -10,9 +10,9 @@ namespace infra.Data.Config
      {
           public void Configure(EntityTypeBuilder<AssessmentStandardQ> builder)
           {
-               builder.Property(x => x.AssessmentParameter).IsRequired();
-               builder.Property(x => x.QNo).IsRequired();
-               builder.HasIndex(x => x.QNo).IsUnique();
+               builder.Property(x => x.Subject).IsRequired();
+               builder.Property(x => x.QuestionNo).IsRequired();
+               builder.HasIndex(x => x.QuestionNo).IsUnique();
                builder.HasIndex(x => x.Question).IsUnique();
                builder.Property(x => x.Question).IsRequired();
                

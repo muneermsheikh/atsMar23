@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../account/account.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { IAssessmentQ } from '../shared/models/admin/assessmentQ';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +39,8 @@ export class StddqsService {
     );
   }
 
-  getStddQs(useCache: boolean=false) {
+  getStddQs() {   //useCache: boolean=false) {
+    /*
     if (useCache === false) this.cache = new Map();
 
     if(this.cache.size > 0 && useCache === true) {
@@ -68,6 +70,8 @@ export class StddqsService {
           return response.body;
         })
       )
+    */
+      return this.http.get<IAssessmentQ[]>(this.apiUrl + 'assessmentstddq');
   }
 
   getStddQ(id: number) {
@@ -93,6 +97,7 @@ export class StddqsService {
   }
 
   updateStddQ(qs:IAssessmentStandardQ[]) {
+    console.log('stddqs.ervice');
     return this.http.put<boolean>(this.apiUrl + 'assessmentstddq', qs);
   }
   

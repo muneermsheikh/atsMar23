@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ToastRef, ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { AccountService } from 'src/app/account/account.service';
@@ -16,6 +16,7 @@ import { ICustomerNameAndCity } from 'src/app/shared/models/admin/customernamean
 import { IProfession } from 'src/app/shared/models/masters/profession';
 import { IOrderCity } from 'src/app/shared/models/admin/orderCity';
 import { IOrderBriefDto } from 'src/app/shared/dtos/admin/orderBriefDto';
+import { IMessage } from 'src/app/shared/models/admin/message';
 
 @Component({
   selector: 'app-orders-index',
@@ -243,10 +244,21 @@ export class OrdersIndexComponent implements OnInit {
   }
 
   editOrder(id: number) {
-    let route = '/orders/edit/' + id;
-    this.router.navigate([route], { state: { toedit: true, returnUrl: '/orders' } });
+    this.navigateByRoute(id, '/orders/edit', true);
+  }
 
-    //this.navigateByRoute(id, 'orders/edit', true);
+  remindSelDecisions(customerid: number) {
+      this.service.remindClientForSelections(customerid).subscribe({
+        next: (response: boolean) => {
+          if(!response) {
+            this.toastr.info('Failed to generate message for reminder to client');
+        } else {
+          this.toastr.success('Email Message for reminder to client generated.  It will be available in Messages Draft folder');
+        }
+      },
+      error: error => this.toastr.error('Error in composing reminder message to customer')
+    })
+
   }
 
   contractReviewOrder(id: number) {
@@ -280,7 +292,7 @@ export class OrdersIndexComponent implements OnInit {
   }
 
   dlForwardToAssociates(event: any) {
-    console.log('dl forward clicked');
+
     var id = event;
      this.navigateByRoute(id, 'orders/forwards', true);
   }

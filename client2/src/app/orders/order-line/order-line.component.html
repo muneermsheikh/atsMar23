@@ -32,22 +32,17 @@
           >
                {{order.reviewStatus===null ? 'Not Reviewed' : order.reviewedOn | date: 'dd-MMM-yy'}}
           </div>
-              <!-- <div *ngIf="order.forwardedToHRDeptOn?.getFullYear < 2000 || order.forwardedToHRDeptOn===null" title="forward this DL to HR Department"
-                    (click)="dlForwardToHRClicked()" > Not Forwarded
-               </div>
-          -->
-               <div class="stdd w100" title="VIEW this Order forwarded to HR Department"
-                    (click)="dlForwardToHRClicked()"> {{order.forwardedToHRDeptOn | date: 'dd-MMM-yy'}}
-               </div>
-
-          <div class="stdd w150" title="click to forward this order to associates"
+          <div class="stdd w100 fontSmall" *ngIf="order.forwardedToHRDeptOn === null"> Not forwarded</div>
+          <div class="stdd w100" *ngIf="order.forwardedToHRDeptOn !== null">
+               {{order.forwardedToHRDeptOn | date: 'dd-MMM-yy'}}
+          </div>
+          <div class="stdd w150 fontSmall" title="click to forward this order to associates"
                (click)="dlForwardToAssociatesClicked()"
                title="click to forward this order to associates (to be selected)" >
                {{order.status}}
           </div>
           
-          <div class="stdd w150" 
-               
+          <div class="stdd w150 fontSmall" 
                title="click to forward this order to associates (to be selected)" >
                {{order.status}}
           </div>
@@ -60,17 +55,20 @@
                     (click)="editClicked()"
                     
                ></button>
-               <button class="stdd w15 fa fa-arrow-right" title="edit this DL" type="button"
-                    title="forwarded to associates"
+               <button class="stdd w15 fa fa-check fa-sm" title="edit this DL" type="button"
+                    title="DLs already forwardED to associates"
                     (click)="dlForwardedToAssociatesClicked()"
-               ></button>
+               ></button> 
                
-               <button class="stdd w15 fa fa-plane" title="cvs forwarded" type="button"
-                    title="cvs referred to clients for this Order"
+               <button class="stdd w15 fa fa-circle" title="cvs forwarded" type="button"
+                    title="CVs already referrED to clients for this Order"
                     (click)="cvReferredClicked()"
                ></button>
+               <button class="stdd w15 fa fa-bell" title="Remind for decision on CVs forwarded" type="button"
+                    title="cvs referred to clients for this Order"
+                    (click)="remindForSelDecisions()"
+               ></button>
 
-               <!-- <button class="stdd w15 fa fa-step-forward" title="display Forward details for this DL" type="button" (click)="dlForwardToAssociatesClicked()"></button> -->
                <button class="stdd fa fa-trash red" title="delete the DL" type="button" (click)="deleteClicked()"></button>
           </div>
      </div>

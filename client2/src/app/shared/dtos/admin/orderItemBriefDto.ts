@@ -8,6 +8,7 @@ export interface IOrderItemBriefDto
      customerName: string;
      orderItemId: number;
      requireInternalReview: boolean;
+     categoryId: number;
      categoryRef: string;
      categoryName: string;
      categoryRefAndName: string;

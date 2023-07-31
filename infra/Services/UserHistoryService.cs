@@ -8,6 +8,7 @@ using core.Params;
 using AutoMapper;
 using core.Entities.HR;
 using core.Entities.EmailandSMS;
+using core.Entities.Identity;
 
 namespace infra.Services
 {
@@ -84,9 +85,12 @@ namespace infra.Services
           }
 
         
-          public async Task<UserHistory> GetHistoryFromHistoryId(int historyId)
+          public async Task<UserHistory> GetHistoryWithItemsFromHistoryId(int historyId)
           {
-               var history = await _context.UserHistories.Where(x => x.Id == historyId).Include(x => x.UserHistoryItems).FirstOrDefaultAsync();
+               var history = await _context.UserHistories
+                    .Where(x => x.Id == historyId)
+                    .Include(x => x.UserHistoryItems)
+                    .FirstOrDefaultAsync();
                return history;     //_mapper.Map<UserHistory, UserHistoryDto>(history);
           }
           
@@ -113,12 +117,13 @@ namespace infra.Services
                if(pParams.UserHistoryHeaderId.HasValue) qry = qry.Where(x => x.UserHistoryHeaderId == pParams.UserHistoryHeaderId);
                if(pParams.CategoryRef != null) qry = qry.Where(x => x.CategoryRef == pParams.CategoryRef);
                if(pParams.DateAdded.Year > 2000) qry = qry.Where(x => Convert.ToDateTime(x.CreatedOn) == pParams.DateAdded.Date);
+               if(!string.IsNullOrEmpty(pParams.UserName)) qry = qry.Where(x => x.UserName.ToLower()==pParams.UserName.ToLower());
                if(pParams.Status=="concluded") {
                     qry = qry.Where(x =>  x.Status.Contains("concluded"));
                } else if (pParams.Status == "pending") {
                     qry = qry.Where(x =>  !x.Status.ToLower().Contains("concluded") || x.Status==null);
                } else if (!string.IsNullOrEmpty(pParams.Status)) {
-                    qry = qry.Where(x => x.Status == pParams.Status);
+                    qry = qry.Where(x => x.Status.ToLower() == pParams.Status.ToLower());
                }
                if(pParams.Id.HasValue) qry = qry.Where(x => x.Id == pParams.Id);
                
@@ -133,6 +138,7 @@ namespace infra.Services
                     {qry = qry.OrderBy(x => x.Source).ThenBy(x => x.Name);}
 
                var totalCount = await qry.CountAsync();
+               if(totalCount==0) return null;
                var prospectives = (ICollection<UserHistory>)await qry.Skip((pParams.PageIndex-1)*pParams.PageSize).Take(pParams.PageSize).ToListAsync();
                var userhistorydto = _mapper.Map<ICollection<UserHistory>, ICollection<UserHistoryDto>>(prospectives);
                return new Pagination<UserHistoryDto>(pParams.PageIndex, pParams.PageSize, totalCount, (IReadOnlyList<UserHistoryDto>)userhistorydto);
@@ -182,94 +188,128 @@ namespace infra.Services
                return history;
           }
 
-          public async Task<UserHistory> GetOrAddUserHistoryByParams(UserHistoryParams histParams)
+          public async Task<UserHistoryDto> GetOrAddUserHistoryByParams(UserHistoryParams histParams, string username)
           {
                //check if the object has empty elements
-               var hist = new UserHistory();
+               var returnDto = new UserHistoryDto();
 
-               if(histParams.PersonType == "prospective") {
-                    hist = await _context.UserHistories.Where(x => x.Id == histParams.Id).Include(x => x.UserHistoryItems).FirstOrDefaultAsync();
-                    if (hist != null) return hist;
+               var qry = _context.UserHistories.Include(x => x.UserHistoryItems) .AsQueryable();
+               if (histParams.Id !=0 && histParams.Id != null) qry = qry.Where(x => x.Id==histParams.Id);
+               if (histParams.ApplicationNo !=0) qry = qry.Where(x => x.ApplicationNo==histParams.ApplicationNo);
+               if (!string.IsNullOrEmpty(histParams.MobileNo)) qry = qry.Where(x => x.MobileNo == histParams.MobileNo);
+               if (!string.IsNullOrEmpty(histParams.PersonType)) qry= qry.Where(x => x.PersonType==histParams.PersonType);
+               if(!string.IsNullOrEmpty(histParams.PersonName)) qry = qry.Where(x => x.Name.Contains(histParams.PersonName));
+               if(!string.IsNullOrEmpty(histParams.Status)) qry = qry.Where(x => x.Status.ToLower()==histParams.Status.ToLower());
+               if(!string.IsNullOrEmpty(histParams.UserName)) qry = qry.Where(x => x.UserName.ToLower()==histParams.UserName.ToLower());
+
+               var hist = await qry.FirstOrDefaultAsync();
+
+               if(hist == null) {
+                    var candQry = _context.Candidates.Include(x => x.UserPhones).AsQueryable();
+                    if(histParams.ApplicationNo != 0) candQry = candQry.Where(x => x.ApplicationNo == histParams.ApplicationNo);
+                    if (!string.IsNullOrEmpty(histParams.EmailId)) candQry = candQry.Where(x => x.Email==histParams.EmailId);
+                    if (!string.IsNullOrEmpty(histParams.MobileNo)) {
+                         var candId = await _context.UserPhones.Where(x => x.MobileNo==histParams.MobileNo).Select(x => x.CandidateId).FirstOrDefaultAsync();
+                         candQry = candQry.Where(x => x.Id==candId);
+                    }
+                    if (!string.IsNullOrEmpty(histParams.UserName)) candQry = candQry.Where(x => x.Email==histParams.UserName);
                     
-                    var prosp = await _context.UserHistories.FindAsync(histParams.PersonId);
-                    if (prosp == null) return null;
-                    hist  = new UserHistory{PersonType= "prospective", Name = prosp.Name, 
-                         EmailId = prosp.EmailId, CreatedOn = DateTime.Now, MobileNo = prosp.MobileNo};
-               } else {
-               var cv = new Candidate();
-               hist = await GetUserHistory(histParams);
+                    var cand = await candQry.FirstOrDefaultAsync();
+                    
+                    if(cand==null) {
+                         returnDto.ErrorMessage = "Failed to create User History record since no candidte found with criteria provided";
+                         return  returnDto;   //look in Prospecives and then in officials
+                    }
 
-               if (hist !=null) return hist;     
+                    var ph = cand.UserPhones?.Select(x => x.MobileNo).FirstOrDefault();
+                    if(string.IsNullOrEmpty(ph)) {
+                         returnDto.ErrorMessage="The candidate retrived with the inputs is " + cand.FullName + "; however he does not have any phone no registered";
+                         return returnDto;
+                    }
+                    var src=cand.Source==null ? "N.A." : cand.Source;
+                    var cat = cand.UserProfessions?.Select(x => x.Profession).FirstOrDefault();
+                    var catName = cat==null ? "" : cat;
+                    
 
-               //no record in UserHistory, so create new UserHistory after verying input data;
+                    hist = new UserHistory{PersonType= "candidate", Name = cand.FullName, Source=src,
+                         CategoryRef=catName,
+                         Address=cand.Address, City=cand.City, Concluded = false, Status="Active",
+                         StatusDate = DateTime.Now, UserName = username,
+                         EmailId = cand.Email, CreatedOn = DateTime.Now, ApplicationNo = cand.ApplicationNo,
+                         MobileNo = ph, PersonId = cand.Id};
+                    
+                    _unitOfWork.Repository<UserHistory>().Add(hist);
                
-               //based upon persontype, get person details either from customer or candidate
-               //and create new history object
-               var userHist = new UserHistory();
-                    var phn = histParams.MobileNo ?? "";
-
-                    //first, try to read candidates records, as probability of calls to/from candidates are high due to its size
-                    var qryCand = _context.Candidates.AsQueryable();
-                    if (histParams.PersonId.HasValue) qryCand = qryCand.Where(x => x.Id == histParams.PersonId);
-                    if (!string.IsNullOrEmpty(histParams.EmailId )) qryCand = qryCand.Where(x => x.Email.ToLower() == histParams.EmailId.ToLower());                         
-                    if (!string.IsNullOrEmpty(histParams.MobileNo)) qryCand = qryCand.Where(x => x.UserPhones.Any(x => x.MobileNo == phn));
-                    qryCand = qryCand.Include(x => x.UserPhones);
-                    var cand = await qryCand.FirstOrDefaultAsync();
+                    try{
+                         await _unitOfWork.Complete();
+                    } catch (Exception ex) {
+                         returnDto.ErrorMessage = ex.Message;
+                         return returnDto;
+                    }
                     
-                    if(cand == null) {       //try to fetch records from customer officials
-                         var qryC = _context.CustomerOfficials.AsQueryable();
-                         if (histParams.PersonId.HasValue) qryC = qryC.Where(x => x.Id == histParams.PersonId);
-                         if (!string.IsNullOrEmpty(histParams.EmailId)) qryC = qryC.Where(x => x.Email.ToLower() == histParams.EmailId.ToLower());
-                         if (!string.IsNullOrEmpty(histParams.MobileNo)) qryC = qryC.Where(x => x.Mobile == phn);
-                         //if (histParams.PersonId.HasValue) hist = hist.Where(x => x.Id == histParams.PersonId);
-                         var off = await qryC.Select(x => new {x.Id, x.CustomerId, x.OfficialName, x.Customer.CustomerName, 
-                              x.Mobile, x.Customer.CustomerType, x.Email}).FirstOrDefaultAsync();
-                         if(off==null) return null;
-
-                         hist = new UserHistory{PersonType="official", Name = off.OfficialName, 
-                              MobileNo = off.Mobile, EmailId = off.Email, CreatedOn = DateTime.Now};
-                    } else {
-                         
-                         //cand != null.  If the histParam has emailId and phoneNo empty, then check if UserHistory has records
-                         //that have these values.  Bcz emailId and PhoneNo in UserHistory are unique.
-                         /*however above should never happen, so this block is commented out
-                         if(string.IsNullOrEmpty(histParams.EmailId) && !string.IsNullOrEmpty(cand.Email) ) {
-                              hist = await _context.UserHistories.Where(x => x.EmailId.ToLower()==cand.Email.ToLower())
-                                   .Include(x => x.UserHistoryItems).FirstOrDefaultAsync();
-                         };
-                         if(hist==null) {
-                              if(string.IsNullOrEmpty(histParams.MobileNo) && !string.IsNullOrEmpty(cand.UserPhones.Select(x => x.MobileNo).FirstOrDefault())) {
-                              hist = await _context.UserHistories.Where(x => x.PhoneNo==cand.UserPhones.Select(x => x.MobileNo).FirstOrDefault())
-                                   .Include(x => x.UserHistoryItems).FirstOrDefaultAsync();
-                         }
-                         if(hist==null) {
-                         */
-                              hist = new UserHistory{PersonType= "candidate", Name = cand.FullName, 
-                                   EmailId = cand.Email, CreatedOn = DateTime.Now, ApplicationNo = cand.ApplicationNo,
-                                   MobileNo = cand.UserPhones == null || cand.UserPhones.Count==0 ? "" : cand.UserPhones.Select(x => x.MobileNo).FirstOrDefault()};
-                         //}
-                    }  
                }
-               
-               _unitOfWork.Repository<UserHistory>().Add(hist);
-              
-               await _unitOfWork.Complete();
-               
-                    
-               hist = await GetUserHistory(histParams);
+
                if(hist==null) return null;
+               
+               returnDto = _mapper.Map<UserHistory, UserHistoryDto>(hist);
 
-                    //var historyDto = _mapper.Map<UserHistory, UserHistoryDto>(history);
+               return returnDto;
 
-               if(hist.UserHistoryItems != null) {
+               /*if(hist.UserHistoryItems != null) {
                     foreach(var item in hist.UserHistoryItems) {
                          if (item.LoggedInUserName == "") item.LoggedInUserName = await _commonServices.GetEmployeeNameFromEmployeeId(item.LoggedInUserId);
                          if (item.ContactResultId > 0) item.ContactResultName = Enum.GetName(typeof(EnumContactResult), item.ContactResultId);
                     }
                }
-               return hist;
+               */
+
           }
 
+          public async Task<UserHistoryItem> UpdateHistoryItem(UserHistoryItem userhistoryitem, string userdisplayname) {
+               //ensure personId is valid
+               //ensure UserHistoryId is valid
+               var appno=0;
+               var error="";
+               if (userhistoryitem.UserHistoryId==0) {
+                    //create new userhistory object
+                    if(userhistoryitem.PersonType=="Candidate") {
+                         appno = await _context.Candidates.Where(x => x.Id==userhistoryitem.PersonId)
+                              .Select(x => x.ApplicationNo).FirstOrDefaultAsync();
+                    }
+                    var items = new List<UserHistoryItem>();
+                    items.Add(userhistoryitem);
+
+                    var userhistory = new UserHistory {
+                         CategoryRef=userhistoryitem.CategoryRef,
+                         MobileNo=userhistoryitem.PhoneNo,
+                         Gender = "M",
+                         Source = "",
+                         Name = userhistoryitem.PersonName,
+                         ApplicationNo = appno,
+                         UserName = userdisplayname,
+                         CreatedOn = userhistoryitem.DateOfContact,
+                         UserHistoryItems=items
+                    };
+                    _unitOfWork.Repository<UserHistory>().Add(userhistory);
+               } else {
+                    //assuming client has correct UserhistoryId
+                    if(userhistoryitem.Id==0) {
+                         _unitOfWork.Repository<UserHistoryItem>().Add(userhistoryitem);
+                    } else {
+                         _unitOfWork.Repository<UserHistoryItem>().Update(userhistoryitem);
+                    }
+                    
+               }
+               
+               try {
+                    await _unitOfWork.Complete();
+               } catch (Exception ex) {
+                    error = ex.Message;
+                    return null;
+               }
+
+               return userhistoryitem;
+          }
           public async Task<bool> EditContactHistoryItems(ICollection<UserHistoryItem> model, int loggedinEmpId)
           {
                var existingItems = await _context.UserHistoryItems
@@ -292,10 +332,10 @@ namespace infra.Services
                               _context.Entry(existingItem).CurrentValues.SetValues(existingItem);
                               _context.Entry(existingItem).State = EntityState.Modified;
                          } else {
-                              var newItem = new UserHistoryItem(modelItem.UserHistoryId, modelItem.PhoneNo, 
+                              var newItem = new UserHistoryItem(modelItem.IncomingOutgoing, modelItem.UserHistoryId, modelItem.PhoneNo, 
                                    modelItem.DateOfContact.Year < 2000 ? DateTime.Now : modelItem.DateOfContact, 
                                    loggedinEmpId, modelItem.Subject, modelItem.CategoryRef, modelItem.ContactResultId, 
-                                   modelItem.ContactResultName, modelItem.ComposeEmailMessage, modelItem.GistOfDiscussions);
+                                   modelItem.ContactResultName, modelItem.PersonName, modelItem.ComposeEmailMessage, modelItem.GistOfDiscussions);
                               
                               existingItems.Add(newItem);
                               _context.Entry(newItem).State = EntityState.Added;
@@ -308,6 +348,15 @@ namespace infra.Services
 
           }
 
+          public async Task<bool> DeleteUserHistoryItem(int UserHistoryItem)
+          {
+               var historyitemtodelete = await _context.UserHistoryItems.FindAsync(UserHistoryItem);
+               if(historyitemtodelete==null) return false;
+               _context.UserHistoryItems.Remove(historyitemtodelete);
+               _context.Entry(historyitemtodelete).State=EntityState.Deleted;
+
+               return await _context.SaveChangesAsync() > 0;
+          }
           public async Task<UserHistoryReturnDto> EditContactHistory(UserHistory model, LoggedInUserDto userDto)
           {
                var historyReturnDto = new UserHistoryReturnDto();
@@ -356,11 +405,11 @@ namespace infra.Services
                               _context.Entry(existingModelItem).CurrentValues.SetValues(modelHistoryItem);
                               _context.Entry(existingModelItem).State = EntityState.Modified;
                          } else {
-                              var newHistoryItem = new UserHistoryItem(model.Id, modelHistoryItem.PhoneNo, 
+                              var newHistoryItem = new UserHistoryItem(modelHistoryItem.IncomingOutgoing, model.Id, modelHistoryItem.PhoneNo, 
                                    modelHistoryItem.DateOfContact.Year < 2000 ? DateTime.Now : modelHistoryItem.DateOfContact, 
                                    userDto.LoggedInEmployeeId, modelHistoryItem.Subject, modelHistoryItem.CategoryRef, 
                                    modelHistoryItem.ContactResultId, modelHistoryItem.ContactResultName, 
-                                   modelHistoryItem.ComposeEmailMessage, modelHistoryItem.GistOfDiscussions);
+                                   modelHistoryItem.PersonName, modelHistoryItem.ComposeEmailMessage, modelHistoryItem.GistOfDiscussions);
                                    
                               existingHistory.UserHistoryItems.Add(newHistoryItem);
                               _context.Entry(newHistoryItem).State = EntityState.Added;

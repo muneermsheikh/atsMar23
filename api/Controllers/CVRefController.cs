@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using core.Params;
+using core.Entities.EmailandSMS;
 
 namespace api.Controllers
 {
@@ -22,9 +23,12 @@ namespace api.Controllers
           private readonly IConfiguration _config;
           private readonly UserManager<AppUser> _userManager;
           private readonly IEmployeeService _empService;
+          private readonly IEmailService _emailService;
           public CVRefController(ICVRefService cvrefService, IUnitOfWork unitOfWork, IEmployeeService empService,
-          IMapper mapper, ITaskService taskService, IConfiguration config, UserManager<AppUser> userManager)
+               IMapper mapper, ITaskService taskService, IConfiguration config, 
+               UserManager<AppUser> userManager, IEmailService emailService)
           {
+               _emailService = emailService;
                _empService = empService;
                _userManager = userManager;
                _config = config;
@@ -75,11 +79,18 @@ namespace api.Controllers
           }
 
           [HttpGet("cvsreferredPaginated")]
-          public async Task<ActionResult<Pagination<CVReferredDto>>> GetCVsReferredPaginated([FromQuery] CVRefSpecParams refParams )
+          public async Task<ActionResult<Pagination<CVReferredDto>>> GetCVsReferredPaginated([FromQuery] CVRefParams refParams )
           {
                var refs = await _cvrefService.GetCVReferredDto(refParams);
                //if(refs==null) return Ok(new ApiResponse(404, "No data to report"));
                return Ok(refs);
+          }
+          
+          [HttpGet("selDecisionReminder/{CustomerId}")]
+          public async Task<ActionResult<bool>> SelDecisionReminderMessage(int CustomerId )
+          {
+               var loggedInDto = await GetLoggedInUserDto();
+               return await _cvrefService.ComposeSelDecisionReminderMessage(CustomerId, loggedInDto);
           }
           
           [HttpGet("cvrefwithdeploys/{cvrefid}")]

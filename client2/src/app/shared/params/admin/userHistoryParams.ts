@@ -14,8 +14,9 @@ export class userHistoryParams {
      status = '';
      concluded = null;        //default
      createNewIfNull=false;
+     userName =  '';
      search = '';
-     sort = '';
+     sort = 'applicationNo';
      pageNumber=1;
      pageSize=10;
 }

@@ -14,12 +14,11 @@ using core.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Office.Interop.Excel;
 
 namespace api.Controllers
 {
-     //[Authorize]
-     public class CandidateController : BaseApiController
+    //[Authorize]
+    public class CandidateController : BaseApiController
      {
           //private readonly IUnitOfWork _unitOfWork;
           static DateTime TimeLast;
@@ -64,6 +63,7 @@ namespace api.Controllers
           public async Task<ActionResult<Pagination<CandidateBriefDto>>> GetCandidatePagesAsync([FromQuery]CandidateSpecParams candidateParam)
           {
                var pages = await _userGetAndUpdateService.GetCandidateBriefPaginated(candidateParam);
+               
                if(pages==null) return BadRequest(new ApiResponse(404, "No records found"));
                return Ok(pages);
           }
@@ -350,7 +350,7 @@ namespace api.Controllers
                          PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
                     
                     //var modelData = Request.Form["data"];
-                         
+                    //CompanyId=null DOB null, remove entityaddress, remove userPassports,
                     var candidateObjectDto = await _userGetAndUpdateService.UpdateCandidateAsync(modelData);
                     var candidateObject = candidateObjectDto.Candidate;
                     var newAttacments = candidateObjectDto.NewAttachments;
@@ -393,7 +393,7 @@ namespace api.Controllers
                     //var attachmentsUpdated = await _userService.AddUserAttachments(userattachmentlist);
                     //candidateObject.UserAttachments=attachmentsUpdated;
 
-                    return Ok("Candidate Updated.");
+                    return Ok("");
                }
                catch (Exception ex)
                {

@@ -24,14 +24,15 @@ export class AssessQComponent implements OnInit {
   totalMarks=0;
   returnUrl: string = '/orders'
   form: FormGroup=new FormGroup({});
-  
+  orderitemid: number=0;
+
   constructor(private activatedRoute: ActivatedRoute, 
     private router: Router, private accountsService: AccountService,
     private stddqservice: StddqsService,
-    private service: AssessmentService, 
+    private assessService: AssessmentService, 
     private toastr: ToastrService,
     private fb: FormBuilder) {
-        //this.routeId = this.activatedRoute.snapshot.params['id'];
+        this.orderitemid = this.activatedRoute.snapshot.params['id'];
           this.router.routeReuseStrategy.shouldReuseRoute = () => false;
 
           this.accountsService.currentUser$.pipe(take(1)).subscribe(user => this.user = user!);
@@ -60,7 +61,7 @@ export class AssessQComponent implements OnInit {
     this.activatedRoute.data.subscribe(data => { 
       //this.orderitem = data.itembrief;
       this.assess= data.assessment;
-      console.log('cvassess in ngOnInit', this.assess);
+
       this.createForm();
       if (this.assess) {
         this.patchForm(this.assess);
@@ -93,33 +94,53 @@ export class AssessQComponent implements OnInit {
       formArray.push(this.fb.group({
         id: i.id, assessmentId: i.assessmentId, orderItemId: i.orderItemId,
         orderId: i.orderId, questionNo: i.questionNo, subject: i.subject,
-        question: i.question, maxMarks: i.maxMarks, isMandatory: i.isMandatory
+        question: i.question, maxPoints: i.maxPoints, isMandatory: i.isMandatory
       }))
     });
 
     return formArray;
   }
 
-  addStddQ() {
+  addAssessmentQuestionsForCategory() {
+      console.log('orderitem Id i assess-q.component.ts addAssessmentQForategory', this.orderitemid);
 
-    this.stddqservice.getStddQs(true).subscribe(response => {
-      const stddqs = response;
-      if (stddqs===null) {
-        this.toastr.warning('failed to retrieve standard questions');
-        return;
-      }
+        this.assessService.getAssessmentQBankOfCategoryId(this.orderitemid, this.orderitem!.categoryId).subscribe({
+          next: (stddQs: IAssessmentQ[]) => {
+              if(stddQs == null) {
+                this.toastr.warning('failed to retrieve Assessment Questions for the category.  Make sure the category has defined Assessment Questions');
+              } else {
+                this.form.setControl('orderItemAssessmentQs', this.setExistingItems(stddQs));
+                this.calculateTotals();
+              }
+            },
+          error: error => this.toastr.error('Error in getting standard Questions from API,', error  )
+      });
+      
+  }
 
-      stddqs.forEach(q => {
-        this.orderItemAssessmentQs.push(this.fb.group({
-          id: q.id, assessmentId: this.assess!.id, orderId: this.assess!.orderId,
-          questionNo: q.qNo, subject: q.assessmentParameter, question: q.question, maxMarks: q.maxPoints,
-          isMandatory: false
-        }))
-      })
-      this.calculateTotals();
-    }, error => {
-      this.toastr.error('error - failed to retrieve standard questions');
-    })
+  addStddAssessmentQuestions() {
+      this.stddqservice.getStddQs().subscribe({
+        next: (stddQs: IAssessmentQ[]) => {
+          if(stddQs == null) {
+            this.toastr.warning('failed to retrieve Standard Questions');
+          } else {
+            var itemid = this.form.get('orderItemId')!.value;
+            var orderid = this.form.get('orderId')!.value;
+            var assessmentid = this.form.get('id')?.value;
+              stddQs.forEach(s => {
+                s.orderItemId=itemid;
+                s.orderId=orderid;
+                s.isMandatory=s.isMandatory===null || s.isMandatory===undefined ? false : s.isMandatory;
+                s.assessmentId=assessmentid;
+              })
+            this.form.setControl('orderItemAssessmentQs', this.setExistingItems(stddQs));
+            this.calculateTotals();
+
+          }
+        },
+        error: error => this.toastr.error('Error in getting standard Questions from API,', error  )
+      });
+  
   }
 
   get orderItemAssessmentQs(): FormArray {
@@ -147,7 +168,7 @@ export class AssessQComponent implements OnInit {
   }
 
   update() {
-    this.service.updateAssessment(this.form.value).subscribe(response => {
+    this.assessService.updateAssessment(this.form.value).subscribe(response => {
       if (response) {
         this.toastr.success('updated the Assessment Question');
         
@@ -162,7 +183,7 @@ export class AssessQComponent implements OnInit {
   calculateTotals() {
     //const subtotal = basket.items.reduce((a, b) => (b.price * b.quantity) + a, 0);
     //var tot = this.assess.orderItemAssessmentQs.map(x => x.maxMarks).reduce((a, b) => a + b);
-    this.totalMarks =  this.orderItemAssessmentQs.value.map((x:any) => x.maxMarks).reduce((a:number, b: number) => a + b,0);
+    this.totalMarks =  this.orderItemAssessmentQs.value.map((x:any) => x.maxPoints).reduce((a:number, b: number) => a + b,0);
 
   }
 

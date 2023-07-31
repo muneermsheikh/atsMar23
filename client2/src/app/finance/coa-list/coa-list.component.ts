@@ -4,7 +4,7 @@ import { IUser } from 'src/app/shared/models/admin/user';
 import { ICOA, coa } from 'src/app/shared/models/masters/finance/coa';
 import { coaParams } from 'src/app/shared/params/finance/coaParams';
 import { CoaService } from '../coa.service';
-import { ToastrService } from 'ngx-toastr';
+import { ToastRef, ToastrService } from 'ngx-toastr';
 import { Navigation, Router } from '@angular/router';
 import { ConfirmService } from 'src/app/shared/services/confirm.service';
 import { InputModalComponent } from 'src/app/shared/components/input-modal/input-modal.component';
@@ -139,9 +139,30 @@ export class CoaListComponent implements OnInit {
       }
     }
     this.bsModalRef = this.modalService.show(CoaEditModalComponent, config);
-    
-    console.log('coaedited event');
-    
+        
+    this.bsModalRef.content.editCOAEvent.subscribe({
+      next: (editedCOA: ICOA|null) => {
+        console.log('returned from modal', editedCOA);
+        if(editedCOA===null) {
+          this.toastr.warning('Aborted by user');
+        } else {
+          this.service.updateCOA(editedCOA).subscribe({
+            next: (success: boolean) => {
+              if(success) {
+                this.toastr.success('Chart of account updated');
+              } else {
+                this.toastr.warning('Failed to update the Chart of Account');
+              }
+            },
+            error: (error: any) => this.toastr.error('Failed to update the Chart of Account:', error)
+          })
+        }
+      },
+      
+      error: (error: any) => this.toastr.error('Failed to update the Chart of account:', error)
+    })
+
+    /*
     this.bsModalRef.content.editCOAEvent.pipe(
       switchMap((coaedited: ICOA) => {
         
@@ -158,6 +179,7 @@ export class CoaListComponent implements OnInit {
         )
       })
     )
+    */
   }
   
   editCoa(t: ICOA) {

@@ -31,8 +31,8 @@ export interface ICandidate {
      email: string;
      companyId: number;
      created: Date;
-     introduction: string;
-     interests: string;
+     //introduction: string;
+     //interests: string;
      appUserIdNotEnforced: string;
      appUserId: number;
      notificationDesired: boolean;
@@ -75,8 +75,8 @@ export class Candidate implements ICandidate {
      email= '';
      companyId= 0;
      created= new Date;
-     introduction= '';
-     interests= '';
+     //introduction= '';
+     //interests= '';
      appUserIdNotEnforced= '';
      appUserId= 0;
      notificationDesired= false;

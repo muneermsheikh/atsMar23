@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ProspectiveSummaryComponent } from './prospective-summary/prospective-summary.component';
 import { CandidateHistoryComponent } from '../candidates/candidate-history/candidate-history.component';
 import { ProspectiveSummaryResolver } from '../resolvers/prospectiveSummaryResolver';

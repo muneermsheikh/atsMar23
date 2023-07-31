@@ -35,5 +35,6 @@ namespace core.Params
         public string Status { get; set; }
         public bool? Concluded {get; set;}
         public bool CreateNewIfNull {get; set;}=false;
+        public string UserName {get; set;}
     }
 }

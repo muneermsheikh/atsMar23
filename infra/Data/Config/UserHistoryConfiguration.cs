@@ -24,7 +24,7 @@ namespace infra.Data.Config
                builder.HasIndex(p => p.MobileNo).IsUnique().HasFilter("MobileNo != ''");
                //builder.HasIndex(x => new{x.PersonId, x.PersonType})
                     //.HasFilter("PersonId > 0") .IsUnique();
-               builder.HasMany(o => o.UserHistoryItems).WithOne().OnDelete(DeleteBehavior.NoAction);
+               builder.HasMany(o => o.UserHistoryItems).WithOne().OnDelete(DeleteBehavior.Cascade);
           }
      }
 }

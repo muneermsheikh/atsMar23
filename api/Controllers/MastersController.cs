@@ -175,5 +175,14 @@ namespace api.Controllers
 
                return Ok(h);
           }
+
+          //specialties
+          [HttpGet("VendorFacilityList")]
+          public async Task<ActionResult<ICollection<VendorFacility>>> GetVendorFacilityList() {
+               var l = await _mastersService.GetVendorFacilityListAsync();
+               if(l == null) return NotFound(new ApiResponse(402, "Record not found"));
+
+               return Ok(l);
+          }
      }
 }

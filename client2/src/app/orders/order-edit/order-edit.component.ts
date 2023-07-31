@@ -34,6 +34,8 @@ import { dLForwardCategoryOfficial } from 'src/app/shared/models/admin/dlForward
 import { IOrderAssignmentDto, orderAssignmentDto } from 'src/app/shared/dtos/admin/orderAssignmentDto';
 import { AccountService } from 'src/app/account/account.service';
 import { take } from 'rxjs/operators';
+import { IReviewItemEditedReturnValuesDto } from 'src/app/shared/dtos/admin/reviewItemEditedReturnValuesDto';
+import { IContractReviewItemReturnValueDto } from 'src/app/shared/dtos/admin/contractReviewItemReturnValueDto';
 
 @Component({
   selector: 'app-order-edit',
@@ -71,6 +73,13 @@ export class OrderEditComponent implements OnInit {
   bsRangeValue = new Date();
   maxDate = new Date();
   minDate = new Date();
+
+  defaultCompleteByTargetDays=7;
+  defaultProjectManagerId=1;
+  defaultOrderDate=new Date();
+  
+  dt=new Date();
+  defaultCompleteby = new Date(this.dt.setDate(this.defaultOrderDate.getDate() + this.defaultCompleteByTargetDays)); 
 
   //file uploads
   uploadProgress = 0;
@@ -138,7 +147,7 @@ export class OrderEditComponent implements OnInit {
     ngOnInit(): void {
 
       this.createForm();
-
+      
       this.activatedRoute.data.subscribe(data => { 
         this.member = data.order;
         this.associates = data.associates;
@@ -159,11 +168,15 @@ export class OrderEditComponent implements OnInit {
     createForm() {
         this.form = this.fb.group({
           id: [null],  
-          orderNo: new FormControl({value:0
+          /*orderNo: new FormControl({value:0
               //, disabled: !this.isAddMode
             }), 
-          orderDate: [new Date, Validators.required],
-          customerId: [0, Validators.required], orderRef: '', salesmanId: 0, projectManagerId: [0, Validators.required],
+          */
+          orderNo: 0,
+          orderDate: [this.defaultOrderDate, Validators.required],
+          customerId: [0, Validators.required], 
+          orderRef: '', salesmanId: 0, 
+          projectManagerId: [this.defaultProjectManagerId, Validators.required],
           medicalProcessInchargeEmpId: 0, visaProcessInchargeEmpId: 0, emigProcessInchargeId: 0,
           travelProcessInchargeId: 0, 
           cityOfWorking: new FormControl({value:''
@@ -172,7 +185,7 @@ export class OrderEditComponent implements OnInit {
           country: new FormControl({value:''
             //, disabled:true
           }), 
-          completeBy: ['', Validators.required],
+          completeBy: [this.defaultCompleteby, Validators.required],
           status: 'Not Started', forwardedToHRDeptOn: '', contractReviewStatusId:0,
           orderItems: this.fb.array([])
         } //, {validator: MustMatch('password', 'confirmPassword')}
@@ -218,14 +231,15 @@ export class OrderEditComponent implements OnInit {
       //get max SrNo
       
       var maxSrNo = this.orderItems.length===0 ? 1 : Math.max(...this.orderItems.value.map((x:any) => x.srNo))+1;
-
+      var completebefore = this.isAddMode ? this.form.get('completeBy')?.value : '';
       return this.fb.group({
         selected: new FormControl({value:false
             //, disabled: !this.form.dirty
           }), 
         id: 0, orderId: 0, srNo: maxSrNo, categoryId: [0,[Validators.required, Validators.min(1)]], ecnr: false, 
         isProcessingOnly: false, industryId: 0, sourceFrom: 'India', quantity: [0, Validators.min(1)], 
-        minCVs: 0, maxCVs: 0, requireInternalReview: false, requireAssess: false,completeBefore: ['', Validators.required], 
+        minCVs: 0, maxCVs: 0, requireInternalReview: false, requireAssess: false, 
+        completeBefore: [completebefore, Validators.required], 
         hrExecId: 0, hrSupId: 0, hrmId: 0, charges: 0, feeFromClientINR: 0, status: 'Not Started',
         reviewItemStatusId: 0, noReviewBySupervisor: false })
     }
@@ -255,16 +269,17 @@ export class OrderEditComponent implements OnInit {
     }
 
     private CreateOrder() {
-      this.service.register(this.form.value).subscribe(response => {
-        var order = response;
-        this.confirmService.confirm('Create Acknowledgement message for client?', 
-          'the DL is saved.  Do you want to compose the acknowledgement message to client?', 'Yes, compose', 'No, not now')
-          .subscribe(result => {
-          })
-      }, error => {
-        console.log(error);
-        this.errors = error.errors;
+      this.service.register(this.form.value).subscribe({
+        next: (response: IOrder) => {
+          if(response == null) {
+            this.toastr.info('Failed to creat the order');
+          } else {
+            this.toastr.success("Created the Order, with Order No. " + response.orderNo)
+          }
+        },
+        error: error => this.toastr.error('Error in creating the Order', error)
       })
+
     }
 
     private UpdateOrder() {
@@ -304,12 +319,20 @@ export class OrderEditComponent implements OnInit {
       return this.getControls()[index].value.minCVs;
     }
 
+    getMaxCVs(index: number) {
+      return this.getControls()[index].value.maxCVs;
+    }
+
     getReviewItemStatusId(index: number) {
       return this.getControls()[index].value.reviewItemStatusId;
     }
 
     setMinCVs(index: number, newValue: number) {
       this.orderItems!.at(index).get('minCVs')!.setValue(newValue);
+    }
+
+    setMaxCVs(index: number, newValue: number) {
+      this.orderItems!.at(index).get('maxCVs')!.setValue(newValue);
     }
   
     getControls() {
@@ -357,12 +380,13 @@ export class OrderEditComponent implements OnInit {
             this.bsModalRef = this.modalService.show(ContractReviewItemModalComponent, config);
             
             this.bsModalRef.content.updateModalReview.subscribe((values: IContractReviewItem) => {
-                  this.rvwService.updateReviewItem(values).subscribe((response)  => {
+                  this.rvwService.updateReviewItem(values).subscribe((response: IContractReviewItemReturnValueDto)  => {
                     //returns IContractReviewItemReturnValueDto - reviewItemStatusId: number,orderReviewStatus: number
                     var dto =response;
                     if(dto !== null) {
                       this.orderItems.at(index).get('reviewItemStatusId')!.setValue (dto.reviewItemStatusId);
-                      this.form.get('contractReviewStatusId')!.setValue(dto.orderReviewStatus);
+                      this.form.get('contractReviewStatusId')!.setValue(dto.contractReviewStatusId);
+                      
                       this.toastr.success("Review Item updated");
                     } else {
                       this.toastr.error('failed to get return value from the api server');
@@ -728,10 +752,11 @@ export class OrderEditComponent implements OnInit {
     }
 
     qntyChanged(index: number) {
-      if(+this.getMinCVs(index) > 0 ) return;
+      if(+this.getMinCVs(index) > 0  || +this.getMaxCVs(index) > 0) return;
 
       var q = +this.getQnty(index);
       this.setMinCVs(index, q*3);
+      this.setMaxCVs(index, q*3);
     }
 
     navigateByRoute(routeString: string, obj: any,  editable: boolean) {

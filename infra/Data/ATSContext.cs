@@ -7,20 +7,17 @@ using core.Entities.Admin;
 using core.Entities.Attachments;
 using core.Entities.EmailandSMS;
 using core.Entities.HR;
-using core.Entities.Identity;
 using core.Entities.MasterEntities;
 using core.Entities.Messages;
 using core.Entities.Orders;
 using core.Entities.Process;
 using core.Entities.Tasks;
 using core.Entities.Users;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace infra.Data
 {
-     public class ATSContext : DbContext
+    public class ATSContext : DbContext
      {
           public ATSContext(DbContextOptions<ATSContext> options) : base(options)
           {
@@ -44,6 +41,9 @@ namespace infra.Data
           public DbSet<CustomerReview> CustomerReviews {get; set;}
           public DbSet<CustomerReviewItem> CustomerReviewItems {get; set;}
           public DbSet<CustomerReviewData> CustomerReviewDatas {get; set;}
+
+          public DbSet<VendorSpecialty> VendorSpecialties {get; set;}
+          public DbSet<VendorFacility> VendorFacilities {get; set;}
 
      //HR
           public DbSet<ChecklistHR> ChecklistHRs {get; set;}

@@ -1,4 +1,5 @@
 using core.Dtos;
+using core.Dtos.Admin;
 using core.Entities;
 using core.Entities.EmailandSMS;
 using core.Entities.HR;
@@ -20,7 +21,9 @@ namespace infra.Services
             private readonly ICommonServices _commonServices;
             private readonly int _empId_HRSup=12;
 
-        public ComposeMessagesForAdmin( IEmployeeService empService, ATSContext context, IComposeMessages commonMessages, IConfiguration confg, ICommonServices commonServices )
+        public ComposeMessagesForAdmin( IEmployeeService empService, 
+            ATSContext context, IComposeMessages commonMessages, IConfiguration confg, 
+            ICommonServices commonServices )
         {
                _commonServices = commonServices;
                _confg = confg;
@@ -231,18 +234,21 @@ namespace infra.Services
             return smsMessage;
         }
 
-        public async Task<EmailMessage> AckEnquiryToCustomer(OrderMessageParamDto orderMessageDto)
+        public async Task<EmailMessage> AckEnquiryToCustomer(Order order)
         {
-            var order = orderMessageDto.Order;
 
-            var customer =order.Customer;
+            var customer = await _context.Customers.Where(x => x.Id == order.CustomerId)
+                .Include(x => x.CustomerOfficials).FirstOrDefaultAsync();
+
             /*var customer = await _context.Customers
                 .Include(x => x.CustomerOfficials)
                 .Where(x => x.Id == orderMessageDto.Order.CustomerId)
                 .FirstOrDefaultAsync();
             */
-            if (customer==null || customer.CustomerOfficials==null || customer.CustomerOfficials.Count()==0) throw new Exception("failed to retrieve customer data for customer no. " + orderMessageDto.Order.CustomerId);
-            var OrderItems = orderMessageDto.Order.OrderItems.OrderBy(x => x.SrNo).ToList();
+            if (customer==null || customer.CustomerOfficials==null || customer.CustomerOfficials.Count()==0) 
+                throw new Exception("failed to retrieve customer data for customer no. " + order.CustomerId);
+            var OrderItems = order.OrderItems.OrderBy(x => x.SrNo).ToList();
+
             var projectManagerId = order.ProjectManagerId == 0 ? 8 : order.ProjectManagerId;
 
             EmployeeDto projManager = await _empService.GetEmployeeFromIdAsync(projectManagerId);
@@ -411,6 +417,44 @@ namespace infra.Services
             emails.Add(email);
 
             return emails;
+        
+        }
+
+        public EmailMessage ComposeSelDecisionRemindersToClient(CustAndOfficialDto custAndOfficialDto, ICollection<CVReferredDto> cvfwddtos, LoggedInUserDto LoggedInDto)
+        {
+            DateTime dateTimeNow = DateTime.Now;
+
+            string msg=dateTimeNow + "<br><br>" + custAndOfficialDto.OfficialTitle + " " + custAndOfficialDto.OfficialName
+                + "<br>" + custAndOfficialDto.OfficialDesignation +"<br>" + custAndOfficialDto.CustomerName + 
+                "<br>" + custAndOfficialDto.City + "<br>" + custAndOfficialDto.Country + "<br><br>Dear Sir:<br><br>";
+
+            msg +="Following profiles are awaiting your decision on their selection.  " +
+                "Pending your decision, we are doing our best to retain their interest.<br><br>" +
+                "engaged.<br><br>Candidates awaiting your decision:<table>";
+
+            foreach(var cvref in cvfwddtos) // result)
+            {
+                msg += "<tr><td>" + cvref.ReferredOn.ToString("ddMMMyy") + "</td><td>" + cvref.OrderNo +"-"+ cvref.SrNo + 
+                    "</td><td>" + cvref.OrderDate.ToString("ddMMMyy") + "</td><td>" +
+                    cvref.CategoryName + "</td><td>" + cvref.ApplicationNo + "</td><td>" + cvref.CandidateName + 
+                    "</td><td>"+ cvref.PPNo + "</td><td></td><td>" + "</td></tr>";
+            }
+            
+            msg += "If a Profile is not selected by you, it would be immensely helpful to us if you let us know in brief " +
+                "reasons for the rejection (for example, lacks relevant exp, lacks relevant qualification, lacks sufficient exp, " +
+                "over age, high salary expectation, Not proficient in languages, etc. it will help us " +
+                "adjust our criteria for further shortlistings, which will ultimately help in minimizing rejections at your end.";
+            
+            msg +="<br><br>We thank you for the opportunity to serve you, and assure you of our best and prompt services, always!" +
+                "<br><br>Best regards<br><br>" + LoggedInDto.LoggedIAppUsername;
+            
+            var email = new EmailMessage("cv forward", LoggedInDto.LoggedInEmployeeId, custAndOfficialDto.OfficialId, 
+                LoggedInDto.LoggedInAppUserEmail, LoggedInDto.LoggedIAppUsername, custAndOfficialDto.OfficialName, 
+                custAndOfficialDto.OfficialEmail, "", "", 
+                "Request for decision on selection of Profiles", msg, (int)EnumMessageType.SelectionReminderToClient,3,
+                custAndOfficialDto.AppUserId, LoggedInDto.LoggedInAppUserId, "Selection Reminder");
+
+            return email;
         
         }
    }

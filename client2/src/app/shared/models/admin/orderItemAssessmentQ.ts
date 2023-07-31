@@ -7,6 +7,6 @@ export interface IOrderItemAssessmentQ
      questionNo: number;
      subject: string;
      question: string;
-     maxMarks: number;
+     maxPoints: number;
      isMandatory: boolean;
 }

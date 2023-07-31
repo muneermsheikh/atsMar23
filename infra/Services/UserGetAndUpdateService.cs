@@ -75,11 +75,12 @@ namespace infra.Services
                     orderby c.ApplicationNo 
                     select new CandidateBriefDto{
                          Id = c.Id, FullName = c.FullName, City = c.City, ApplicationNo = c.ApplicationNo, 
-                         ReferredById=(int)c.ReferredBy     //, ReferredByName= customers.CustomerName
+                         ReferredById=(int)c.ReferredBy    //, ReferredByName= customers.CustomerName
                     }).AsQueryable();
 
                if(prm.ProfessionId.HasValue) {
-                    var candidateIds = await _context.UserProfessions.Where(x => x.CategoryId==prm.ProfessionId).Select(x => x.CandidateId).ToListAsync();
+                    var candidateIds = await _context.UserProfessions.Where(x => x.CategoryId==prm.ProfessionId)
+                         .Select(x => x.CandidateId).ToListAsync();
                     brief = brief.Where(x => candidateIds.Contains(x.Id));
                }
 
@@ -107,7 +108,7 @@ namespace infra.Services
                if (count==0) return null;
                
                var dto = await brief.Skip((prm.PageIndex-1)*prm.PageSize).Take(prm.PageSize).ToListAsync();
-               
+
                //now, find agents and proessions to populae the DTO
                var officialList = dto.Select(x => x.ReferredById).Distinct().ToList();
                var offAndCust = await (from off in _context.CustomerOfficials where officialList.Contains(off.Id)
@@ -115,7 +116,8 @@ namespace infra.Services
                     select new {OfficialId = off.Id, CustomerName = cust.KnownAs})
                     .ToListAsync();
 
-               var UserProfs = await _context.UserProfessions.Where(x => string.IsNullOrEmpty(x.Profession)).ToListAsync();
+               var UserProfs = await _context.UserProfessions.Where(x => dto.Select(x => x.Id).ToList().Contains(x.CandidateId))
+                    .OrderBy(x => x.CandidateId).ThenBy(x => x.CategoryId).ToListAsync();
                var cats = await _context.Categories.Where(x => UserProfs.Select(x => x.CategoryId).ToList().Contains(x.Id)).ToListAsync();
                foreach(var prof in UserProfs) {
                     var cat = cats.Find(x => x.Id == prof.CategoryId);
@@ -126,7 +128,7 @@ namespace infra.Services
                }
                if(_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
 
-               var prosfs = await _context.UserProfessions.Where(x => dto.Select(y => y.Id).ToList().Contains(x.CandidateId)).ToListAsync();
+               //var prosfs = await _context.UserProfessions.Where(x => dto.Select(y => y.Id).ToList().Contains(x.CandidateId)).ToListAsync();
 
                foreach(var item in dto) {
                     var proflist = new List<UserProfession>();
@@ -467,7 +469,17 @@ namespace infra.Services
                               }
                          }
                     }
-                    File.Delete(attachmentsToDelete[attachmentsToDelete.Count]);
+                    foreach(var f in attachmentsToDelete)
+                    {
+                         if(File.Exists(f)) {
+                              try {
+                                   File.Delete(f);
+                              } catch {
+                                   continue;
+                              } 
+                         }
+                    }
+                    //File.Delete(attachmentsToDelete[attachmentsToDelete.Count]);
                }
 
                return new CandidateWithNewAttachmentDto {Candidate = existingObject, NewAttachments=attachmentsToAdd};

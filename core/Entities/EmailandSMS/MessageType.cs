@@ -34,6 +34,7 @@ namespace core.Entities.EmailandSMS
         RequirementForwardToHRDept,
         DLForwardToAgents,
         CandidateFollowup,
-        InterviewAdviseToCandidatebyEmail
+        InterviewAdviseToCandidatebyEmail,
+        SelectionReminderToClient
     }
 }

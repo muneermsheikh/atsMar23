@@ -45,16 +45,16 @@ namespace infra.Services
                return (await _unitOfWork.Complete() > 0);
           }
 
-     public async Task<Pagination<Industry>> GetIndustryListAsync(IndustrySpecParams specParams)
-          {
-               var spec = new IndustrySpecs(specParams);
-               var specCount = new IndustryForCountSpecs(specParams);
-               var totalCount = await _unitOfWork.Repository<Industry>().CountAsync(specCount);
-               var lst = await _unitOfWork.Repository<Industry>().ListAsync(spec);
-               //var data = _mapper.Map<IReadOnlyList<IndustryToReturnDto>>(lst);
- 
-               return new Pagination<Industry>(specParams.PageIndex, specParams.PageSize, totalCount, lst);
-          }
+          public async Task<Pagination<Industry>> GetIndustryListAsync(IndustrySpecParams specParams)
+               {
+                    var spec = new IndustrySpecs(specParams);
+                    var specCount = new IndustryForCountSpecs(specParams);
+                    var totalCount = await _unitOfWork.Repository<Industry>().CountAsync(specCount);
+                    var lst = await _unitOfWork.Repository<Industry>().ListAsync(spec);
+                    //var data = _mapper.Map<IReadOnlyList<IndustryToReturnDto>>(lst);
+     
+                    return new Pagination<Industry>(specParams.PageIndex, specParams.PageSize, totalCount, lst);
+               }
 
           public async Task<ICollection<Industry>> GetIndustryListWOPaginationAsync()
           {
@@ -142,7 +142,7 @@ namespace infra.Services
                _unitOfWork.Repository<ReviewItemStatus>().Delete(reviewItemStatus);
                return (await _unitOfWork.Complete() > 0);
           }
-                    public async Task<ReviewItemData> AddReviewItemData(string reviewDescriptionName, bool isBoolean)
+          public async Task<ReviewItemData> AddReviewItemData(string reviewDescriptionName, bool isBoolean)
           {
                var srno = await _context.ReviewItemDatas.MaxAsync(x => x.SrNo) + 1;
                var entity = new ReviewItemData(srno, reviewDescriptionName, isBoolean);
@@ -180,10 +180,6 @@ namespace infra.Services
                return await _unitOfWork.Repository<ReviewItemStatus>().ListAllAsync();
           }
 
-
-
-
-
      //skilldata
           public async Task<bool> DeleteSkillDataAsync(int skilldataid)
           {
@@ -194,7 +190,7 @@ namespace infra.Services
                return (await _unitOfWork.Complete() > 0);
           }
 
-               public async Task<SkillData> AddSkillData(string skillname)
+          public async Task<SkillData> AddSkillData(string skillname)
           {
                var entity = new SkillData(skillname);
                _unitOfWork.Repository<SkillData>().Add(entity);
@@ -213,7 +209,7 @@ namespace infra.Services
           }
 
      //qualification
-     public async Task<Qualification> AddQualification(string qualificationName)
+          public async Task<Qualification> AddQualification(string qualificationName)
 		{
 			var entity = new Qualification(qualificationName);
                _unitOfWork.Repository<Qualification>().Add(entity);
@@ -239,7 +235,7 @@ namespace infra.Services
 		public async Task<ICollection<Qualification>> GetQualificationsAsync()
 		{
 			var lst = await _context.Qualifications.OrderBy(x => x.Name).ToListAsync();
-            return lst;
+               return lst;
 		}
 
 		public async Task<Pagination<Qualification>> GetQualificationPaginated(QualificationSpecParams specParams)
@@ -258,5 +254,43 @@ namespace infra.Services
 			return await _context.Helps.Include(x => x.HelpItems).ThenInclude(x => x.HelpSubItems)
                     .Where(x => x.Topic.ToLower() == topic.ToLower()).FirstOrDefaultAsync();
 		}
-	}
+
+          public async Task<VendorFacility> AddVendorFacility(string vendorFacilityName)
+          {
+               var entity = new VendorFacility(vendorFacilityName);
+               _unitOfWork.Repository<VendorFacility>().Add(entity);
+               if (await _unitOfWork.Complete() > 0) return entity;
+               return null;
+          }
+
+          public async Task<bool> EditVendorFacilityNameAsync(VendorFacility vendorFacility)
+          {
+               _unitOfWork.Repository<VendorFacility>().Update(vendorFacility);
+               return (await _unitOfWork.Complete() > 0);
+          }
+
+          public async Task<bool> DeleteVendorFacilityAsync(int VendorFacilityId)
+          {
+               var vendorfacility = await _context.VendorFacilities.FindAsync(VendorFacilityId);
+               if(vendorfacility==null) return false;
+
+			_unitOfWork.Repository<VendorFacility>().Delete(vendorfacility);
+               return (await _unitOfWork.Complete() > 0);
+          }
+
+          public async Task<VendorFacility> GetVendorFacility(int id)
+          {
+               return await _context.VendorFacilities.FindAsync(id);
+          }
+
+          public async Task<ICollection<VendorFacility>> GetVendorFacilityListAsync()
+          {
+               return await _context.VendorFacilities.OrderBy(x => x.Name).ToListAsync();
+          }
+
+          public Task<Pagination<VendorFacility>> GetVendorFacilityPaginated(VendorFacilityParams vendorParams)
+          {
+               throw new NotImplementedException();
+          }
+    }
 }

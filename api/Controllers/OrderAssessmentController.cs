@@ -44,19 +44,11 @@ namespace api.Controllers
                return Ok(new Pagination<AssessmentQBank>(stddQParams.PageIndex, stddQParams.PageSize, data.Count, data));
           }
 
-          //[Authorize]    //(Roles = "HRManager, HRSupervisor, HRExecutive")]
-          [HttpGet("itemassessment/{orderitemid}")]
-          public async Task<ActionResult<OrderItemAssessment>> GetOrderItemAssessmentQs(int orderitemid)
-          {
-               var itemassessment = await _orderAssessmentService.GetOrAddOrderAssessmentItem(orderitemid);
-               return itemassessment;
-          }
-
           //[Authorize]
-          [HttpGet("itemassessmentQ/{orderitemid}")]
-          public async Task<ICollection<OrderItemAssessmentQ>> GetItemAssessmentQs(int orderitemid)
+          [HttpGet("itemassessment/{orderitemid}")]
+          public async Task<OrderItemAssessment> GetItemAssessmentQs(int orderitemid)
           {
-               var qs = await _orderAssessmentService.GetAssessmentQsOfOrderItemId(orderitemid);
+               var qs = await _orderAssessmentService.GetOrAddOrderAssessmentItem(orderitemid);
                return qs;
           }
 

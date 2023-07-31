@@ -1,19 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Errors;
-using core.Entities;
+using core.Entities.HR;
 using core.Entities.MasterEntities;
+using core.Entities.Orders;
 using core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace api.Controllers
 {
-    
+
     public class AssessmentQBankController : BaseApiController
     {
         private readonly IAssessmentQBankService _service;
@@ -41,10 +36,10 @@ namespace api.Controllers
             return await _service.GetAssessmentQsOfACategoryByName(categoryName);
         }
 
-        [HttpGet("byid/{id}")]
-        public async Task<AssessmentQBank> GetAssessmentQBankByCategoryId(int id)
+        [HttpGet("catqsbycategoryid/{orderitemid}/{id}")]
+        public async Task<ICollection<OrderItemAssessmentQ>> GetAssessmentQBankByCategoryId(int orderitemid, int id)
         {
-            var q = await _service.GetAssessmentQBankByCategoryId(id);
+            var q = await _service.GetAssessmentQBankByCategoryId(orderitemid, id);
             return q;
         }
 

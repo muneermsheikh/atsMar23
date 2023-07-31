@@ -230,11 +230,11 @@ namespace infra.Services
 
                var updated = new ContractReviewItemReturnValueDto();
                updated.ReviewItemStatusId=(int)orderitem.ReviewItemStatusId;
-               updated.OrderReviewStatus=(int) EnumReviewStatus.NotReviewed;               
+               updated.ContractReviewStatusId=(int) EnumReviewStatus.NotReviewed;               
                if(await _context.SaveChangesAsync() > 0) {
                     //update order.contractReviewStatus
                     var order = await _context.Orders.Include(x => x.OrderItems).Where(x => x.Id == model.OrderId).FirstOrDefaultAsync();
-                    updated.OrderReviewStatus = await UpdateOrderReviewStatusBasedOnOrderItemReviewStatus(order, loggedInEmployeeId);
+                    updated.ContractReviewStatusId = await UpdateOrderReviewStatusBasedOnOrderItemReviewStatus(order, loggedInEmployeeId);
                }
 
                return updated;
@@ -590,24 +590,22 @@ namespace infra.Services
                //if any item is not reviewed, return false
                var orderitems = order.OrderItems.ToList();
                int orderReviewStatus=0;
-               
+               var orderitemids = orderitems.Select(x => x.Id).ToList();
+
                var reviewitems = await _context.ContractReviewItems
+                    .Where(x => orderitemids.Contains(x.OrderItemId))
                     .Include(x => x.ReviewItems.Where(x => x.ReviewParameter=="Service Charges in INR"))
-                    .Where(x => orderitems.Select(x => x.Id).ToList().Contains(x.OrderItemId))
                     .ToListAsync();
                
-               if(orderitems.Count > reviewitems.Count) {
-                    order.Status="Awaiting Review";
-                    await UpdateOrderReviewStatusAndContractReview(1, order, loggedInEmployeeId);
-                    return 0;
+               if(reviewitems == null || reviewitems.Count == 0 || orderitems.Count > reviewitems.Count) {
+                    if(order.Status != "Awaiting Review") {
+                         order.Status="Awaiting Review";
+                         await UpdateOrderReviewStatusAndContractReview(1, order, loggedInEmployeeId);
+                         return 0;
+                    }
                }
 
-               if(orderitems.Any(x => x.ReviewItemStatusId==1)) {
-                    order.Status="Awaiting Review";
-                    await UpdateOrderReviewStatusAndContractReview(1, order, loggedInEmployeeId);
-                    return 0;
-               }
-
+              /* 
                //copy reviewItem.Charges to orderitem.
                foreach(var item in orderitems) {
                     var reviewitem = reviewitems .Where(x => x.OrderItemId==item.Id).FirstOrDefault();
@@ -615,6 +613,9 @@ namespace infra.Services
                          order.Status="Awaiting Review";
                          await UpdateOrderReviewStatusAndContractReview(1, order, loggedInEmployeeId);
                          return 0;
+                    }
+                    if(reviewitem.ReviewItemStatus==(int)EnumReviewItemStatus.Accepted) {
+                         var serviceCharge = reviewitem.
                     }
                     var chargeRecord = reviewitem.ReviewItems.Select(x => x.ResponseText).FirstOrDefault();
                     if(chargeRecord==null) return 0;
@@ -625,7 +626,7 @@ namespace infra.Services
                     }
 
                }
-
+               */
 
                if(!orderitems.Any(x => x.ReviewItemStatusId==7)) {     //atleast 1 item is regretted
                     if(orderitems.Any(x => x.ReviewItemStatusId==7)) {
@@ -645,6 +646,9 @@ namespace infra.Services
                return orderReviewStatusIdUpdated;
 		}
 
+          //UPDATES  Order -Status, ContractReviewStatusId, ReviewStatusId
+          //UPDATES  ContractReview - ReviewedBy, ReviewedOn, ReviewStatusId (based on ContractReviewItems ReviewItemStatus values)
+          //returns Order.ReviewStatusId
           private async Task<int> UpdateOrderReviewStatusAndContractReview(int reviewStatusId, Order order, int loggedInEmployeeId) {
                
                string currentStatus="";
@@ -684,7 +688,7 @@ namespace infra.Services
 
                _context.Entry(contractReview).State = EntityState.Modified;
 
-               return 0;
+               return reviewStatusId;
           }
 	}
 }

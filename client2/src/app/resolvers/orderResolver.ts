@@ -14,7 +14,8 @@ import { IOrder } from "../shared/models/admin/order";
         
      resolve(route: ActivatedRouteSnapshot): Observable<IOrder|null> {
         var id=route.paramMap.get('id');
-        if(id===null) return of(null);
+
+        if(id===null || id==='0') return of(null);
         return this.orderService.getOrder(+id);
      }
  

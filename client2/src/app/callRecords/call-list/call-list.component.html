@@ -1,1 +1,61 @@
-<p>call-list works!</p>
+<br><br>
+<div class="stdd col-3">
+        <button class="fa fa-undo" (click)="buttonCancel()" ></button>    
+        <button class="fa fa-check pull-right green" (click)="buttonOk()" ></button>
+        
+        <br>
+        <label class="stdd w150">Header Id</label>
+        <input type="text" class="stdd w150" [(ngModel)]="params.id" >
+        
+        <br><label class="stdd w150">Person Type</label>
+        <input type="text" class="stdd w150" [(ngModel)]="params.personType" >
+        
+        <br><label class="stdd w150">Person Name</label>
+        <input type="text" class="stdd w150" [(ngModel)]="params.personName" >
+        
+        <br><label class="stdd w150">Application No</label>
+        <input type="text" class="stdd w150" [(ngModel)]="params.applicationNo">
+
+        <br><label class="stdd w150">Aadhar No</label>
+        <input type="text" class="stdd w150" [(ngModel)]="params.aadharNo">
+        
+        <br><label class="stdd w150">Email</label>
+        <input type="text" class="stdd w150" [(ngModel)]="params.emailId">
+        
+        <br><label class="stdd w150">Mobile No</label>
+        <input type="text" class="stdd w150" [(ngModel)]="params.mobileNo">
+        
+        <br><label class="stdd w150">Category Ref</label>
+        <input type="text" class="stdd w150" [(ngModel)]="params.categoryRef">
+        
+        <br><label class="stdd w150">Concluded</label>
+        <input type="text" class="stdd w150" [(ngModel)]="params.concluded">
+        
+        <br><label class="stdd w150">Search</label>
+        <input type="text" class="stdd w150" [(ngModel)]="params.search">
+    
+</div>
+
+<div class="stdd col-9">
+    <div class="stdd mx-1 w50 b">App No</div>
+    <div class="stdd mx-1 w150 b">Name</div>
+    <div class="stdd mx-1 w75 b">person<br>Type</div>
+    <div class="stdd mx-1 w200 b">Email</div>
+    <div class="stdd mx-1 w100 b">Mobile No</div>
+    <div class="stdd mx-1 w75 b">Operator</div>
+    <div class="stdd mx-1 w150 b">Status</div>
+
+    <div *ngIf="cHistories === undefined">
+        No data for the logged in user
+    </div>
+    <div *ngIf="cHistories !== undefined && cHistories.length > 0"  >
+        <div *ngFor="let hist of cHistories">
+            <app-call-item
+                [hist] = hist
+                (editEvent)="editHistoryModal($event)"
+                (deleteEvent)="deleteHistory($event)"
+            >
+            </app-call-item>
+        </div>
+    </div>
+</div>

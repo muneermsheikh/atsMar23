@@ -68,31 +68,14 @@ namespace api.Controllers
         }
 
         //[Authorize]
-        [HttpGet("associateidandnames/{usertype}")]
+        [HttpGet("idandnames/{usertype}")]
         public async Task<ActionResult<ICollection<CustomerIdAndNameDto>>> GetCustomerIdAndNames(string usertype)
         {
             var dto = await _customerService.GetCustomerIdAndName(usertype);
-            if (dto==null) return NotFound(new ApiResponse(401, "nO valid data found"));
+            if (dto==null) return NotFound(new ApiResponse(401, "No valid data found"));
             return Ok(dto);
         }
 
-        [HttpGet("clientidandnames")]
-        public async Task<ActionResult<ICollection<ClientIdAndNameDto>>> GetClientIdAndNames()
-        {
-            var dto = await _customerService.GetClientIdAndName();
-            if (dto==null) return NotFound(new ApiResponse(401, "nO valid data found"));
-            return Ok(dto);
-        }
-
-
-        //[Authorize]
-        [HttpGet("associateidamecitycountry/{usertype}")]
-        public async Task<ActionResult<ICollection<CustomerIdAndNameDto>>> GetCustomerIdameCityCountry(string usertype)
-        {
-            var dto = await _customerService.GetCustomerIdAndName(usertype);
-            if (dto==null) return NotFound(new ApiResponse(401, "nO valid data found"));
-            return Ok(dto);
-        }
         //[Authorize]
         [HttpGet("byId/{id}")]
         public async Task<ActionResult<Customer>> GetCustomerById(int Id)
@@ -129,14 +112,6 @@ namespace api.Controllers
             return BadRequest();
         }
 
-        //[Authorize]
-        [HttpGet("officialidandname/{custType}")]
-        public async Task<ActionResult<ICollection<CustomerOfficialDto>>> CustomerOfficialIdAndNames(string custType)
-        {
-            var users = await _customerService.GetCustomerIdAndName(custType);
-            return Ok(users);
-        }
-        
         
         //[Authorize(Roles="Admin, DocumentControllerAdmin, HRManager, HRSupervisor, HRExecutive, DocumentControllerAdmin, DocumentControllerProcess")]
         [HttpGet("agentdetails")]

@@ -213,6 +213,7 @@ namespace infra.Services
                     .Include(x => x.CustomerOfficials)
                     .Include(x => x.CustomerIndustries)
                     .Include(x => x.AgencySpecialties)
+                    .Include(x => x.VendorSpecialties)
                     .AsNoTracking()
                     .SingleOrDefaultAsync();
                
@@ -337,6 +338,43 @@ namespace infra.Services
                     }
                }
 
+               //VendorSpecialties
+               if(model.VendorSpecialties==null || model.VendorSpecialties?.Count == 0) {
+                    foreach(var item in existingObject.VendorSpecialties.ToList()) {
+                         _context.VendorSpecialties.Remove(item);
+                         _context.Entry(item).State = EntityState.Deleted;
+                    }
+               } else {
+                    //Delete that exist in DB but not in the model
+                    if(model.VendorSpecialties==null || model.VendorSpecialties?.Count==0)
+                    {
+                         foreach(var item in existingObject.VendorSpecialties)
+                         {
+                              _context.VendorSpecialties.Remove(item);
+                              _context.Entry(item).State = EntityState.Deleted;
+                         }
+                    } else {                      //others are eitehr to be added or updated
+                         int lastItem=0;
+                         foreach(var item in model.VendorSpecialties)
+                         {
+                              var existingItem = existingObject.VendorSpecialties.Where(c => c.Id == item.Id && c.Id != default(int)).SingleOrDefault();
+                              if (existingItem != null)     //replace DB Object, i.e. the existingItem, with values from the model
+                              {
+                                   _context.Entry(existingItem).CurrentValues.SetValues(item);
+                                   _context.Entry(existingItem).State = EntityState.Modified;
+                              } else {
+                                   if(lastItem==item.VendorFacilityId) continue;
+                                   var newInd = new VendorSpecialty(model.Id, item.VendorFacilityId, item.Name);
+                                   if(existingObject.VendorSpecialties==null) existingObject.VendorSpecialties=new List<VendorSpecialty>();
+                                   existingObject.VendorSpecialties.Add(newInd);
+                                   _context.Entry(newInd).State = EntityState.Added;
+                                   lastItem = item.VendorFacilityId;
+                              }
+                         }
+                    }
+               }
+               
+
                _context.Entry(existingObject).State = EntityState.Modified;
 
                return await _context.SaveChangesAsync() > 0;
@@ -350,6 +388,7 @@ namespace infra.Services
                     .Include(x => x.CustomerOfficials)
                     .Include(x => x.CustomerIndustries)
                     .Include(x => x.AgencySpecialties)
+                    .Include(x => x.VendorSpecialties)
                     .ProjectTo<CustomerDto>(_mapper.ConfigurationProvider)
                     .FirstOrDefaultAsync();
                //var offs = await _context.CustomerOfficials.Where(x => x.CustomerId == id).ToListAsync();

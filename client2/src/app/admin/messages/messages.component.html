@@ -30,14 +30,16 @@
                <div *ngFor="let msg of messages" style="font-size: smaller;">
                     <div class="stdd w125" title="click to display the message" (click)="setMessageFromUsername(msg)">{{msg.recipientUserName}}</div>
                     <div class="stdd w70">{{msg.messageComposedOn | date:'ddMMMyy'}}</div>
-                    <div class="stdd w150">{{msg.subject.substr(30)}}</div>
+                    <!-- <div class="stdd w150" style="text-align: left;;" >{{msg.subject.substr(30)}}</div> -->
+                    <input type="text" class="stdd w200" style="border:none;" [(ngModel)]="msg.subject">
                </div>
           </div>
           <div *ngIf="container==='inbox'">
                <div *ngFor="let msg of messages" style="font-size: smaller;" >
                     <div class="stdd w125" title="click to display the message" (click)="setMessageFromUsername(msg)">{{msg.senderUserName}}</div>
-                    <div class="stdd w70">{{msg.messageSentOn | date: 'ddMMMyy'}}</div>
-                    <div class="stdd w150">{{msg.subject.substr(30)}}</div>
+                    <!-- <div class="stdd w70">{{msg.messageSentOn | date: 'ddMMMyy'}}</div> -->
+                    <div class="stdd w200">{{msg.subject.substr(30)}}</div>
+                    <input type="text" class="stdd w150" [(ngModel)]="msg.subject">
                </div>
           </div>
      </div>

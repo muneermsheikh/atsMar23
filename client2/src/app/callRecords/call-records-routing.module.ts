@@ -2,9 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CallListComponent } from './call-list/call-list.component';
 import { RouterModule } from '@angular/router';
+import { PendingCallRecordsOfLoggedInUserResolver } from '../resolvers/pendingCallRecordsOfLoggedInUserResolver';
 
 const routes = [
-  {path: '', component: CallListComponent}
+  {path: '', component: CallListComponent,
+    Resolvers: {
+      pendingCallRecordsOfLoggedInUser: PendingCallRecordsOfLoggedInUserResolver
+    }
+  }
 ]
 
 

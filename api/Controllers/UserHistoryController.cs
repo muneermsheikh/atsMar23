@@ -25,54 +25,27 @@ namespace api.Controllers
         }
 
  
-        [HttpGet("byhistoryid/{historyid}")]
+        [HttpGet("historywithitems/{historyid}")]
         public async Task<ActionResult<UserHistoryDto>> GetUserHistoryDataByCandidateId(int historyid)
         {
             
-            var data = await _userHistoryService.GetHistoryFromHistoryId(historyid);
+            var data = await _userHistoryService.GetHistoryWithItemsFromHistoryId(historyid);
             if (data == null) return NotFound("No record found with selected id");
             if (data != null) return Ok(data);
 
             return NotFound(new ApiResponse(400, "Your search parameters did not yield any result"));
         }
 
-        [HttpGet("bycandidateid/{candidateid}")]
-        public async Task<ActionResult<UserHistory>> GetUserHistoryByCandidateId(int candidateid)
-        {
-            var cParams = new UserHistoryParams();
-            cParams.PersonType="candidate";
-            cParams.PersonId = candidateid;
-            
-            var d = await GetCandidateHistoryFromParams(cParams);
-            
-            return d.Value;
-            
-        }
 
-        [HttpGet("prospective/{prospectiveId}")]
-        public async Task<ActionResult<UserHistory>> GetUserHistoryByProspectiveCandidateId(int prospectiveId)
-        {
-            var cParams = new UserHistoryParams();
-            cParams.PersonType="prospective";
-            cParams.PersonId = prospectiveId;
-            
-            var d = await GetCandidateHistoryFromParams(cParams);
-            
-            return d.Value;
-            
-        }
 
         [HttpGet("dto")]
-        public async Task<ActionResult<UserHistory>> GetCandidateHistoryFromParams([FromQuery]UserHistoryParams histParams)
+        public async Task<ActionResult<UserHistoryDto>> GetCandidateHistoryFromParams([FromQuery]UserHistoryParams histParams)
         {
-            string err="";
-            var hist = new UserHistory();
+            var loggedInUser = await _userManager.FindByEmailFromClaimsPrincipal(User);
+            if (loggedInUser == null) return Unauthorized("Access allowed to authorized loggin user only");
+            
+            var err="";
 
-            if (histParams.PersonType == "prospective") {
-                hist = await _userHistoryService.GetOrAddUserHistoryByParams(histParams);
-                if (hist==null) return BadRequest(new ApiResponse(400, "failed to retrieve/create history record"));
-                return hist;
-            }
             var ph = histParams.MobileNo;
             if (!string.IsNullOrEmpty(ph)) {
                 if(ph.Substring(0,4) == "0091") ph=ph.Substring(4);
@@ -83,21 +56,15 @@ namespace api.Controllers
                     ph="";
                     err="mobile no. should be 10 to 15 digits,including country codes";
                 }           
+                if(string.IsNullOrEmpty(ph)) return BadRequest(new ApiResponse(400, "Invalid mobile no" + err));
             }
 
-            if (!string.IsNullOrEmpty(histParams.MobileNo) &&  string.IsNullOrEmpty(ph)) return BadRequest(new ApiResponse(400, "Invalid mobile no"));
-            if(histParams.CreateNewIfNull && (string.IsNullOrEmpty(ph) || string.IsNullOrEmpty(histParams.PersonName) )) 
-                return BadRequest(new ApiResponse(404,"when create new record if set to true, then phone number and person name both should be provided"));
-
-            if (!histParams.ApplicationNo.HasValue && string.IsNullOrEmpty(histParams.EmailId) &&
-                string.IsNullOrEmpty(ph) && !histParams.PersonId.HasValue) return BadRequest(new ApiResponse(404, "The search object empty" + err));
-
-            histParams.MobileNo=ph;
-            if(string.IsNullOrEmpty(histParams.PersonType)) histParams.PersonType="candidate";
-
-            hist = await _userHistoryService.GetOrAddUserHistoryByParams(histParams);
+            var hist = await _userHistoryService.GetOrAddUserHistoryByParams(histParams, loggedInUser.DisplayName);
+            
             if (hist==null) return BadRequest(new ApiResponse(400, "failed to retrieve/create history record"));
+            
             return hist;
+            
         }
 
         [HttpGet("paginated")]
@@ -132,6 +99,11 @@ namespace api.Controllers
         }
 
 
+        [HttpDelete("historyItemId/{historyitemid}")]
+        public async Task<ActionResult<bool>> DeleteUserHistoryItem(int historyitemid)
+        {
+            return await _userHistoryService.DeleteUserHistoryItem(historyitemid);
+        }
         [HttpGet("contactresults")]
         public async Task<ActionResult<ICollection<ContactResult>>> GetContactResults()
         {
@@ -171,6 +143,16 @@ namespace api.Controllers
             return BadRequest(new ApiResponse(402, "Failed to Update the transactions items"));
         }
 
+        [HttpPost("userhistoryitem")]
+        public async Task<ActionResult<UserHistoryItem>> InsertUserHistoryItem(UserHistoryItem userhistoryitem) {
+            
+            var loggedInUser = await _userManager.FindByEmailFromClaimsPrincipal(User);
+            if (loggedInUser == null) return Unauthorized("Access allowed to authorized loggin user only");
+            
+            var succeeded = await _userHistoryService.UpdateHistoryItem(userhistoryitem, loggedInUser.DisplayName);
+            return succeeded;
+        }
+        
         [HttpGet("categoryrefdetails")]
         public async Task<ICollection<CategoryRefDto>> GetCategoryRefDetails()
         {

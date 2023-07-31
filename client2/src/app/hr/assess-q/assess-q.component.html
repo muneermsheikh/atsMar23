@@ -14,11 +14,10 @@
           <div class="stdd w75 hAlignCenter mx-2 b">Points</div>
           <button class="fa mx-2 fa-plus blue" title="add a new assessment question" 
                type="button" (click)="addOrderItemAssessmentQ()" ></button>
-          <button class="mx-2 fa fa-copy green" title="copy standard assessment questions" type="button" (click)="addStddQ()" ></button>
-          <div class="pull-right" >
-               <button class="fa fa-save" style="margin-left: 15px;" (click)="update()" ></button>
-               <button class="fa fa-home" style="margin-left: 15px;" (click)="close()"  ></button>
-          </div>
+          <button class="mx-2 fa-regular fa-paste" title="copy standard assessment questions" type="button" (click)="addStddAssessmentQuestions()" ></button>
+          <button class="mx-2 fa-solid fa-paste" title="copy assessment questions designed for the category" type="button" (click)="addAssessmentQuestionsForCategory()" ></button>
+          <button class="mx-2 fa fa-save" title="update the assessmen data" (click)="update()" ></button>
+          <button class="mx-2 fa fa-home" title="return to calling program"  (click)="close()"  ></button>
           
           <hr>
           <div formArrayName="orderItemAssessmentQs" class="my-1" >
@@ -28,11 +27,12 @@
                          <input type="checkbox" class="stdd hAlignCenter w75 mx-2" formControlName="isMandatory" >
                          <input type="text" class="stdd w200 mx-2" formControlName="subject" >
                          <input type="text" class="stdd w400 mx-2" formControlName="question">
-                         <input type="number" class="stdd w75 tAlignR mx-2" (change)="calculateTotals()" formControlName="maxMarks">
+                         <input type="number" class="stdd w75 tAlignR mx-2" 
+                              (change)="calculateTotals()" formControlName="maxPoints">
                          <button class="stdd red fa fa-trash mx-2" (click)="removeOrderItemAssessmentQ(i)" ></button>
                     </div>
                </div>
-               <div style="width: 850px; text-align: right; font-weight: bold; ">Total Points: {{totalMarks}}</div>
+               <div style="width: 860px; text-align: right; font-weight: bold; ">Total Points: {{totalMarks}}</div>
                <!-- <div class="ml-100">{{calculateTotals()}}</div> -->
           </div>
           

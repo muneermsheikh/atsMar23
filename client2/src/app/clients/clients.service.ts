@@ -93,16 +93,16 @@ export class ClientsService {
   }
 
   getAgentIdAndNames() {
-    return this.http.get<IClientIdAndNameDto[]>(this.baseUrl + 'customers/associateidandnames/associate');
+    return this.http.get<IClientIdAndNameDto[]>(this.baseUrl + 'customers/idandnames/associate');
   }
 
   //**todo - implement procedure in contoller**/
   getCustomerAndCities() {
-    return this.http.get<ICustomerNameAndCity[]>(this.baseUrl + 'customers/associateidandnames/associate');
+    return this.http.get<ICustomerNameAndCity[]>(this.baseUrl + 'customers/idandnames/customer');
   }
 
   getCustomerAndCitiesCustomers() {
-    return this.http.get<ICustomerNameAndCity[]>(this.baseUrl + 'customers/associateidandnames/customer');
+    return this.http.get<ICustomerNameAndCity[]>(this.baseUrl + 'customers/customerCities/customer');
   }
 
 }

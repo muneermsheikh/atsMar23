@@ -23,16 +23,17 @@
 .w200 {width: 200px;}
 .w300 {width: 300px;}
 
+
 .ng-select.custom {
      display: inline-block;
-     margin-left: 15px;
+     
      width: 300px;
      border:1px solid rgba(0, 0, 0, 0.15);
      height: 38px;
-     border-radius: 0.25rem;
+     
      background-color: white;
      font-size: 1rem;
-     padding: 0.5rem 0.75rem;
+     
      font-family: sans-serif;
      }
      .ng-select.custom .ng-option {

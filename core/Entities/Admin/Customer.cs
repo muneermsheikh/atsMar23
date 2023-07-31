@@ -57,7 +57,27 @@ namespace core.Entities
               CustomerIndustries = customerIndustries;
               AgencySpecialties = agencySpecialties;
           }
-
+          public Customer(string customerType, string customerName, string knownAs, string add, string add2, string city, string pin, 
+            string district, string state, string country, string email, string website, string phone, string phone2, 
+            string introduction, ICollection<VendorSpecialty> vendorSpecialties)
+          {
+              CustomerType = customerType;
+              CustomerName = customerName;
+              KnownAs = knownAs;
+              Add = add;
+              Add2 = add2;
+              City = city;
+              Pin = pin;
+              District = district;
+              State = state;
+              Country = country;
+              Email = email;
+              Website = website;
+              Phone = phone;
+              Phone2 = phone2;
+              Introduction = introduction;
+              VendorSpecialties = vendorSpecialties;
+          }
 		public string CustomerType { get; set; }
         public string CustomerName { get; set; }
         public string KnownAs { get; set; }
@@ -80,6 +100,6 @@ namespace core.Entities
         public ICollection<CustomerIndustry> CustomerIndustries { get; set; }
         public ICollection<CustomerOfficial> CustomerOfficials { get; set; }
         public virtual ICollection<AgencySpecialty> AgencySpecialties {get; set;}
-
+        public virtual ICollection<VendorSpecialty> VendorSpecialties {get; set;}
     }
 }

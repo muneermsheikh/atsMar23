@@ -13,7 +13,6 @@ import { ICandidateAssessment } from '../shared/models/hr/candidateAssessment';
 import { ICandidateAssessmentWithErrorStringDto } from '../shared/dtos/hr/candidateAssessmentWithErrorStringDto';
 import { ICandidateAssessmentAndChecklist } from '../shared/models/hr/candidateAssessmentAndChecklist';
 import { ICandidateAssessedDto } from '../shared/dtos/hr/candidateAssessedDto';
-import { IChecklistHR } from '../shared/models/hr/checklistHR';
 import { IChecklistHRDto } from '../shared/dtos/hr/checklistHRDto';
 
 @Injectable({
@@ -77,7 +76,8 @@ export class CvAssessService {
   
 
   getCVAssessmentAndChecklist(cvid: number, orderitemid: number) {
-    return this.http.get<ICandidateAssessmentAndChecklist>(this.apiUrl + 'candidateassessment/assessmentandchecklist/' + orderitemid + '/' + cvid);
+    return this.http.get<ICandidateAssessmentAndChecklist>(this.apiUrl + 
+        'candidateassessment/assessmentandchecklist/' + orderitemid + '/' + cvid);
   }
 
 

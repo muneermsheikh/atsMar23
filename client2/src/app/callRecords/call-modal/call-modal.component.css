@@ -1,7 +1,30 @@
-.stdd {display: inline-block;}
+.stdd {
+    display: inline-block;
+    font-size: medium;
+    vertical-align: top;
+}
+
+.stdds {
+    display: inline-block;
+    font-size: small;
+    vertical-align: top;
+}
+
+.fSmaller {font-size: smaller;}
+
 .b {font-weight: bold;}
+
+.w25 {width: 25px;}
+.w35 {width: 35px;}
+.w50 {width: 50px;}
+.w75 {width: 75px;}
+.w150 {width: 150px;}
 .w200 {width: 200px;}
 .w100 {width: 100px;}
+.w120 {width: 120px;}
+.w300 {width: 300px;}
+.w500 {width: 500px;}
+
 .alignT{vertical-align: top;}
 .alignB{vertical-align: bottom;}
 .red {color: red}

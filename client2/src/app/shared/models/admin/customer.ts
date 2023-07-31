@@ -2,6 +2,7 @@ import { IAgencySpecialty } from "./agencySpecialty";
 import { ICustomerIndustry } from "./customerIndustry";
 import { ICustomerOfficial } from "./customerOfficial";
 import { ICustomerOfficialDto } from "./customerOfficialDto";
+import { IVendorSpecialty } from "./vendorSpecialty";
 
 
 export interface ICustomer {
@@ -27,6 +28,7 @@ export interface ICustomer {
      customerIndustries: ICustomerIndustry[];
      customerOfficials: ICustomerOfficial[];
      agencySpecialties: IAgencySpecialty[];
+     vendorSpecialties: IVendorSpecialty[];
      lastActive: Date;
  }
 
@@ -54,5 +56,7 @@ export interface ICustomer {
     customerIndustries: ICustomerIndustry[]=[];
     customerOfficials: ICustomerOfficial[]=[];
     agencySpecialties: IAgencySpecialty[]=[];
+    vendorSpecialties: IVendorSpecialty[]=[];
+    
     lastActive = new Date('1900-01-01');
  }

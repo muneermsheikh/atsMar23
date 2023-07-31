@@ -13,7 +13,7 @@
     <div class="numeric" >{{employment.foodAllowance=== undefined || employment.foodAllowance===0  ? '---' : employment.foodAllowance}}</div>
     <div class="free" >{{employment.transportProvidedFree === true ? 'Y' : 'N'}}</div>
     <div class="numeric" >{{employment.transportAllowance=== undefined  || employment.transportAllowance===0  ? '---' : employment.transportAllowance}}</div>
-    <div class="stdd w100" style="text-align: center;" >{{employment.approved === true ? 'Y' : 'N'}}</div>
+    <div class="stdd w100" style="text-align: center;" ngClass="employment.approved ? 'black' : 'red' " >{{employment.approved === true ? 'Y' : 'N'}}</div>
 
     <div class="mx-1" style="display: inline-block; width: 200px;">
          <button class="w35 bordernone fa fa-pencil" style="margin-left: 50x;"

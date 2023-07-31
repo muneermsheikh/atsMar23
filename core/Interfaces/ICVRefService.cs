@@ -1,4 +1,5 @@
 using core.Dtos;
+using core.Entities.EmailandSMS;
 using core.Entities.HR;
 using core.Params;
 
@@ -6,7 +7,8 @@ namespace core.Interfaces
 {
      public interface ICVRefService
     {
-        Task<Pagination<CVReferredDto>> GetCVReferredDto(CVRefSpecParams refParams);
+        Task<Pagination<CVReferredDto>> GetCVReferredDto(CVRefParams refParams);
+        Task<bool> ComposeSelDecisionReminderMessage(int CustomerId, LoggedInUserDto loggedInUserDto);
         Task<CVReferredDto> GetCVRefWithDeploys(int CVRefId);
         Task<ICollection<CVRef>> GetReferralsOfOrderItemId(int orderItemId);
         Task<ICollection<CVRef>> GetReferralsOfACandidate(int candidateId);

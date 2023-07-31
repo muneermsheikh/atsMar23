@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Excel = Microsoft.Office.Interop.Excel;       //Microsoft Excel 14 object in references-> COM tab
 
+
 namespace infra.Services
 {
      public class ExcelService : IExcelService
@@ -14,7 +15,14 @@ namespace infra.Services
         private readonly ATSContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly IUserService _userService;
-		public ExcelService(ATSContext context, UserManager<AppUser> userManager, IUserService userService)
+		
+        public const int colDate=1;
+        public const int colSource=2;
+        public const int colCategoryRef=4;
+
+
+
+        public ExcelService(ATSContext context, UserManager<AppUser> userManager, IUserService userService)
 		{
             _userService = userService;
             _userManager = userManager;
@@ -48,7 +56,7 @@ namespace infra.Services
                 return "The column title 'Name' is too down in the sheet";
             }
 
-            int constHeaderValueCol=20;
+            int constHeaderValueCol=7;
 
             var OrderItemId= ((Excel.Range)xlWorksheet.Cells[3, constHeaderValueCol]).Value2;
             int orderitemid = Convert.ToInt32(OrderItemId);
@@ -182,12 +190,7 @@ namespace infra.Services
                                 case "Notification Desired":
                                     newCandidate.NotificationDesired=Convert.ToBoolean(val);
                                     break;
-                                case "Introduction":
-                                    newCandidate.Introduction=TrimIfNecessary(val,150);
-                                    break;
-                                case "Interests":
-                                    newCandidate.Interests=val;
-                                    break;
+                               
                                 case "Qualification":
                                     int j = val.IndexOf("|");
                                     if(j!=-1) userQs.Add(new UserQualification(j,true));
@@ -230,6 +233,12 @@ namespace infra.Services
 		public async Task<string> ReadAndSaveProspectiveXLToDb(string filePathName, int userid, string username)
 		{
 			
+            //valid column names in the sheet
+            //Gender, Resume Id, Resume Title, Name, Age, Mobile No, Alternate Contact No,
+            //Alternate Number, Current Location, Address, Work Experience, Email Id,
+            //Alternate Email Id, Date of Birth
+            //ORDER ITEM ID IS IN ROW 3, COL 7
+
             //Create COM Objects. Create a COM object for everything that is referenced
             Excel.Application xlApp = new Excel.Application();
             Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(@filePathName);
@@ -253,19 +262,23 @@ namespace infra.Services
             }
 
             int constHeaderValueCol=20;
-
-            var OrderItemId= ((Excel.Range)xlWorksheet.Cells[3, constHeaderValueCol]).Value2;
-            int orderitemid = Convert.ToInt32(OrderItemId);
+            //the OrderItemId value is in row 3, column 20
+            var strOrderItemId= ((Excel.Range)xlWorksheet.Cells[3, constHeaderValueCol]).Value2.ToString();
+            if(string.IsNullOrEmpty( strOrderItemId)) {
+                closeExcelApplication(xlApp, xlWorkbook);    
+                return "Order Item Id not available in column 3 or row 3";
+            }
+            int orderitemid = Convert.ToInt32(strOrderItemId);
             
             if(orderitemid==0 || !await OrderItemIdIsValidForProspective(orderitemid)) {
                 closeExcelApplication(xlApp, xlWorkbook);    
                 return "Invalid Order Item Id";
             }
-
-            var dated = ((Excel.Range)xlWorksheet.Cells[1, constHeaderValueCol]).Value;
-            var Source= ((Excel.Range)xlWorksheet.Cells[2, constHeaderValueCol]).Value2;
             
-            var CategoryRef= ((Excel.Range)xlWorksheet.Cells[4, constHeaderValueCol]).Value2;     //row, column
+            var dated = ((Excel.Range)xlWorksheet.Cells[colDate, constHeaderValueCol]).Value;
+            var Source= ((Excel.Range)xlWorksheet.Cells[colSource, constHeaderValueCol]).Value2;
+            
+            var CategoryRef= ((Excel.Range)xlWorksheet.Cells[colCategoryRef, constHeaderValueCol]).Value2;     //row, column
 
             string strError="";
 
@@ -275,7 +288,7 @@ namespace infra.Services
             try{
                 NotOk = Convert.ToDateTime(dated).Year<2000 
                         || string.IsNullOrEmpty((string)Source)
-                        || Convert.ToInt32(OrderItemId)==0 
+                        || orderitemid==0 
                         || string.IsNullOrEmpty((string) CategoryRef);
             } catch (Exception ex) {
                         closeExcelApplication(xlApp, xlWorkbook);
@@ -314,53 +327,53 @@ namespace infra.Services
                         object _ColumnName;
                         
                         if(!string.IsNullOrEmpty((string)val)) {
-                        _ColumnName= ((Excel.Range)xlWorksheet.Cells[9, j]).Value2; //itle is in row 9
-                        switch(_ColumnName) {
-                            case "Gender":
-                                newProspect.Gender=val.Substring(0,1);
-                                break;
-                            case "Resume Id":
-                                newProspect.ResumeId= TrimIfNecessary(val, 15);
-                                break;
-                            case "Resume Title":
-                                newProspect.ResumeTitle=TrimIfNecessary(val, 50);
-                                break;
-                            case "Name":
-                                newProspect.CandidateName=TrimIfNecessary(val, 50);
-                                break;
-                            case "Age":
-                                newProspect.Age=TrimIfNecessary(val, 10);
-                                break;
-                            case "Mobile No.":
-                                newProspect.PhoneNo=TrimIfNecessary(val, 15);
-                                break;
-                            case "Alternate Contact No.":
-                            case "Alternate Number":
-                                newProspect.AlternatePhoneNo=TrimIfNecessary(val, 15);
-                                break;
-                            case "Current Location":
-                                newProspect.CurrentLocation=val;
-                                newProspect.City=val;
-                                break;
-                            case "Address":
-                                newProspect.Address=val;
-                                break;
-                            case "Work Experience":
-                                newProspect.WorkExperience=val;
-                                break;
-                            case "Email Id":
-                                newProspect.Email=val;
-                                break;
-                            case "Alternate Email Id.":
-                                newProspect.AlternateEmail=val;
-                                break;
-                            case "Date of Birth":
-                                var dob = Convert.ToDateTime(val);
-                                if(dob.Year < 1900) newProspect.DateOfBirth=dob;
-                                break;
-                            default:
-                                break;
-                        }
+                            _ColumnName= ((Excel.Range)xlWorksheet.Cells[9, j]).Value2; //itle is in row 9
+                            switch(_ColumnName) {
+                                case "Gender":
+                                    newProspect.Gender=val.Substring(0,1);
+                                    break;
+                                case "Resume Id":
+                                    newProspect.ResumeId= TrimIfNecessary(val, 15);
+                                    break;
+                                case "Resume Title":
+                                    newProspect.ResumeTitle=TrimIfNecessary(val, 50);
+                                    break;
+                                case "Name":
+                                    newProspect.CandidateName=TrimIfNecessary(val, 50);
+                                    break;
+                                case "Age":
+                                    newProspect.Age=TrimIfNecessary(val, 10);
+                                    break;
+                                case "Mobile No.":
+                                    newProspect.PhoneNo=TrimIfNecessary(val, 15);
+                                    break;
+                                case "Alternate Contact No.":
+                                case "Alternate Number":
+                                    newProspect.AlternatePhoneNo=TrimIfNecessary(val, 15);
+                                    break;
+                                case "Current Location":
+                                    newProspect.CurrentLocation=val;
+                                    newProspect.City=val;
+                                    break;
+                                case "Address":
+                                    newProspect.Address=val;
+                                    break;
+                                case "Work Experience":
+                                    newProspect.WorkExperience=val;
+                                    break;
+                                case "Email Id":
+                                    newProspect.Email=val;
+                                    break;
+                                case "Alternate Email Id.":
+                                    newProspect.AlternateEmail=val;
+                                    break;
+                                case "Date of Birth":
+                                    var dob = Convert.ToDateTime(val);
+                                    if(dob.Year < 1900) newProspect.DateOfBirth=dob;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                         
                 }

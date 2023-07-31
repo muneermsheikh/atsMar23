@@ -1,0 +1,12 @@
+.stdd {
+	display: inline-block;
+	font-size: medium;
+	vertical-align: top;
+}
+
+.b {font-weight: bold;}
+
+.w75 {width: 75px;}
+.w125 {width: 125px;}
+.w100 {width: 100px;}
+.w400 {width: 400px;}

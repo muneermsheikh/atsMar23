@@ -1,0 +1,25 @@
+<div class="modal-header" *ngIf="stddQ !== undefined">
+	<div class="b">{{stddQ.id===0 ? 'Add New' : 'Edit' + ' Standard Assessment Question'}}</div>
+	<button type="button" title="submit" class="stdd btn btn-default green fa fa-2x fa-check" 
+        (click)="updateStandardQ()"></button>
+	<button class="stdd close pull-right fa fa-2x fa-close" type="button" aria-label="Close" 
+        (click)="bsModalRef.hide()"></button>
+</div>
+
+<div class="modal-body">
+	<label class="stdd w125 b">Subject: </label>
+        <input type="text" class="stdd.w400" [(ngModel)]="subject">
+    
+	<br><label class="stdd w125 b">Question No</label>
+        <input type="text" class="stdd w75" [(ngModel)]="qNo">
+
+	<br><label class="stdd w125 b">question</label>
+	<textarea class="stdd" name="question" id="question" cols="80" rows="5" [(ngModel)]="question"></textarea>
+	<br>
+	<label class="stdd w125 b">Max Points: </label>
+    <input type="text" class="stdd w100" [(ngModel)]="maxPoints">
+	
+</div>
+<div class="modal-footer">
+
+</div>

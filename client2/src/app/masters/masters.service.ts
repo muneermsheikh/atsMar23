@@ -11,6 +11,7 @@ import { IUser } from '../shared/models/admin/user';
 import { ICustomerNameAndCity } from '../shared/models/admin/customernameandcity';
 import { IEmployeeIdAndKnownAs } from '../shared/models/admin/employeeIdAndKnownAs';
 import { IQualification } from '../shared/models/hr/qualification';
+import { IVendorFacility } from '../shared/models/admin/vendorFacility';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +45,10 @@ export class MastersService {
   getCategoryList() {
 
       return this.http.get<IProfession[]>(this.apiUrl + 'masters/categories', {});
+  }
+
+  getVendorFacilityList() {
+    return this.http.get<IVendorFacility[]>(this.apiUrl + 'masters/VendorFacilityList')
   }
 
   getCategories(useCache: boolean) { 
@@ -230,7 +235,7 @@ export class MastersService {
       return of(this.agents);
     }
     
-    return this.http.get<ICustomerNameAndCity[]>(this.apiUrl + 'customers/associateidandnames/associate').pipe(
+    return this.http.get<ICustomerNameAndCity[]>(this.apiUrl + 'customers/idandnames/associate').pipe(
       map(response => {
         this.agents = response;
         return response;

@@ -16,7 +16,7 @@
                <input type="text" class="stdd w150 mt-1" formControlName="applicationNo" >
                <div class="pull-right mt-1">
                     <button class="btn btn-default fa fa-undo" type="button" (click)="cancel()"></button>
-                    <button [disabled]="!registerForm.valid" title="save without attachments" 
+                    <button [disabled]="!registerForm.valid" title="Update" 
                          class="btn btn-success me-2 fa fa-save " type="submit"></button>
                </div>
                 
@@ -114,30 +114,30 @@
                      </div>
                </div>
                <div class="mt-2">
-                    <div class="stdd col-4">
+                    <div class="stdd col-3">
                          <input type="text" class="w150" formControlName="city">
                          <label for="city" class="w150">City</label>
                      </div>
-                     <div class="stdd col-4">
+                     <div class="stdd col-2">
                          <input type="text" class="w75" formControlName="pin">
                          <label for="pin" class="w75">PIN</label>
                      </div>
-                     <div class="stdd col-4">
+                     <div class="stdd col-3">
                          <input type="text" class="w100" formControlName="district">
                          <label for="district" class="w100">District</label>
                      </div>
                </div>
                <div class="mt-2">
-                    <div class="stdd col-4">
+                    <div class="stdd col-6">
                          <input type="text" class="w150" formControlName="email">
-                         <label for="email" ngClass="isAddMode ? 'stdd w250' : 'stdd w350'">Email</label>
+                         <br><label for="email" ngClass="isAddMode ? 'stdd w250' : 'stdd w350'">Email</label>
                      </div>
      
-                     <div class="stdd col-4" *ngIf="isAddMode">
+                     <div class="stdd col-3" *ngIf="isAddMode">
                          <input type="password" class="w150" formControlName="password">
                          <label for="password" class="stdd w150">Password</label>
                      </div>
-                     <div class="stdd col-4" *ngIf="isAddMode">
+                     <div class="stdd col-3" *ngIf="isAddMode">
                          <input type="password" class="w150" formControlName="password">
                          <label for="district" class="stdd w150">Confirm Password</label>
                      </div>
@@ -249,22 +249,30 @@
                          <div class="stdd col-3">Type</div>
                          <button class="stdd pull-right fa fa-plus" type="button" (click)="addUserAttachment()" ></button>
                          <div formArrayName="userAttachments" style="height: 12px;" >
+                              <div class="stdd" style="font-size: x-small;">
+                                   <input class="stdd" type="file" id="file" 
+                                   (change)="onFileInputChange($event)"
+                                   >
+                              </div>
                               <div *ngFor="let ph of userAttachments.controls; let j=index"> 
                                    <div [formGroupName]="j">
-                                        <div class="stdd col-8" style="font-size: x-small;">
-                                             <input class="stdd" type="file" id="file" formControlName="fileName" 
-                                             (change)="onFileInputChange($event)"
-                                             >
+
+                                        <br>
+                                        <div class="stdd col-8">
+                                             <app-text-input [label]="'File Name'" formControlName="fileName" ></app-text-input>
                                         </div>
-                                        <div class="stdd col-3">
+                                        
+                                        <div class="stdd col-2">
                                              <app-text-input [label]="'File Type'" formControlName="attachmentType" ></app-text-input>
                                         </div>
                                         
                                         <button (click)="removeUserAttachment(j)" class="stdd red fa fa-trash"></button>
+                                        <button (click)="download(j)" class="stdd red fa fa-download"></button>
                                    </div>
                               </div>
                          </div>
                     </tab>
+               
                </tabset>
           </div>
      </div>    

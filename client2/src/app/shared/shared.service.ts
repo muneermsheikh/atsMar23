@@ -20,23 +20,12 @@ export class SharedService {
 
   constructor(private http: HttpClient) { }
   
-  getAgents() {
-    if (this.agents.length > 0) {
-      return of(this.agents);
-    }
-    return this.http.get<ICustomerNameAndCity[]>(this.apiUrl + 'customers/associateidandnames/associate').pipe(
-      map((response: any) => {
-        this.agents = response;
-        return response;
-      })
-    );
-  }
-
-  getCustomers() {
+  
+  getCustomerList(customerType: string) {
     if (this.customers.length > 0) {
       return of(this.customers);
     }
-    return this.http.get<ICustomerNameAndCity[]>(this.apiUrl + 'customers/associateidandnames/customer').pipe(
+    return this.http.get<ICustomerNameAndCity[]>(this.apiUrl + 'customers/idandnames/' + customerType).pipe(
       map(response => {
         this.customers = response;
         return response;

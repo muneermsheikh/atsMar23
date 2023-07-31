@@ -62,25 +62,8 @@ export class EmploymentListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    /*
-    this.activatedRoute.data.subscribe(data => {
-      this.employments = data.employments;
-      this.totalCount = data.count;
-    })
-    */
     this.getEmployments(false);
     console.log('employments;', this.employments);
-   /*
-    this.activatedRoute.data.subscribe({
-      next: response => {
-        console.log('employmentslist response:', response);
-        this.employments = response.employments;
-        this.totalCount = response.count;
-      },
-      error: error => console.log(error)
-      
-    });
-    */
   }
 
   getEmployments(useCache: boolean) {
@@ -209,16 +192,6 @@ export class EmploymentListComponent implements OnInit {
     (err: any) => {
       console.log('unhandled error NOT handled in catch Error(, orif throwError()')
     }
-    
-   /*
-      this.bsModalRef.content.updateEmployment.subscribe((values: IEmployment) => {
-        console.log('calling update employment');
-          this.service.updateEmployment(values).subscribe(() => {
-            this.toastr.success('employment updated');
-          }, error => {
-            this.toastr.error('failed to update the checklist Service', error);
-          })
-      })  
-    */
+ 
   }
 }

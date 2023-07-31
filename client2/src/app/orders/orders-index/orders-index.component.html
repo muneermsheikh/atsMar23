@@ -1,24 +1,6 @@
-<div class="row mt-5" >
-     <div class="col-2" >
-          <ng-container>
-               <div class="stdd b w50 blue">Sort</div>
-               <select name="" id="" class="custom-select mb-2" (change)="onSortSelected($event)">
-                    <option *ngFor="let sort of sortOptions"
-                         [value] = "sort.value"
-                    >{{sort.name}}</option>
-               </select>
-               <div class="stdd b w50 blue">City</div>
 
-               <ul class="list-group mb-3">
-                    <li class="list-group-item" *ngFor="let city of orderCities"
-                        [class.active]="city.cityName === oParams.city" [value]="city.cityName"
-                        (click)="onCitySelected(city.cityName)">
-                        {{city.cityName}}
-                    </li>
-                </ul>
-          </ng-container>
-     </div>
-     <div class="col-10">
+<div class="row mt-5" style="margin-left: 5px;" >
+     <div class="col-10" style="margin-left: 5px;">
           <div class="d-flex justify-contents-between align-items-center">
                <app-paging-header
                     [totalCount]="totalCount"
@@ -54,22 +36,27 @@
                <div class="stdd w100 b">Forwarded To HR On</div>
                <div class="stdd w150 b" >Order Status</div>
           </div>
-          <div class="row" *ngFor="let order of orders" >
-               <app-order-line 
-                    [order]="order" 
-                    (viewEvent)="viewOrder($event)"
-                    (editEvent)="editOrder($event)"
-                    (contractReviewEvent)="contractReviewOrder($event)"
-                    (dlForwardedToHREvent)="dlForwardedToHRDept($event)"
-                    (dlFwdToAssociatesEvent)="dlForwardToAssociates($event)"
-                    (dlForwardedToAssociatesEvent)="dlForwardedToAssociates($event)"
-                    (deleteEvent)="deleteOrder($event)"
-                    (dlFwdToHREvent)="dlForwardToHRDept($event)"
-                    (acknowledgeToClientEvent)="acknowledgeToClient($event)"
-                    (cvreferredEvent)="cvsReferred($event)"
-               ></app-order-line>
+          <div *ngIf="!orders">No orders on record</div>
+          <div *ngIf="orders">
+               <div class="row" *ngFor="let order of orders" >
+                    <app-order-line 
+                         [order]="order" 
+                         (viewEvent)="viewOrder($event)"
+                         (editEvent)="editOrder($event)"
+                         (contractReviewEvent)="contractReviewOrder($event)"
+                         (dlForwardedToHREvent)="dlForwardedToHRDept($event)"
+                         (dlFwdToAssociatesEvent)="dlForwardToAssociates($event)"
+                         (dlForwardedToAssociatesEvent)="dlForwardedToAssociates($event)"
+                         (deleteEvent)="deleteOrder($event)"
+                         (dlFwdToHREvent)="dlForwardToHRDept($event)"
+                         (acknowledgeToClientEvent)="acknowledgeToClient($event)"
+                         (cvreferredEvent)="cvsReferred($event)"
+                         (selDecisionEvent)="remindSelDecisions($event)"
+                    ></app-order-line>
+               </div>
+    
           </div>
-          
+         
      </div>
 </div>
 

@@ -40,7 +40,7 @@ export class MessagesComponent implements OnInit {
   constructor(private service: MessageService, private toastr: ToastrService, private confirmService: ConfirmService) { }
 
   ngOnInit(): void {
-    //this.mParams.pageSize = this.pageSize;
+    this.mParams.pageSize = 15;
     this.container = this.mParams.container;  // =  this.container;
     //console.log('controlsDisabled', this.controlsDisabled);
     this.getMessages(false);

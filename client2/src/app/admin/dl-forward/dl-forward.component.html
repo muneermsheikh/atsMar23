@@ -1,28 +1,29 @@
 
 
 <br><br>
-<div class="b">Requirements forwarded to Associates</div>
+<div class="b">REQUIREMENT FORWARDED TO ASSOCIATES - 
+	Customer <span style="color: blue">{{forwards?.customerName}}</span>, 
+	Order No <span style="color: blue">{{forwards?.orderNo}}</span> 
+	dt <span style="color: blue" >{{forwards?.orderDate | date: 'dd-MMM-yy'}} </span>
+</div>
 <div *ngIf="forwards === undefined" >
 	Undefined Order forwards
 </div>
 
 <div *ngIf="forwards !== undefined" class="ml30 mt20" >
-	<div class="stdd vAlignMiddle w150"><strong>Order No:</strong>{{forwards.orderNo}}</div>
-	<div class="stdd vAlignMiddle w150"><strong>dated:</strong>{{forwards.orderDate | date: 'dd-MMM-yy'}}</div>
-	<div class="stdd vAlignMiddle w300"><strong>Customer:</strong>{{forwards.customerName}}</div>
-	<br>
+	
 	<div class="stdd b vAlignMiddle w150">Date forwarded</div>
 	<div class="stdd b vAlignMiddle w400">Associate Name</div>
 	<div class="stdd b vAlignMiddle mx-1 w200" style="margin-left: 3px;">Official Name</div>
 	<div class="stdd b vAlignMiddle w200">Email</div>
     <div class="stdd b vAlignMiddle mx-1 w150">Phone No</div>
     <div class="stdd b vAlignMiddle w150">WhatsApp No</div>
-	<button type="button" class="stdd w35 vAlignMiddle btn btn-success fa fa-check" (click)="updateAgentsSelected()"></button>
+	<!-- <button type="button" class="stdd w35 vAlignMiddle btn btn-success fa fa-check" (click)="updateAgentsSelected()"></button> -->
 	<button type="button" class="stdd w35 vAlignMiddle btn mx-1 btn-secondary fa fa-close" (click)="close()"></button>
-     <hr  >
+     <hr style="margin:0px; padding: 0px;" >
      <form #agentsForm="ngForm" id="agentsForm">
 	   	<div *ngIf="forwards === undefined">
-			No Assciates defined for the Order Id selected
+			No Associates defined for the Order Id selected
 	   	</div>
 
 		<div *ngFor="let cat of forwards.forwardedCategories">
@@ -30,13 +31,14 @@
 			<div class="stdd w150 textUL"><strong>Charges:</strong>{{cat.charges}}</div>
 			<br>
 			<div *ngFor="let off of cat.forwardedOfficials">
-				<span class="form-check stdd " >
+				<!-- <span class="form-check stdd " >
 					<input type="checkbox" 
 						class="form-check-input"
 						[checked]="off.checked"
 						(change)="off.checked = !off.checked" 
 					>
 				</span>
+			-->
 				<div class="stdd w150">{{off.dateTimeForwarded | date: 'dd-MMM-yy hh:mm' }}</div>
 				<div class="stdd w400">{{off.agentName}}</div>
 				<div class="stdd w200">{{off.officialName}}</div>

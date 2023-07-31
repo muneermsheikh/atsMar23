@@ -27,12 +27,12 @@ namespace infra.Services
                throw new System.NotImplementedException();
           }
 
-          public async Task<ICollection<OrderItemAssessmentQ>> GetAssessmentQsOfOrderItemId(int orderitemid)
+          public async Task<OrderItemAssessment> GetAssessmentOfOrderItemId(int orderitemid)
           {
                var item = await _context.OrderItemAssessments.Where(x => x.OrderItemId == orderitemid)
                     .Include(x => x.OrderItemAssessmentQs.OrderBy(x => x.QuestionNo)).FirstOrDefaultAsync();
                if (item==null) return null;
-               return item.OrderItemAssessmentQs;
+               return item;
           }
         
           public async Task<OrderItemAssessment> CopyStddQToOrderAssessmentItem(int orderitemid)
@@ -40,11 +40,11 @@ namespace infra.Services
                var assessmentitem = await _context.OrderItemAssessments.Where(x => x.OrderItemId == orderitemid).FirstOrDefaultAsync();
                if (assessmentitem != null) return assessmentitem;
 
-               var qs = await _context.AssessmentStandardQs.OrderBy(x => x.QNo).ToListAsync();
+               var qs = await _context.AssessmentStandardQs.OrderBy(x => x.QuestionNo).ToListAsync();
                var lst = new List<OrderItemAssessmentQ>();
                foreach (var q in qs)
                {
-                    lst.Add(new OrderItemAssessmentQ(orderitemid, q.QNo, q.AssessmentParameter, q.Question, q.MaxPoints));
+                    lst.Add(new OrderItemAssessmentQ(orderitemid, q.QuestionNo, q.Subject, q.Question, q.MaxPoints));
                }
                var orderitem = await _context.OrderItems.Where(x => x.Id == orderitemid)
                     .Select(x => new { x.OrderId, x.CategoryName, x.CategoryId }).FirstOrDefaultAsync();
@@ -105,7 +105,7 @@ namespace infra.Services
                     } else {
                          var newQ = new OrderItemAssessmentQ(
                               assessmentItem.OrderItemId, q.OrderId, q.OrderAssessmentItemId,
-                              q.QuestionNo, q.Subject, q.Question, q.MaxMarks, q.IsMandatory);
+                              q.QuestionNo, q.Subject, q.Question, q.MaxPoints, q.IsMandatory);
                          existingItem.OrderItemAssessmentQs.Add(newQ);
                          _context.Entry(newQ).State = EntityState.Added;
                     }
@@ -147,21 +147,25 @@ namespace infra.Services
                return qs;
           }
 
+          //returns object, witout writing to db
           public async Task<OrderItemAssessment> GetOrAddOrderAssessmentItem(int orderItemId)
           {
                var assessmt = await _context.OrderItemAssessments.Where(x => x.OrderItemId == orderItemId)
                     .Include(x => x.OrderItemAssessmentQs.OrderBy(x => x.QuestionNo))
                     .FirstOrDefaultAsync();
+               if(assessmt != null) return assessmt;
 
-               if (assessmt == null) {
-                    //orderid, orderno, categoryid, categoryname
-                    var details = await _orderItemService.GetOrderItemRBriefDtoFromOrderItemId(orderItemId);
-                    assessmt = new OrderItemAssessment(orderItemId, details.OrderId, details.OrderNo, details.CategoryId, details.CategoryName,null);
-                    _unitOfWork.Repository<OrderItemAssessment>().Add(assessmt);
-                    if (await _unitOfWork.Complete() == 0) return null;
-               }
+               //create AssessmentQuestion Header
+               var details = await _orderItemService.GetOrderItemRBriefDtoFromOrderItemId(orderItemId);
+               //var qq = new OrderItemAssessmentQ(orderItemId, details.OrderId, 0, 1, "", "", 0, false);
+               var qq = new OrderItemAssessment(orderItemId, details.OrderId, details.OrderNo, details.CategoryId,
+                    details.CategoryName, null);
 
-               return assessmt;
+               _unitOfWork.Repository<OrderItemAssessment>().Add(qq);
+
+               if (await _unitOfWork.Complete() == 0) return null;
+
+               return qq;
           }
 
           public async Task<bool> DeleteAssessmentQ(int assessmentQid)

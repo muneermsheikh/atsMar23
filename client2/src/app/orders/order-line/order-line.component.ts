@@ -20,6 +20,7 @@ export class OrderLineComponent implements OnInit {
   @Output() dlForwardedToAssociatesEvent = new EventEmitter<number>();
   @Output() acknowledgeToClientEvent = new EventEmitter<number>();
   @Output() cvreferredEvent = new EventEmitter<number>();
+  @Output() selDecisionEvent = new EventEmitter<number>();
 
   menuTopLeftPosition =  {x: 0, y: 0}
 
@@ -48,6 +49,10 @@ export class OrderLineComponent implements OnInit {
 
   deleteClicked() {
     this.deleteEvent.emit(this.order?.id);
+  }
+
+  remindForSelDecisions() {
+    this.selDecisionEvent.emit(this.order?.id);
   }
 
   dlForwardToHRClicked() {

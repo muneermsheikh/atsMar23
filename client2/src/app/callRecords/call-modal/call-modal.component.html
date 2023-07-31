@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <div class="b">Call Records</div>
+    <div class="b">Call Records of {{candidateName}}</div>
     <button class="close pull-right fa fa-poweroff"
          type="button" aria-label="Close"
          (click)="bsModalRef.hide()">X
@@ -7,44 +7,80 @@
 </div>
 
 <div class="modal-body">
+    
+     <div>
+        <!--<form #frm="ngForm" id="frm"> -->
+            <div *ngIf="bAddNew && cHistItem !== undefined">
+                <div class="stdd w100" *ngIf="cHistItem.id===0 ? 'adding new record' : 'editing ..'"></div>
+         
+                <label class="stdd w100 mx-2">Mode</label>
+                In: <input class="stdd mx-2" style="vertical-align: middle;" type="radio" value="in"
+                     [(ngModel)]="cHistItem.incomingOutgoing" >
+                Out: <input class="stdd mx-2" type="radio" style="vertical-align: middle;" value="out"
+                     [(ngModel)]="cHistItem.incomingOutgoing" >
+                
+                <label class="stdd w75 mx-2">Date</label>
+                <input type="text"
+                     placeholder="Date of birth"
+                     [(ngModel)]="cHistItem.dateOfContact"
+                     bsDatepicker
+                     [bsValue]="bsValueDate"
+                     [bsConfig]="{dateInputFormat: 'YYYY-MM-DD' }"
+                >
+                <button type="button" title="Save this record" 
+                    class="btn btn-default pull-right b fa fa-save" (click)="updateRecord()">"</button>
+                <button type="button" title="Abort" 
+                    class="btn btn-default pull-right fa fa-undo" (click)="cancelNewRecord()">"</button>
 
-    <div class="form-check"style="font-size: small;">
-         <label class="stdd">Create new History if no record exists</label>
-         <input type="checkbox"
-             class="stdd mx-2 form-check-input"
-             [checked]="candidateFromDb"
-             value="candidateFromDb"
-             (change)="candidateFromDb = !candidateFromDb"
-         >
-     </div>
-     <div *ngIf="histParams !== undefined && histParams !== null">
-        <form #frm="ngForm" id="frm">
-            <div class="form-check" style="font-size: medium;">
-                 <label class="stdd w100">Mobile No.</label>
-                 <input class="stdd w200" type="text" name="mobileNo" 
-                      ngModel id="mobileNo" [(ngModel)]="histParams.mobileNo" >
+                
+                <br><label class="stdd w120 mx-2">Party's Name :</label>
+                <input class="stdd w200 mx-2" type="text" name="personName" 
+                    id="personName" [(ngModel)]="cHistItem.personName" >
+                
+                <label class="stdd w120 mx-2">Subject</label>
+                <input class="stdd w200 mx-2" type="text" name="emailId" 
+                    id="subject" [(ngModel)]="cHistItem.subject" >
+
+                <br><label class="stdd w120 mx-2">Category Ref :</label>
+                <input class="stdd w200 mx-2" type="text" name="categoryRef" 
+                    id="categoryRef" [(ngModel)]="cHistItem.categoryRef" >
+        
+                <label class="stdd w120 mx-2">Mobile No.</label>
+                <input class="stdd w200 mx-2" type="text" name="phoneNo" 
+                    id="phoneNo" [(ngModel)]="cHistItem.phoneNo" >
+                        
+                <br><label class="stdd w120 mx-2">Discussions</label>
+                <input class="stdd w500 mx-2" type="text" name="gistOfDiscussions"
+                    id="gistOfDiscussions" [(ngModel)]="cHistItem.gistOfDiscussions" >
+        
             </div>
-            <div class="form-check" style="font-size: medium;">
-                 <label class="stdd w100">Email Id</label>
-                 <input class="stdd w200" type="text" name="emailId" 
-                      ngModel id="emailId" [(ngModel)]="histParams.emailId" >
-            </div>
-            <div class="form-check" style="font-size: medium;">
-                 <label class="stdd w100">Name :</label>
-                 <input class="stdd w200" type="text" name="personName" 
-                      ngModel id="personName" [(ngModel)]="histParams.personName" >
-            </div>
-            <button type="button" title="retrieve entity from Database based upon above inputs" 
-                class="btn btn-default pull-right" (click)="getCandidate()">Get Caller History"</button>
             
             <div class="stdd red" style="vertical-align: bottom;">{{err}}</div>
             
-        </form>
+            <div class="stdds w50 b">Date</div>
+            <div class="stdds w35 b">In/<br>Out</div>
+            <div class="stdds w100 b">Phone</div>
+            <div class="stdds w150 b">Subject</div>
+            <div class="stdds w300 b">Discussions</div>
+            <div class="stdds w75 b">Result</div>
+            <button class="pull-right fa fa-plus fSmaller" (click)=addNewItem()> </button>
+            <div *ngFor="let item of cHistory?.userHistoryItems">
+                <div class="stdds w50">{{item.dateOfContact | date : 'ddMMM'}}</div>
+                <div class="stdds w35">{{item.incomingOutgoing}}</div>
+                <div class="stdds w100">{{item.phoneNo}}</div>
+                <div class="stdds w150">{{item.subject}}</div>
+                <div class="stdds w300 fSmall">{{item.gistOfDiscussions}}</div>
+                <div class="stdds w75">{{item.contactResultName}}</div>
+                <button class="stdd fa fa-pencil fSmaller" (click)="editHistoryItem(item)"></button>
+                <button class="stdd fa fa-trash fSmaller red" (click)="deleteHistoryItem(item)" ></button>
+            </div>
+        <!-- </form> -->
      </div>
     
-    <!-- <div class="modal-footer">
-         <button type="button" class="btn btn-default fa fa-poweroff" (click)="close()">close</button>
+    <div class="modal-footer">
+         <!-- <button type="button" class="btn btn-default fa fa-poweroff" (click)="close()">close</button>
          <button type="button" [disabled]="cHistory===null" title="Show History" class="btn btn-default fa fa-user" (click)="emitValue()">Display History</button>
+         -->
     </div>
--->
+
     

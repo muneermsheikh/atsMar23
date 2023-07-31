@@ -24,7 +24,15 @@ namespace core.Interfaces
         Task<Pagination<Industry>> GetIndustryListAsync(IndustrySpecParams industryParams);
         Task<ICollection<Industry>> GetIndustryListWOPaginationAsync();
         Task<Pagination<Industry>> GetIndustryPaginated(IndustrySpecParams specParams);
-        
+
+    //vendor Facility    
+        Task<VendorFacility> AddVendorFacility(string vendorFacilityName);
+        Task<bool> EditVendorFacilityNameAsync(VendorFacility vendorFacility);
+        Task<bool> DeleteVendorFacilityAsync(int VendorFacilityId);
+        Task<VendorFacility> GetVendorFacility(int id);
+        Task<ICollection<VendorFacility>> GetVendorFacilityListAsync();
+        Task<Pagination<VendorFacility>> GetVendorFacilityPaginated(VendorFacilityParams vendorParams);
+    
     //Qualifications
     
         Task<Qualification> AddQualification(string qualificationName);

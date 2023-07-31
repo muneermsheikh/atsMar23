@@ -15,7 +15,8 @@
          title="this is charges agreed box"
          [(ngModel)]="chklst!.chargesAgreed ">
      
-     <div *ngIf="chklst?.charges != chklst?.chargesAgreed && chklst!.charges > 0" class="stdd b ml-5 mx-1" style="padding-right: 5px;">Fees Diff Approved:
+     <div *ngIf="chklst?.charges != chklst?.chargesAgreed && chklst!.charges > 0" 
+            class="stdd b ml-5 mx-1" style="padding-right: 5px;">Fees Diff Approved:
          <input type="checkbox" 
              class="form-check-input mx-1" 
              [checked]="chklst!.exceptionApproved"
@@ -32,7 +33,10 @@
      <br>
      <div class="stdd b">checklisted on:</div> 
      <div class="stdd blue">{{chklst!.checkedOn | date: 'd-MMM-yy'}}</div>
-     <div class="stdd ml-5 b"><span class="b">Checklist Completed:</span><span class="b mx-2 blue">{{chklst!.checklistedOk ? 'Yes' : 'No'}}</span></div>
+     <div class="stdd ml-5 b">
+        <span class="b">Checklist Completed:</span>
+        <span class="b mx-2 blue"> {{chklst!.checklistedOk ? 'Yes' : 'No'}}</span>
+    </div>
      <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
          <span aria-hidden="true">&times;</span>
      </button>

@@ -9,7 +9,7 @@ using infra.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using core.Params;
-using core.Entities.Process;
+using core.Dtos.Admin;
 
 namespace infra.Services
 {
@@ -27,8 +27,10 @@ namespace infra.Services
           
           private readonly IEmailService _emailService;
           private readonly ITaskService _taskService;
-          public CVRefService(IUnitOfWork unitOfWork, ATSContext context, ICommonServices commonService, IEmailService emailService,
-                    IConfiguration config, IComposeMessagesForAdmin composeMsgAdmin, IEmployeeService empService, ITaskService taskService)
+          public CVRefService(IUnitOfWork unitOfWork, ATSContext context, 
+               ICommonServices commonService, IEmailService emailService,
+               IConfiguration config, IComposeMessagesForAdmin composeMsgAdmin, 
+               IEmployeeService empService, ITaskService taskService)
           {
                _composeMsgAdmin = composeMsgAdmin;
                _emailService = emailService;
@@ -490,7 +492,7 @@ namespace infra.Services
                }
           }
 
-          public async Task<Pagination<CVReferredDto>> GetCVReferredDto(CVRefSpecParams refParams)
+          public async Task<Pagination<CVReferredDto>> GetCVReferredDto(CVRefParams refParams)
           {
                var qry =(from cvref in _context.CVRefs where cvref.OrderId==refParams.OrderId
                     join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
@@ -516,6 +518,10 @@ namespace infra.Services
                     ReferralDecision = cvref.RefStatus,
                     SelectedOn = cvref.RefStatusDate
                }).AsQueryable();
+
+               if(refParams.OrderId > 0) qry.Where(x => x.OrderId==refParams.OrderId);
+               if(refParams.CustomerId > 0) qry.Where(x => x.CustomerId==refParams.CustomerId);
+               if(refParams.CVRefStatus.HasValue) qry.Where(x => x.ReferralDecision==refParams.CVRefStatus);
 
                qry = qry.OrderByDescending(x => x.OrderItemId).ThenByDescending(x => x.ReferredOn);
 
@@ -574,5 +580,60 @@ namespace infra.Services
 
                return null;
           }
+    
+          public async Task<bool> ComposeSelDecisionReminderMessage(int CustomerId, LoggedInUserDto loggedinUser)
+          {
+               var qry =(from cvref in _context.CVRefs where cvref.RefStatus==(int)EnumCVRefStatus.Referred
+                    join item in _context.OrderItems on cvref.OrderItemId equals item.Id 
+                    join cv in _context.Candidates on cvref.CandidateId equals cv.Id 
+                    join o in _context.Orders on cvref.OrderId equals o.Id where o.CustomerId == CustomerId
+                    join cat in _context.Categories on item.CategoryId equals cat.Id 
+                    join cust in _context.Customers on o.CustomerId equals cust.Id 
+
+               select new CVReferredDto {
+                    CvRefId = cvref.Id,
+                    CustomerName = cust.KnownAs,
+                    OrderId = o.Id,
+                    SrNo = item.SrNo,
+                    OrderNo = o.OrderNo,
+                    OrderDate = o.OrderDate,
+                    OrderItemId = item.Id,
+                    CategoryName = cat.Name,
+                    CategoryRef = o.OrderNo + "-" + item.SrNo,
+                    CustomerId = o.CustomerId,
+                    CandidateId = cvref.CandidateId,
+                    ApplicationNo = cv.ApplicationNo,
+                    CandidateName = cv.FullName,
+                    ReferredOn = cvref.ReferredOn,
+                    ReferralDecision = cvref.RefStatus,
+                    SelectedOn = cvref.RefStatusDate
+               }).AsQueryable();
+
+               qry = qry.OrderByDescending(x => x.OrderItemId).ThenByDescending(x => x.ReferredOn);
+
+               var refDtos = await qry.ToListAsync();
+
+               if(refDtos==null || refDtos.Count==0) return false;
+
+               var CustAndOfficial = await(from cust in _context.Customers.Where(x => x.Id == CustomerId)
+                    join offs in _context.CustomerOfficials on cust.Id equals offs.CustomerId
+                         where offs.Divn=="HR"
+                    select new CustAndOfficialDto{
+                         CustomerId = CustomerId, CustomerName = cust.CustomerName,
+                         OfficialName = offs.OfficialName, OfficialDesignation = offs.Designation,
+                         OfficialEmail = offs.Email
+                    }).FirstOrDefaultAsync();
+
+               var msg = _composeMsgAdmin.ComposeSelDecisionRemindersToClient(CustAndOfficial, refDtos, loggedinUser);
+
+               _unitOfWork.Repository<EmailMessage>().Add(msg);
+
+               return await _unitOfWork.Complete() > 0;
+
+          }
+
+    
     }
+
+    
 }

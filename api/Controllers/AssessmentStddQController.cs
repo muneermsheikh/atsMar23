@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using core.Entities.HR;
 using core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace api.Controllers
 {
@@ -32,21 +26,21 @@ namespace api.Controllers
             return await _service.GetStandardAssessmentQs();
         }   
 
-         [Authorize(Roles ="Admin, HRManager, HRSupervisor")]
+        [Authorize]     //(Roles ="Admin, HRManager, HRSupervisor")]
         [HttpDelete("{id}")]
         public async Task<bool> deleteStddQ(int id) 
         {
             return await _service.DeleteStandardAssessmentQ(id);
         }
 
-         [Authorize(Roles ="Admin, HRManager, HRSupervisor")]
+         [Authorize]        //(Roles ="Admin, HRManager, HRSupervisor")]
         [HttpPost]
         public async Task<AssessmentStandardQ> PostNewStddQ(AssessmentStandardQ stddQ)
         {
             return await _service.CreateStandardAssessmentQ(stddQ);
         }
 
-         [Authorize(Roles ="Admin, HRManager, HRSupervisor")]
+        [Authorize]    //(Roles ="Admin, HRManager, HRSupervisor")]
         [HttpPut]
         public async Task<bool> UpdateNewStddQ(ICollection<AssessmentStandardQ> stddqs)
         {

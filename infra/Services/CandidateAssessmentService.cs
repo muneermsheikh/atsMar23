@@ -79,7 +79,7 @@ namespace infra.Services
                     var items = new List<CandidateAssessmentItem>();
                     foreach(var item in itemassessment.OrderItemAssessmentQs)
                     {
-                        items.Add(new CandidateAssessmentItem(item.QuestionNo, item.Subject, item.Question, item.IsMandatory, item.MaxMarks));
+                        items.Add(new CandidateAssessmentItem(item.QuestionNo, item.Subject, item.Question, item.IsMandatory, item.MaxPoints));
                     }
 
                     candassessment = new CandidateAssessment(candidateId, orderItemId, loggedInEmployeeId, knownas, dateIssued,true, checklistHRid, items);
@@ -273,7 +273,7 @@ namespace infra.Services
                         var items = new List<CandidateAssessmentItem>();
                         foreach(var item in itemassessment.OrderItemAssessmentQs)
                         {
-                            items.Add(new CandidateAssessmentItem(item.QuestionNo, item.Subject, item.Question, item.IsMandatory, item.MaxMarks));
+                            items.Add(new CandidateAssessmentItem(item.QuestionNo, item.Subject, item.Question, item.IsMandatory, item.MaxPoints));
                         }
         
                         candassessment = new CandidateAssessment(candidateId, orderItemId, loggedInIdentityUserId, knownas, dateIssued,true, checklisthrid, items);
@@ -517,7 +517,7 @@ namespace infra.Services
 
                     foreach(var item in items){
                         var assessmentItem = new CandidateAssessmentItem(one.Id, item.QuestionNo, item.Subject, 
-                            item.Question, item.IsMandatory, item.MaxMarks,0,"");
+                            item.Question, item.IsMandatory, item.MaxPoints,0,"");
                         assessmentItems.Add(assessmentItem);
                         _context.Entry(assessmentItem).State=EntityState.Added;
                     }
